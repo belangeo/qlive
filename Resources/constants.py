@@ -22,7 +22,8 @@ else:
     RESOURCES_PATH = os.path.join(os.getcwd(), 'Resources')
 
 if not os.path.isdir(RESOURCES_PATH) and PLATFORM == "win32":
-    RESOURCES_PATH = os.path.join(os.getenv("ProgramFiles"), "QLive", "Resources")
+    RESOURCES_PATH = os.path.join(os.getenv("ProgramFiles"), "QLive", 
+                                  "Resources")
 
 IMAGES_PATH = os.path.join(RESOURCES_PATH, "images")
 
@@ -109,7 +110,8 @@ MIDI_DRIVERS = ['portmidi']
 # Audio settings
 SAMPLE_RATES = ['22050','44100','48000', '88200', '96000']
 BUFFER_SIZES = ['64','128','256','512','1024','2048','4096','8192','16384']
-ALLOWED_EXTENSIONS = ["wav","wave","aif","aiff","aifc","au","","sd2","flac","caf","ogg"]
+ALLOWED_EXTENSIONS = ["wav","wave","aif","aiff","aifc","au","",
+                      "sd2","flac","caf","ogg"]
 EXPORT_FORMATS = ['WAV', 'AIFF', 'AU', 'RAW', 'SD2', 'FLAC', 'CAF', 'OGG']
 EXPORT_TYPES = ['16 int', '24 int', '32 int', '32 float', '64 float']
 RECORD_EXTENSIONS = [".wav",".aif",".au","",".sd2",".flac",".caf",".ogg"]

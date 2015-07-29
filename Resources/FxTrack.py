@@ -41,7 +41,7 @@ class FxTrack:
                             wx.FONTWEIGHT_NORMAL, face="Monospace")
 
     def createButtons(self):
-        # Buttons should be created at a position derived according to ther ids
+        # TODO: Buttons should be created at a position according to ther ids
         self.buttonsFxs = []
         self.buttonsInputs = []
         for i in range(self.rows):
@@ -59,13 +59,13 @@ class FxTrack:
             but.setId([0, len(self.buttonsInputs)])
             self.buttonsInputs.append(but)
         else:
-            # need to retrieve the correct id from the position
+            # TODO: need to retrieve the correct id from the position
             but = FxBox(self)
             but.setId([len(self.buttonsFxs), 0])
             self.buttonsFxs.append(but)
 
     def deleteButton(self, but):
-        # work only for fxs, not for inputs
+        # TODO: work only for fxs, not for inputs
         but.delete()
         self.buttonsFxs.remove(but)
         for i, but in enumerate(self.buttonsFxs):
@@ -91,7 +91,7 @@ class FxTrack:
 
     def createConnections(self):
         for i, button in enumerate(self.buttonsFxs):
-            if i == 0: # Should be based on the id...
+            if i == 0: # TODO: Should be based on the id...
                 button.setInput(self.buttonsInputs[i].getOutput())
             else:
                 button.setInput(self.buttonsFxs[i-1].getOutput())
@@ -103,7 +103,8 @@ class FxTrack:
             if obj.name == "AudioIn":
                 inchnls = obj.getInChannels()
                 ismulti = obj.getIsMultiChannels()
-                channels = [audioMixer.getInputChannel(i).getOutput() for i in range(NUM_INPUTS) if inchnls[i]]
+                channels = [audioMixer.getInputChannel(i).getOutput() 
+                            for i in range(NUM_INPUTS) if inchnls[i]]
                 if not ismulti:
                     channels = sum(channels)
                 obj.setInput(channels)
@@ -113,7 +114,8 @@ class FxTrack:
                 outchnls = obj.getOutChannels()
                 channels = [j for j in range(NUM_OUTPUTS) if outchnls[j]]
                 for j in range(chnls):
-                    audioMixer.addToMixer(channels[j % len(channels)], obj.getOutput()[j])
+                    audioMixer.addToMixer(channels[j % len(channels)], 
+                                          obj.getOutput()[j])
 
     def onPaint(self, dc, buttonBitmap, disableButtonBitmap, selectedTrack):
         gc = wx.GraphicsContext_Create(dc)
@@ -128,13 +130,14 @@ class FxTrack:
             dc.DrawLine(127, y, MAX_WIDTH-127, y)
         for i in range(1, MAX_WIDTH/(TRACK_COL_SIZE-1)):
             x = i * TRACK_COL_SIZE + 125
-            dc.DrawLine(x, self.trackPosition, x, self.trackPosition+self.trackHeight)
+            end = self.trackPosition + self.trackHeight
+            dc.DrawLine(x, self.trackPosition, x, end)
 
         if self.id == selectedTrack:
-            rect = wx.Rect(1, self.trackPosition+1, MAX_WIDTH-2, self.trackHeight-2)
+            r = wx.Rect(1,self.trackPosition+1,MAX_WIDTH-2,self.trackHeight-2)
             gc.SetPen(wx.Pen("#BBBBBB", 1.5))
-            gc.SetBrush(wx.Brush(TRACKS_BACKGROUND_COLOUR, style=wx.TRANSPARENT))
-            gc.DrawRoundedRectangle(rect[0], rect[1], rect[2], rect[3], 3)
+            gc.SetBrush(wx.Brush(TRACKS_BACKGROUND_COLOUR, wx.TRANSPARENT))
+            gc.DrawRoundedRectangle(r[0], r[1], r[2], r[3], 3)
 
         dc.SetTextForeground("#FFFFFF")
         rect = wx.Rect(0, self.trackPosition, 25, self.trackHeight)
@@ -147,12 +150,12 @@ class FxTrack:
             dc.DrawLabel(inputBut.name, rect, wx.ALIGN_CENTER)
 
         for i, button in enumerate(self.buttonsFxs):
-            rect = button.getRect()
+            r = button.getRect()
             if button.getEnable():
-                gc.DrawBitmap(buttonBitmap, rect[0], rect[1], rect[2], rect[3])
+                gc.DrawBitmap(buttonBitmap, r[0], r[1], r[2], r[3])
             else:
-                gc.DrawBitmap(disableButtonBitmap, rect[0], rect[1], rect[2], rect[3])
-            dc.DrawLabel(button.name, rect, wx.ALIGN_CENTER)    
+                gc.DrawBitmap(disableButtonBitmap, r[0], r[1], r[2], r[3])
+            dc.DrawLabel(button.name, r, wx.ALIGN_CENTER)    
 
         dc.SetPen(wx.Pen("#222222", 1))
         y = self.trackPosition + self.trackHeight

@@ -1,7 +1,8 @@
 import wx
 from FxTrack import *
 
-# put FxBox at the clicked position
+# TODO: create the FxBox at the clicked position
+# TODO: Review the FxBox/effects connection design
 
 class FxTracks(wx.ScrolledWindow):
     def __init__(self, parent):

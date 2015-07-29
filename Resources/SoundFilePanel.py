@@ -413,9 +413,11 @@ class SoundFileGrid(gridlib.Grid):
 
     def OnMotion(self, evt):
         if self.clickPosition is not None:
-            inc = {ID_COL_TRANSPO: [.0001, .01], ID_COL_GAIN: [.01, .1],
-                   ID_COL_STARTPOINT: [.0001, .01], ID_COL_ENDPOINT: [.0001, .01],
-                   ID_COL_CROSSFADE: [.1, 1], ID_COL_CHANNEL: [1, 1]}[self.selCol]
+            inc = {
+                ID_COL_TRANSPO: [.0001,.01], ID_COL_GAIN: [.01,.1],
+                ID_COL_STARTPOINT: [.0001,.01], ID_COL_ENDPOINT: [.0001,.01],
+                ID_COL_CROSSFADE: [.1,1], ID_COL_CHANNEL: [1,1]
+                  }[self.selCol]
             diff = self.clickPosition - evt.GetPosition()[1]
             dur = self.objects[self.selRow].getDuration()
             if evt.ShiftDown():

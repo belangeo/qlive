@@ -6,13 +6,13 @@ from constants import *
 import QLiveLib
 from Widgets import TransportButtons, CueButton, QLiveControlKnob
 
+# TODO: This class needs revision... 
 class SetInterpTimeDialog(wx.Dialog):
     def __init__(self):
         wx.Dialog.__init__(self, None, size = (200, 120))
         panel = wx.Panel(self)
 
         knob = QLiveControlKnob(self, 0.01, 300, pos = (5,5))
-
         
         button = wx.Button(self,label="set All" , pos = (60, 65))
         button.Bind(wx.EVT_BUTTON, self.onSetAll)
@@ -23,7 +23,6 @@ class SetInterpTimeDialog(wx.Dialog):
             pass
 #            QLiveLib.getVar("FxTracks").cueEvent(value)
         self.Close()
-        
 
 class CueEvent:
     def __init__(self, type, current, old, total):
@@ -53,9 +52,10 @@ class ControlPanel(wx.Panel):
         
         self.learnButton = None
         
+        server = QLiveLib.getVar("AudioServer")
         self.buttons = TransportButtons(self, 
-                                        playCallback=QLiveLib.getVar("AudioServer").start,
-                                        recordCallback=QLiveLib.getVar("AudioServer").record)
+                                        playCallback=server.start,
+                                        recordCallback=server.record)
         self.mainSizer.Add(self.buttons, 0, wx.ALIGN_CENTER_HORIZONTAL)
 
         self.mainSizer.Add(wx.StaticLine(self, size=(1, 1)), 0, 
@@ -67,7 +67,6 @@ class ControlPanel(wx.Panel):
         #button = wx.Button(self,wx.ID_OK, label="Interp Time" )
         #self.mainSizer.Add(button, 0, wx.ALIGN_CENTER, 5)
         #button.Bind(wx.EVT_BUTTON, self.onSetInterpTime)
-
 
         bmp = wx.Bitmap(ICON_ADD, wx.BITMAP_TYPE_PNG)
         self.newButton = wx.BitmapButton(self, wx.ID_ANY, bmp)
@@ -170,7 +169,8 @@ class ControlPanel(wx.Panel):
 
 class CuesPanel(scrolled.ScrolledPanel):
     def __init__(self, parent=None, size=(95, 500)):
-        scrolled.ScrolledPanel.__init__(self, parent, size=size, style=wx.SUNKEN_BORDER)
+        scrolled.ScrolledPanel.__init__(self, parent, size=size, 
+                                        style=wx.SUNKEN_BORDER)
 
         self.currentCue = 0
         self.cueButtons = []
@@ -186,7 +186,7 @@ class CuesPanel(scrolled.ScrolledPanel):
                 self.cueButtons[self.currentCue].select(False)
             self.cueButtons[number].select(True)
             self.currentCue = number
-            self.SetupScrolling(scroll_x=False, scroll_y=True, scrollToTop=False)
+            self.SetupScrolling(scroll_x=False, scrollToTop=False)
             self.mainSizer.Layout()
             self.ScrollChildIntoView(self.cueButtons[self.currentCue])
             return True

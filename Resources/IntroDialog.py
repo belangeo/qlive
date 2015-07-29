@@ -35,7 +35,7 @@ class IntroDialog(wx.Dialog):
         sizer.Add(box, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 10)
 
         line = wx.StaticLine(self, -1, size=(20,-1), style=wx.LI_HORIZONTAL)
-        sizer.Add(line, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP, 25)
+        sizer.Add(line,0,wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP,25)
 
         btnsizer = wx.StdDialogButtonSizer()
 
@@ -61,8 +61,12 @@ class IntroDialog(wx.Dialog):
         self.pathtext.SetLabel(head+path)
 
     def open(self, evt):
-        dlg = wx.FileDialog(self, "Open Qlive Projet", os.path.expanduser("~"), "",
-                            "QLive Project files (*.qlp)|*.qlp", style=wx.OPEN)
+        dlg = wx.FileDialog(self, 
+                            "Open Qlive Projet", 
+                            os.path.expanduser("~"), 
+                            "",
+                            "QLive Project files (*.qlp)|*.qlp", 
+                            style=wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             self.filepath = dlg.GetPath()
             self.createDir = False
@@ -71,8 +75,11 @@ class IntroDialog(wx.Dialog):
         self.okbtn.SetFocus()
     
     def new(self, evt):
-        dlg = wx.FileDialog(self, "Create Qlive Projet Folder", os.path.expanduser("~"), 
-                            "newproject", style=wx.SAVE|wx.FD_OVERWRITE_PROMPT)
+        dlg = wx.FileDialog(self, 
+                            "Create Qlive Projet Folder", 
+                            os.path.expanduser("~"), 
+                            "newproject", 
+                            style=wx.SAVE|wx.FD_OVERWRITE_PROMPT)
         if dlg.ShowModal() == wx.ID_OK:
             self.filepath = dlg.GetPath()
             self.createDir = True

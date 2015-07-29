@@ -9,18 +9,14 @@ class QLiveApp(wx.App):
     def __init__(self, *args, **kwargs):
         wx.App.__init__(self, *args, **kwargs)
         X, Y = wx.DisplaySize()
+        sizex, sizey = 1000, 670
         if X < 1000:
             sizex = X - 40
-        else:
-            sizex = 1000
         if Y < 670:
             sizey = Y - 40
-        else:
-            sizey = 670
-        self.filenames = []
         self.frame = MainWindow(pos=(20, 20), size=(sizex, sizey))
         QLiveLib.setVar("MainWindow", self.frame)
-        if self.filenames:
+        if hasattr(self, "filenames"):
             self.frame.loadFile(QLiveLib.ensureNFD(self.filenames[0]))
             
     def MacOpenFiles(self, filenames):

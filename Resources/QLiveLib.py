@@ -1,12 +1,14 @@
 from constants import *
 import variables as vars
 
+# getter/setter for global variables defined at runtime (see variables.py)
 def getVar(var):
     return vars.QLiveVariables[var]
 
 def setVar(var, value):
     vars.QLiveVariables[var] = value
-    
+
+# PRINT should be used instead of print function to enable/disable printing.
 def PRINT(*args):
     if DEBUG:
         for arg in args:
@@ -14,6 +16,7 @@ def PRINT(*args):
         print
 
 def ensureNFD(unistr):
+    "Converts a string to unicode."
     if unistr == None:
         return None
     if PLATFORM in ['linux2', 'win32']:
@@ -42,6 +45,7 @@ def ensureNFD(unistr):
         return unicodedata.normalize(format, decstr)
 
 def toSysEncoding(unistr):
+    "Converts a unicode string to the current system encoding."
     try:
         if PLATFORM == "win32":
             unistr = unistr.encode(SYSTEM_ENCODING)

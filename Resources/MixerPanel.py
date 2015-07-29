@@ -12,8 +12,9 @@ class QLiveControlSlider(MeterControlSlider):
                  size=(200,16), log=False, outFunction=None, integer=False, 
                  powoftwo=False, backColour=None, orient=wx.HORIZONTAL, 
                  linkedObject=None):
-        MeterControlSlider.__init__(self, parent, minvalue, maxvalue, init, pos, 
-                               size, self.localOutFunction, False, backColour)
+        MeterControlSlider.__init__(self, parent, minvalue, maxvalue, 
+                                    init, pos, size, self.localOutFunction, 
+                                    False, backColour)
         self.channelobject = None
         self.midiscanning = False
         self.linkedObject = None
@@ -73,10 +74,12 @@ class MixerPanel(wx.Panel):
         label = wx.StaticText(self, label="Input Channels")
         label.SetFont(font)
         inputBox.Add(label, 0, wx.LEFT|wx.EXPAND, 10)
-        inputBox.Add(wx.StaticLine(self, size=(1, -1)), 0, wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT, 2)
+        inputBox.Add(wx.StaticLine(self, size=(1, -1)), 0, 
+                     wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT, 2)
         for i in range(NUM_INPUTS):
             channel = self.audioMixer.getInputChannel(i)
-            slide = QLiveControlSlider(self, -60, 18, 0, size=(28,100), orient=wx.VERTICAL, 
+            slide = QLiveControlSlider(self, -60, 18, 0, size=(28,100), 
+                                       orient=wx.VERTICAL, 
                                        outFunction=channel.setVolume)
             slide.setChannelObject(channel)
             channel.setMidiCallback(slide.SetValue)
@@ -94,10 +97,12 @@ class MixerPanel(wx.Panel):
         label = wx.StaticText(self, label = "Output Channels")
         label.SetFont(font)
         outputBox.Add(label, 0, wx.LEFT|wx.EXPAND, 10)
-        outputBox.Add(wx.StaticLine(self, size=(1, -1)), 0, wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT, 2)
+        outputBox.Add(wx.StaticLine(self, size=(1, -1)), 0, 
+                      wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT, 2)
         for i in range(NUM_OUTPUTS):
             channel = self.audioMixer.getOutputChannel(i)            
-            slide = QLiveControlSlider(self, -60, 18, 0, size=(28,100), orient=wx.VERTICAL, 
+            slide = QLiveControlSlider(self, -60, 18, 0, size=(28,100), 
+                                       orient=wx.VERTICAL, 
                                        outFunction=channel.setVolume)
             slide.setChannelObject(channel)
             channel.setMidiCallback(slide.SetValue)

@@ -16,7 +16,7 @@ class MainWindow(wx.Frame):
         self.SetMinSize((600, 400))
         self.SetTitle("QLive Session")
 
-        # Status bar, the third filed is unused yet.
+        # Status bar, the third field is unused yet.
         self.status = self.CreateStatusBar(3)
         self.status.SetStatusWidths([100, 100, -1])
         self.status.SetStatusText("CPU: 0.0 %", 0)

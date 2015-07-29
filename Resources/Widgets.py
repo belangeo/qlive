@@ -24,7 +24,8 @@ def toLog(t, v1, v2):
 def toExp(t, v1, v2):
     return math.pow(10, t * (math.log10(v2) - math.log10(v1)) + math.log10(v1))
 
-POWOFTWO = {2:1, 4:2, 8:3, 16:4, 32:5, 64:6, 128:7, 256:8, 512:9, 1024:10, 2048:11, 4096:12, 8192:13, 16384:14, 32768:15, 65536:16}
+POWOFTWO = {2:1, 4:2, 8:3, 16:4, 32:5, 64:6, 128:7, 256:8, 512:9, 1024:10, 
+            2048:11, 4096:12, 8192:13, 16384:14, 32768:15, 65536:16}
 def powOfTwo(x):
     return 2**x
 
@@ -34,7 +35,8 @@ def powOfTwoToInt(x):
 class QLiveControlKnob(wx.Panel):
     def __init__(self, parent, minvalue, maxvalue, init=None, pos=(0,0), 
                  size=(50,85), log=False, outFunction=None, integer=False, 
-                 backColour=None, label='', playFunction=None, editFunction=None):
+                 backColour=None, label='', playFunction=None, 
+                 editFunction=None):
         wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY, pos=pos, 
                           size=size, style=wx.NO_BORDER|wx.WANTS_CHARS)
         self.parent = parent
@@ -210,7 +212,8 @@ class QLiveControlKnob(wx.Panel):
             w, h = self.GetSize()
             pos = event.GetPosition()
             reclab = wx.Rect(3, 60, w-3, 10)
-            recpt = wx.Rect(self.knobPointPos[0]-3, self.knobPointPos[1]-3, 9, 9)
+            recpt = wx.Rect(self.knobPointPos[0]-3, 
+                            self.knobPointPos[1]-3, 9, 9)
             if reclab.Contains(pos):
                 self.selected = True
             elif recpt.Contains(pos):
@@ -226,7 +229,8 @@ class QLiveControlKnob(wx.Panel):
                 offX = pos[0] - self.clickPos[0]
                 off = offY + offX
                 off *= 0.005 * (self.maxvalue - self.minvalue)
-                self.value = clamp(self.oldValue + off, self.minvalue, self.maxvalue)
+                self.value = clamp(self.oldValue + off, self.minvalue, 
+                                   self.maxvalue)
                 # Send value
                 if self.outFunction:
                     self.outFunction(self.GetValue())
@@ -268,7 +272,7 @@ class QLiveControlKnob(wx.Panel):
 
         if self.selected:
             gc.SetBrush(wx.Brush(CONTROLSLIDER_SELECTED_COLOUR, wx.SOLID))
-            gc.SetPen(wx.Pen(CONTROLSLIDER_SELECTED_COLOUR, width=self.borderWidth, style=wx.SOLID))  
+            gc.SetPen(wx.Pen(CONTROLSLIDER_SELECTED_COLOUR, self.borderWidth))  
             gc.DrawRoundedRectangle(2, 55, w-4, 12, 2)
 
         r = math.sqrt(.1)
@@ -284,12 +288,17 @@ class QLiveControlKnob(wx.Panel):
         gc.StrokeLine(25, 35, X+25, Y+35)
 
         if not self.midiLearn:
-            dc.SetFont(wx.Font(CONTROLSLIDER_FONT-1, wx.ROMAN, wx.NORMAL, wx.NORMAL, face=FONT_FACE))    
-            dc.DrawLabel(self.midictlLabel, wx.Rect(2, 12, 40, 40), wx.ALIGN_CENTER)
+            dc.SetFont(wx.Font(CONTROLSLIDER_FONT-1, wx.FONTFAMILY_DEFAULT, 
+                               wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 
+                               face=FONT_FACE))    
+            dc.DrawLabel(self.midictlLabel, wx.Rect(2, 12, 40, 40), 
+                         wx.ALIGN_CENTER)
         else:
             dc.DrawLabel("?...", wx.Rect(2, 12, 40, 40), wx.ALIGN_CENTER)
 
-        dc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.ROMAN, wx.NORMAL, wx.NORMAL, face=FONT_FACE))
+        dc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT, 
+                           wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 
+                           face=FONT_FACE))
         # Draw text value
         if self.selected and self.new:
             val = self.new
@@ -313,7 +322,9 @@ class QLiveControlKnob(wx.Panel):
         tri = [(8,70), (8,80), (16,75), (8, 70)]
         gc.DrawLines(tri)
 
-        gc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.ROMAN, wx.NORMAL, wx.NORMAL, face=FONT_FACE))
+        gc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT, 
+                           wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 
+                           face=FONT_FACE))
         if self.autoEdit:
             gc.SetPen(wx.Pen("#333333", 1.5))
             gc.SetBrush(wx.Brush("#DD5555"))
@@ -377,7 +388,8 @@ class CueButton(wx.Panel):
     def __init__(self, parent, size, number, evtHandler):
         wx.Panel.__init__(self, parent, -1, size=size, style=wx.SUNKEN_BORDER)
         self.SetBackgroundColour(CUEBUTTON_UNSELECTED_COLOUR)
-        self.labtext = stattext.GenStaticText(self, -1, label="", style=wx.ALIGN_CENTER)
+        self.labtext = stattext.GenStaticText(self, -1, label="", 
+                                              style=wx.ALIGN_CENTER)
         self.labtext.SetBackgroundColour(CUEBUTTON_UNSELECTED_COLOUR)
         self.evtHandler = evtHandler
         self.Bind(wx.EVT_SIZE, self.OnSize)
@@ -762,12 +774,6 @@ if __name__ == "__main__":
             wx.Frame.__init__(self, None)
             panel = wx.Panel(self)
             panel.SetBackgroundColour(BACKGROUND_COLOUR)
-#            m = MeterControlSlider(panel, -90, 18, 0, pos=(40,40), size=(30, 100), 
-#                                    outFunction=self.callback, outLinValue=True)
-#            self.am = Sig(1, mul=Randi(0.3, 1.4, 8))
-#            self.si = Noise(self.am)
-#            self.pe = PeakAmp(self.si, m.setRms)
-#            tr = TransportButtons(panel)
             knob = QLiveControlKnob(panel, 20, 20000, 1000, pos=(20,20), 
                                     label="Freq", outFunction = self.callback)
             self.Show()
