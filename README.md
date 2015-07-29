@@ -3,33 +3,38 @@ QLive
 
 QLive is a cues-based software to help the creation of mixed music 
 (live instruments + electronic).
-  
-TODO
-----
 
-** JIM **
+Main goals of the project
+-------------------------
 
-- interpolation pour arriver au cue, global per track, per FX _ Lucas
-- BPF
-- midi triggering of cues
-- Handling SoundFilePlayer number of channels and routing to the tracks 
+- Propose a solution to the problem of technological obsolescence in mixed music creation.
 
+- Facilitate the development of a heuristic pedagogy of mixed music for performers and composers.
 
-**Short term**
+Requirements
+------------
 
-- Documentation/archive prototype
-- Finalizing cue selection (Lucas)
+If you want to try the current development version of QLive (it is still in alpha stage), you'll have to install these software/libraries on your system:
 
+- [Python 2.7](https://www.python.org/downloads/release/python-2710/)
 
-**Mid term**
+Windows users must install the 32-bit version of python.
 
-- Midi cue triggering (one key forward, one key backward; one key per cue)
-- Improve effect modules (with categories)
-- Software preferences (fileformat and sampletype in the prefs) (Olivier)
-- Audio driver setup (Olivier)
-- GUI connections design
-- Licensing
-- master FX (in and out)
+- [WxPython 3.0](http://wxpython.org/download.php)
 
+Choose the installer that fits your python version.
 
+- [Pyo 0.7.6](http://ajaxsoundstudio.com/software/pyo/)
 
+Choose the installer that fits your python version.
+
+Starting the application
+------------------------
+
+Download and extract the QLive sources and, in a terminal window, navigate to the qlive folder:
+
+`cd qlive/src/folder`
+
+Then, start the app:
+
+`python QLive.py`
