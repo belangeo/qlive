@@ -14,19 +14,23 @@ Main goals of the project
 Requirements
 ------------
 
-If you want to try the current development version of QLive (it is still in alpha stage), you'll have to install these software/libraries on your system:
+If you want to try the current development version of QLive (it is still in alpha stage), you'll have to install these softwares/libraries on your system:
 
 - [Python 2.7](https://www.python.org/downloads/release/python-2710/)
 
-Windows users must install the 32-bit version of python.
+The programming language. Windows users must install the 32-bit version of python.
 
 - [WxPython 3.0](http://wxpython.org/download.php)
 
-Choose the installer that fits your python version.
+The GUI toolkit. Choose the installer that fits your python version.
 
 - [Pyo 0.7.6](http://ajaxsoundstudio.com/software/pyo/)
 
-Choose the installer that fits your python version.
+The audio engine. Choose the installer that fits your python version.
+
+- [psutil](https://pypi.python.org/pypi/psutil)
+
+Library used to retrieve memory and CPU usage.
 
 Starting the application
 ------------------------
