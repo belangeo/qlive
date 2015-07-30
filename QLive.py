@@ -31,6 +31,7 @@ class QLiveApp(wx.App):
             pass
 
 if __name__ == "__main__":
+
     qlfile = None
     if len(sys.argv) > 1:
         qlfile = sys.argv[1]

@@ -49,9 +49,9 @@ class ControlPanel(wx.Panel):
         self.mainSizer = wx.BoxSizer(wx.VERTICAL)
         self.newAddSizer = wx.BoxSizer(wx.HORIZONTAL)
         self.upDownSizer = wx.BoxSizer(wx.HORIZONTAL)
-        
+
         self.learnButton = None
-        
+
         server = QLiveLib.getVar("AudioServer")
         self.buttons = TransportButtons(self, 
                                         playCallback=server.start,
@@ -71,6 +71,7 @@ class ControlPanel(wx.Panel):
         bmp = wx.Bitmap(ICON_ADD, wx.BITMAP_TYPE_PNG)
         self.newButton = wx.BitmapButton(self, wx.ID_ANY, bmp)
         self.newButton.Bind(wx.EVT_BUTTON, self.onNewCue)
+        self.newButton.SetToolTip(wx.ToolTip('Add a new cue'))
         self.newAddSizer.Add(self.newButton, 1)
 
         bmp = wx.Bitmap(ICON_DELETE, wx.BITMAP_TYPE_PNG)
