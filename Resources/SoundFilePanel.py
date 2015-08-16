@@ -461,10 +461,12 @@ class SoundFileGrid(gridlib.Grid):
         if self.selCol == ID_COL_FILENAME:
             menu = wx.Menu("Soundfiles")
             self.snds = sorted([f for f in os.listdir(sndfolder)])
+            i = 0
             for i, snd in enumerate(self.snds):
                 menu.Append(i+1, snd)
             menu.Bind(wx.EVT_MENU, self.selectSound, id=1, id2=i+1)
-            self.PopupMenu(menu, evt.GetPosition())
+            if self.snds != []: # do not show an empty menu
+                self.PopupMenu(menu, evt.GetPosition())
             menu.Destroy()
         if self.selRow != self.GetNumberRows() - 1:
             if self.selCol == ID_COL_LOOPMODE:
