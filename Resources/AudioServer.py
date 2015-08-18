@@ -186,6 +186,7 @@ class AudioServer:
         self.soundfiles = []
         self.audioObjects = []
         self.recording = False
+        self.fade = Fader(fadein=1, fadeout=1, dur=0, mul=0.3)
         self.cueMidiLearn = CueMidiLearn(self.cueMidiLearnCallback)
         self.cueMidiLearnState = None
         self.cueMidiNotes = {}
@@ -270,7 +271,7 @@ class AudioServer:
             if self.recording:
                 self.recording = False
                 self.recStop()
-            self.server.stop()
+            self.stop()
             self.resetPlayerRefs()
             self.resetObjectRefs()
             self.soundfiles = []
@@ -288,6 +289,8 @@ class AudioServer:
             self.start(False)
 
     def stop(self):
+        self.server.setAmp(0)
+        time.sleep(.1)
         self.server.stop()
 
     def shutdown(self):
