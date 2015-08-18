@@ -69,6 +69,11 @@ FX_DICT = { "None": {"ctrls": []},
                                         DRYWET_DEF
                                     ]
                         },
+            "Panning": {"ctrls":   [ ["pan", 0.5, 0, 1, "", False],
+                                     ["spread", 0.5, 0, 1, "", False],
+                                     GAIN_DEF
+                                   ]
+                        },
             "AudioOut": {   "ctrls":    [   GAIN_DEF
                                         ],
                             "outselect": [str(x+1) for x in range(NUM_OUTPUTS)],
@@ -77,7 +82,7 @@ FX_DICT = { "None": {"ctrls": []},
 
 # Effects ordered names
 FX_LIST = ["None", "Lowpass", "Highpass", "Freeverb", "StereoVerb", "Disto",
-           "Delay", "Compressor", "FreqShift", "Harmonizer", "AudioOut"]
+           "Delay", "Compressor", "FreqShift", "Harmonizer", "Panning", "AudioOut"]
 
 # Input defintions
 INPUT_DICT = {  "None":     {"ctrls":   []},

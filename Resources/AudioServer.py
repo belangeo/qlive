@@ -166,6 +166,13 @@ class FxHarmonizer(BaseAudioObject):
         self.process = Interp(self.input, self.harmon, self.dryWet)
         self.output = Sig(self.process)
 
+class FxPanning(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.panning = Pan(self.input, self.chnls, self.pan, self.spread, mul=self.gain)
+        self.process = Interp(self.input, self.panning)
+        self.output = Sig(self.process)
+
 class FxAudioOut(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
@@ -176,7 +183,7 @@ AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn, "Lowpass": FxLowpass,
                 "Highpass": FxHighpass, "Freeverb": FxFreeverb, 
                 "StereoVerb": FxStereoVerb, "Disto": FxDisto, "Delay": FxDelay, 
                 "Compressor": FxCompressor, "FreqShift": FxFreqShift,
-                "Harmonizer": FxHarmonizer, "AudioOut": FxAudioOut}
+                "Harmonizer": FxHarmonizer, "Panning": FxPanning, "AudioOut": FxAudioOut}
 
 class AudioServer:
     def __init__(self):
