@@ -3,6 +3,7 @@ import wx.lib.stattext as stattext
 from pyolib._wxwidgets import BACKGROUND_COLOUR
 from AudioMixer import *
 from constants import *
+import QLiveLib
 
 def interpFloat(t, v1, v2):
     "interpolator for a single value; interprets t in [0-1] between v1 and v2"
@@ -402,7 +403,7 @@ class CueButton(wx.Panel):
 
     def OnSize(self, evt):
         self.labtext.Center()
-        
+
     def setNumber(self, x):
         try:
             self.number = x
@@ -765,6 +766,13 @@ class MeterControlSlider(wx.Panel):
         self.needBackground = True
 
         evt.Skip()
+
+class QLiveTooltip(wx.ToolTip):
+    def __init__(self, tip):
+        if QLiveLib.getVar("useTooltips") is True:
+            wx.ToolTip.__init__(self, tip)
+        else:
+            wx.ToolTip.__init__(self, '')
 
 if __name__ == "__main__":
     from pyo64 import *

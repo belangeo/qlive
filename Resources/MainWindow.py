@@ -8,6 +8,7 @@ from CuesPanel import ControlPanel, CuesPanel
 from MixerPanel import MixerPanel
 from IntroDialog import IntroDialog
 from SoundFilePanel import SoundFilePanel
+from PreferencePanel import PreferenceFrame
 
 class MainWindow(wx.Frame):
     def __init__(self, pos, size):
@@ -330,7 +331,9 @@ class MainWindow(wx.Frame):
         QLiveLib.getVar("MixerPanel").linkOutputs(evt.GetInt())
 
     def openPrefs(self, evt):
-        print "Popup Preferences Windows..."
+        self.prefs = PreferenceFrame(self)
+        self.prefs.ShowModal()
+        self.prefs.Center()
 
     def OnClose(self, evt):
         self.timer.Stop()
@@ -342,5 +345,6 @@ class MainWindow(wx.Frame):
         if self.audioServer.isBooted():
             self.audioServer.shutdown()
             time.sleep(0.25)
+        QLiveLib.saveVars()
         self.tracks.close()
         self.Destroy()

@@ -8,6 +8,12 @@ def getVar(var):
 def setVar(var, value):
     vars.QLiveVariables[var] = value
 
+def saveVars():
+    vars.writeQLivePrefsToFile()
+
+def loadVars():
+    vars.readQLivePrefsFromFile()
+
 # PRINT should be used instead of print function to enable/disable printing.
 def PRINT(*args):
     if DEBUG:

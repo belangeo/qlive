@@ -4,7 +4,7 @@ import wx
 import wx.lib.scrolledpanel as scrolled
 from constants import *
 import QLiveLib
-from Widgets import TransportButtons, CueButton, QLiveControlKnob
+from Widgets import TransportButtons, CueButton, QLiveControlKnob, QLiveTooltip
 
 # TODO: This class needs revision... 
 class SetInterpTimeDialog(wx.Dialog):
@@ -71,7 +71,7 @@ class ControlPanel(wx.Panel):
         bmp = wx.Bitmap(ICON_ADD, wx.BITMAP_TYPE_PNG)
         self.newButton = wx.BitmapButton(self, wx.ID_ANY, bmp)
         self.newButton.Bind(wx.EVT_BUTTON, self.onNewCue)
-        self.newButton.SetToolTip(wx.ToolTip('Add a new cue'))
+        self.newButton.SetToolTip(QLiveTooltip('Add a new cue'))
         self.newAddSizer.Add(self.newButton, 1)
 
         bmp = wx.Bitmap(ICON_DELETE, wx.BITMAP_TYPE_PNG)

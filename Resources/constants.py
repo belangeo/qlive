@@ -37,15 +37,6 @@ if not os.path.isfile(OPEN_RECENT_PATH):
         pass
 
 PREFERENCES_PATH = os.path.join(TEMP_PATH, "qlive-prefs.py")
-if not os.path.isfile(PREFERENCES_PATH):
-    with open(PREFERENCES_PATH, "w") as f:
-        f.write("qlive_prefs = {}")
-
-qlive_prefs = {}
-with open(PREFERENCES_PATH, "r") as f:
-    text = f.read()
-exec text in locals()
-PREFERENCES = copy.deepcopy(qlive_prefs)
 
 SOUNDS_PATH = os.path.join(RESOURCES_PATH, "sounds")
 NEW_FILE_PATH = os.path.join(RESOURCES_PATH, "qlive_new_file.qlp")

@@ -12,7 +12,7 @@ TODO
 - Edit mode versus playing mode
 - Floating window to show current cue number
 - Master effects for both input and output section
-- Spatialisation
+- Spatialisation (partially done with the Pan object)
 - Licensing
 - Improving effect modules (with categories)
 - Warning audio out (?)
