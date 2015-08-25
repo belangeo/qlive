@@ -2,42 +2,13 @@
 # encoding: utf-8
 from pyo64 import *
 from constants import *
-from AudioServer import MidiLearn
 
 class AudioChannel:
     def __init__(self, input=0):
-        self.midicallback = None
-        self.oldMidiValue = 9999999
-        self.midictl = Midictl(128, -80, 12).stop()
-        self.midictl.setInterpolation(False)
-        self.midipat = Pattern(self.midiout, time=0.06)
         self.input = Sig(input)
         self.gain = SigTo(1, init=1)
         self.output = Sig(self.input, mul=self.gain)
         self.ampOut = PeakAmp(self.output)
-
-    def midiout(self):
-        val = self.midictl.get()
-        if self.midicallback != None and val != self.oldMidiValue:
-            self.midicallback(val)
-            self.oldMidiValue = val
-
-    def setMidiCallback(self, callback):
-        self.midicallback = callback
-
-    def setMidiCtl(self, ctlnum):
-        if ctlnum != None:
-            self.midictl.setCtlNumber(ctlnum)
-            self.midictl.play()
-            self.midipat.play()
-
-    def stopMidiCtl(self):
-        self.midictl.setCtlNumber(128)
-        self.midictl.stop()
-        self.midipat.stop()
- 
-    def setMidiCtlValue(self, value):
-        self.midictl.setValue(value)
 
     def setInput(self, input):
         self.input.setValue(input)

@@ -51,6 +51,7 @@ class ControlPanel(wx.Panel):
         self.upDownSizer = wx.BoxSizer(wx.HORIZONTAL)
 
         self.learnButton = None
+        self.midiBindings = {}
 
         server = QLiveLib.getVar("AudioServer")
         self.buttons = TransportButtons(self, 
@@ -116,11 +117,28 @@ class ControlPanel(wx.Panel):
     def onMoveCueDown(self, evt):
         QLiveLib.getVar("CuesPanel").onMoveCueDown()
 
-    def moveCueFromMidi(self, which):
+    def midi(self, pitch, vel):
+        which = self.midiBindings[pitch]
         if which == "up":
             wx.CallAfter(QLiveLib.getVar("CuesPanel").onMoveCueUp)
         elif which == "down":
             wx.CallAfter(QLiveLib.getVar("CuesPanel").onMoveCueDown)
+        
+    def getMidiScan(self, num, midichnl):
+        if self.learnButton == self.upButton:
+            which = "up"
+        elif self.learnButton == self.downButton:
+            which = "down"
+        self.assignMidiCtl(num, which)
+        self.resetCueButtonBackgroundColour()
+
+    def assignMidiCtl(self, num, which):
+        self.midiBindings[num] = which
+        if which == "up":
+            self.upTooltip.SetTip("Midi key: %d" % num)
+        elif which == "down":
+            self.downTooltip.SetTip("Midi key: %d" % num)
+        QLiveLib.getVar("MidiServer").bind("noteon", num, self.midi)
 
     def midiLearn(self, evt):
         obj = evt.GetEventObject()
@@ -129,32 +147,41 @@ class ControlPanel(wx.Panel):
                 wx.CallAfter(self.learnButton.SetBitmapLabel, self.upbmp)
             elif self.learnButton == self.downButton:
                 wx.CallAfter(self.learnButton.SetBitmapLabel, self.downbmp)
-        server = QLiveLib.getVar("AudioServer")
-        if self.learnButton == obj:
+        midi = QLiveLib.getVar("MidiServer")
+        if evt.ShiftDown():
+            num = -1
+            if obj == self.upButton:
+                for key, val in self.midiBindings.items():
+                    if val == "up":
+                        num = key
+                        break
+                self.upTooltip.SetTip("")
+                obj.SetBitmapLabel(self.upbmp)
+            elif obj == self.downButton:
+                for key, val in self.midiBindings.items():
+                    if val == "down":
+                        num = key
+                        break
+                self.downTooltip.SetTip("")
+                obj.SetBitmapLabel(self.downbmp)
+            self.learnButton = None
+            midi.noteonscan(None)
+            if num != -1:
+                midi.unbind("noteon", num)
+        elif self.learnButton == obj:
             if obj == self.upButton:
                 obj.SetBitmapLabel(self.upbmp)
             elif obj == self.downButton:
                 obj.SetBitmapLabel(self.downbmp)
             self.learnButton = None
-            server.stopCueMidiLearn()
+            midi.noteonscan(None)
         else:
             if obj == self.upButton:
                 obj.SetBitmapLabel(self.upmidbmp)
             elif obj == self.downButton:
                 obj.SetBitmapLabel(self.downmidbmp)
             self.learnButton = obj
-            if obj == self.upButton:
-                which = "up"
-            elif obj == self.downButton:
-                which = "down"
-            server.setCueMidiLearnState(which)
-            server.startCueMidiLearn()
-
-    def setButtonTooltip(self, which, tip):
-        if which == "up":
-            self.upTooltip.SetTip(tip)
-        elif which == "down":
-            self.downTooltip.SetTip(tip)
+            midi.noteonscan(self.getMidiScan)
         
     def resetCueButtonBackgroundColour(self):
         if self.learnButton is not None:
@@ -167,6 +194,15 @@ class ControlPanel(wx.Panel):
     def onSetInterpTime(self, e):
         panel = SetInterpTimeDialog()
         panel.ShowModal()
+
+    def getSaveState(self):
+        return {"midiBindings": self.midiBindings}
+
+    def setSaveState(self, state):
+        if state:
+            self.midiBindings = {}
+            for key, val in state["midiBindings"].items():
+                self.assignMidiCtl(key, val)
 
 class CuesPanel(scrolled.ScrolledPanel):
     def __init__(self, parent=None, size=(95, 500)):

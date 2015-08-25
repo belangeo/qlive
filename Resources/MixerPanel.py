@@ -6,6 +6,7 @@ from Widgets import MeterControlSlider
 from AudioMixer import *
 from constants import *
 import QLiveLib
+from pyo import rescale
 
 class QLiveControlSlider(MeterControlSlider):
     def __init__(self, parent, minvalue, maxvalue, init=None, pos=(0,0), 
@@ -19,7 +20,6 @@ class QLiveControlSlider(MeterControlSlider):
         self.midiscanning = False
         self.linkedObject = None
         self.externalOutFunction = outFunction
-        self.midiscan = MidiLearn(self.getMidiScan)
         self.Bind(wx.EVT_RIGHT_DOWN, self.MouseRightDown)
  
     def localOutFunction(self, value):
@@ -36,23 +36,29 @@ class QLiveControlSlider(MeterControlSlider):
 
     def MouseRightDown(self, evt):
         if evt.ShiftDown():
+            QLiveLib.getVar("MidiServer").unbind("ctls", self.midictl)
             self.setMidiCtl(None)
-            self.channelobject.stopMidiCtl()
             return
         if not self.midiscanning:
             self.midiscanning = True
-            self.midiscan.scan()
+            QLiveLib.getVar("MidiServer").ctlscan(self.getMidiScan)
             self.setMidiBackgroundColour(MIDILEARN_COLOUR)
         else:
             self.midiscanning = False
-            self.midiscan.stop()
+            QLiveLib.getVar("MidiServer").ctlscan(None)
             self.revertMidiBackgroundColour()
             
     def getMidiScan(self, ctlnum, midichnl):
-        self.setMidiCtl(ctlnum)
-        self.channelobject.setMidiCtl(ctlnum)
+        self.assignMidiCtl(ctlnum)
         self.revertMidiBackgroundColour()
-        
+
+    def assignMidiCtl(self, ctlnum):
+        self.setMidiCtl(ctlnum)
+        QLiveLib.getVar("MidiServer").bind("ctls", ctlnum, self.midi)
+
+    def midi(self, value):
+        self.SetValue(rescale(value, 0, 127, -80, 18))
+
 class MixerPanel(wx.Panel):
     def __init__(self, parent, audioMixer):
         wx.Panel.__init__(self, parent, size=(800,129), style=wx.SUNKEN_BORDER)
@@ -82,7 +88,6 @@ class MixerPanel(wx.Panel):
                                        orient=wx.VERTICAL, 
                                        outFunction=channel.setVolume)
             slide.setChannelObject(channel)
-            channel.setMidiCallback(slide.SetValue)
             self.inputSliders.append(slide)
             channel.setAmpCallback(slide.setRms)
             inputSliderBox.Add(slide, 0, wx.ALL, 2)
@@ -105,7 +110,6 @@ class MixerPanel(wx.Panel):
                                        orient=wx.VERTICAL, 
                                        outFunction=channel.setVolume)
             slide.setChannelObject(channel)
-            channel.setMidiCallback(slide.SetValue)
             self.outputSliders.append(slide)
             channel.setAmpCallback(slide.setRms)
             outputSliderBox.Add(slide, 0, wx.ALL, 2)
@@ -178,16 +182,12 @@ class MixerPanel(wx.Panel):
             val = dict["inputSliderValues"][i]
             ctl = dict["inputSliderCtls"][i]
             slide.SetValue(val)
-            slide.setMidiCtl(ctl)
-            self.audioMixer.getInputChannel(i).setMidiCtl(ctl)
-            self.audioMixer.getInputChannel(i).setMidiCtlValue(val)
+            slide.assignMidiCtl(ctl)
         for i, slide in enumerate(self.outputSliders):
             val = dict["outputSliderValues"][i]
             ctl = dict["outputSliderCtls"][i]
             slide.SetValue(val)
-            slide.setMidiCtl(ctl)
-            self.audioMixer.getOutputChannel(i).setMidiCtl(ctl)
-            self.audioMixer.getOutputChannel(i).setMidiCtlValue(val)
+            slide.assignMidiCtl(ctl)
         inlink = dict.get("inputLinked", False)
         outlink = dict.get("outputLinked", False)
         self.linkInputs(set=inlink)

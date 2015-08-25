@@ -1,7 +1,7 @@
 import wx, time, os, pprint, copy, codecs, shutil, psutil
 from constants import *
 import QLiveLib
-from AudioServer import AudioServer
+from AudioServer import AudioServer, MidiServer
 from AudioMixer import AudioMixer
 from FxTracks import FxTracks
 from CuesPanel import ControlPanel, CuesPanel
@@ -33,6 +33,8 @@ class MainWindow(wx.Frame):
 
         self.audioServer = AudioServer()
         QLiveLib.setVar("AudioServer", self.audioServer)
+        self.midiServer = MidiServer()
+        QLiveLib.setVar("MidiServer", self.midiServer)
 
         self.saveState = None
 
@@ -191,7 +193,8 @@ class MainWindow(wx.Frame):
         dictSave["cues"] = self.cues.getSaveDict()
         dictSave["mixer"] = self.mixer.getSaveDict()
         dictSave["soundfiles"] = self.soundfiles.getSaveState()
-        dictSave["server"] = self.audioServer.getSaveState()
+        dictSave["control"] = self.controlPanel.getSaveState()
+        #dictSave["server"] = self.audioServer.getSaveState()
         return dictSave
 
     def saveFile(self, path):
@@ -224,7 +227,8 @@ class MainWindow(wx.Frame):
         self.tracks.setSaveState(self.saveState["tracks"])
         self.cues.setSaveDict(self.saveState["cues"])
         self.mixer.setSaveDict(self.saveState["mixer"])
-        self.audioServer.setSaveState(self.saveState.get("server", {}))
+        self.controlPanel.setSaveState(self.saveState.get("control", {}))
+        #self.audioServer.setSaveState(self.saveState.get("server", {}))
         if "soundfiles" in self.saveState:
             self.soundfiles.setSaveState(self.saveState["soundfiles"])
         linkMenuItem = self.GetMenuBar().FindItemById(LINK_STEREO_ID)

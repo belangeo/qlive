@@ -10,6 +10,7 @@ QLiveVariables["CuesPanel"] = None
 QLiveVariables["FxTracks"] = None
 QLiveVariables["AudioMixer"] = None
 QLiveVariables["AudioServer"] = None
+QLiveVariables["MidiServer"] = None
 QLiveVariables["MixerPanel"] = None
 QLiveVariables["Soundfiles"] = None
 QLiveVariables["FxViews"] = []
