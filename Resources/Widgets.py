@@ -391,15 +391,56 @@ class CueButton(wx.Panel):
     def __init__(self, parent, size, number, evtHandler):
         wx.Panel.__init__(self, parent, -1, size=size, style=wx.SUNKEN_BORDER)
         self.SetBackgroundColour(CUEBUTTON_UNSELECTED_COLOUR)
+        self.learning = False
+        self.midinote = None
         self.labtext = stattext.GenStaticText(self, -1, label="", 
                                               style=wx.ALIGN_CENTER)
         self.labtext.SetBackgroundColour(CUEBUTTON_UNSELECTED_COLOUR)
         self.evtHandler = evtHandler
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
+        self.Bind(wx.EVT_RIGHT_DOWN, self.midiLearn)
         self.labtext.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
+        self.labtext.Bind(wx.EVT_RIGHT_DOWN, self.midiLearn)
         wx.CallAfter(self.setNumber, number)
 
+    def midiLearn(self, evt):
+        midi = QLiveLib.getVar("MidiServer")
+        # remove current binding
+        if evt.ShiftDown():
+            self.learning = False
+            self.select(0)
+            midi.noteonscan(None)
+            if self.midinote is not None:
+                midi.unbind("noteon", self.midinote)
+            self.midinote = None
+            self.SetToolTip(QLiveTooltip(""))
+        # stop midi learn
+        elif self.learning:
+            self.learning = False
+            self.select(0)
+            midi.noteonscan(None)
+        # start midi learn
+        else:
+            self.learning = True
+            self.SetBackgroundColour(MIDILEARN_COLOUR)
+            self.labtext.SetBackgroundColour(MIDILEARN_COLOUR)
+            midi.noteonscan(self.getMidiScan)            
+
+    def assignMidi(self, num):
+        self.midinote = num
+        self.SetToolTip(QLiveTooltip("Midi key: %d" % num))
+        QLiveLib.getVar("MidiServer").bind("noteon", num, self.midi)
+
+    def getMidiScan(self, num, midichnl):
+        if num != -1:
+            self.assignMidi(num)
+        self.learning = False
+        self.select(0)
+ 
+    def midi(self, pitch, vel):
+        self.evtHandler(self.getNumber())
+        
     def OnLeftDown(self, evt):
         self.evtHandler(self.getNumber())
 
@@ -409,7 +450,7 @@ class CueButton(wx.Panel):
     def setNumber(self, x):
         try:
             self.number = x
-            self.labtext.SetLabel(str(self.number))
+            wx.CallAfter(self.labtext.SetLabel, str(self.number))
             self.labtext.Center()
         except:
             pass
@@ -419,12 +460,20 @@ class CueButton(wx.Panel):
 
     def select(self, state):
         if state:
-            self.SetBackgroundColour(CUEBUTTON_SELECTED_COLOUR)
-            self.labtext.SetBackgroundColour(CUEBUTTON_SELECTED_COLOUR)
+            wx.CallAfter(self.SetBackgroundColour, CUEBUTTON_SELECTED_COLOUR)
+            wx.CallAfter(self.labtext.SetBackgroundColour, CUEBUTTON_SELECTED_COLOUR)
         else:
-            self.SetBackgroundColour(CUEBUTTON_UNSELECTED_COLOUR)
-            self.labtext.SetBackgroundColour(CUEBUTTON_UNSELECTED_COLOUR)
-        wx.CallAfter(self.Refresh)
+            wx.CallAfter(self.SetBackgroundColour, CUEBUTTON_UNSELECTED_COLOUR)
+            wx.CallAfter(self.labtext.SetBackgroundColour, CUEBUTTON_UNSELECTED_COLOUR)
+
+    def getSaveDict(self):
+        return {"number": self.number, "midinote": self.midinote}
+
+    def setSaveDict(self, dict):
+        midinote = dict.get("midinote", None)
+        if midinote is not None:
+            self.assignMidi(midinote)
+        self.setNumber(dict["number"])
 
 class MeterControlSlider(wx.Panel):
     def __init__(self, parent, minvalue, maxvalue, init=None, pos=(0,0), 

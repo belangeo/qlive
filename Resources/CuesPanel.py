@@ -122,51 +122,45 @@ class ControlPanel(wx.Panel):
             wx.CallAfter(QLiveLib.getVar("CuesPanel").onMoveCueUp)
         elif which == "down":
             wx.CallAfter(QLiveLib.getVar("CuesPanel").onMoveCueDown)
-        
+
     def getMidiScan(self, num, midichnl):
-        if self.learnButton == self.upButton:
-            which = "up"
-        elif self.learnButton == self.downButton:
-            which = "down"
-        self.assignMidiCtl(num, which)
+        if num != -1:
+            if self.learnButton == self.upButton:
+                which = "up"
+            elif self.learnButton == self.downButton:
+                which = "down"
+            self.assignMidiCtl(num, which)
         self.resetCueButtonBackgroundColour()
 
     def assignMidiCtl(self, num, which):
         self.midiBindings[num] = which
         if which == "up":
-            self.upTooltip.SetTip("Midi key: %d" % num)
+            self.upButton.SetToolTip(QLiveTooltip("Midi key: %d" % num))
         elif which == "down":
-            self.downTooltip.SetTip("Midi key: %d" % num)
+            self.downButton.SetToolTip(QLiveTooltip("Midi key: %d" % num))
         QLiveLib.getVar("MidiServer").bind("noteon", num, self.midi)
 
     def midiLearn(self, evt):
         obj = evt.GetEventObject()
-        if self.learnButton is not None and self.learnButton != obj:
-            if self.learnButton == self.upButton:
-                wx.CallAfter(self.learnButton.SetBitmapLabel, self.upbmp)
-            elif self.learnButton == self.downButton:
-                wx.CallAfter(self.learnButton.SetBitmapLabel, self.downbmp)
         midi = QLiveLib.getVar("MidiServer")
+        # remove current binding
         if evt.ShiftDown():
             num = -1
             if obj == self.upButton:
-                for key, val in self.midiBindings.items():
-                    if val == "up":
-                        num = key
-                        break
-                self.upTooltip.SetTip("")
-                obj.SetBitmapLabel(self.upbmp)
+                search, bitmap = "up", self.upbmp
             elif obj == self.downButton:
-                for key, val in self.midiBindings.items():
-                    if val == "down":
-                        num = key
-                        break
-                self.downTooltip.SetTip("")
-                obj.SetBitmapLabel(self.downbmp)
-            self.learnButton = None
+                search, bitmap = "down", self.downbmp
+            for key, val in self.midiBindings.items():
+                if val == search:
+                    num = key
+                    break
+            obj.SetBitmapLabel(bitmap)
+            obj.SetToolTip(QLiveTooltip(""))
             midi.noteonscan(None)
+            self.learnButton = None
             if num != -1:
                 midi.unbind("noteon", num)
+        # stop midi learn
         elif self.learnButton == obj:
             if obj == self.upButton:
                 obj.SetBitmapLabel(self.upbmp)
@@ -174,13 +168,14 @@ class ControlPanel(wx.Panel):
                 obj.SetBitmapLabel(self.downbmp)
             self.learnButton = None
             midi.noteonscan(None)
+        # start midi learn
         else:
             if obj == self.upButton:
                 obj.SetBitmapLabel(self.upmidbmp)
             elif obj == self.downButton:
                 obj.SetBitmapLabel(self.downmidbmp)
-            self.learnButton = obj
             midi.noteonscan(self.getMidiScan)
+            self.learnButton = obj
         
     def resetCueButtonBackgroundColour(self):
         if self.learnButton is not None:
@@ -308,9 +303,13 @@ class CuesPanel(scrolled.ScrolledPanel):
         self.clearButtons()
         for i in range(dict["numberOfCues"]):
             self.appendCueButton()
+        if "buttons" in dict:
+            for i, d in enumerate(dict["buttons"]):
+                self.cueButtons[i].setSaveDict(d)
         self.setSelectedCue(0)
 
     def getSaveDict(self):
         dict = {}
         dict["numberOfCues"] = len(self.cueButtons)
+        dict["buttons"] = [but.getSaveDict() for but in self.cueButtons]
         return dict

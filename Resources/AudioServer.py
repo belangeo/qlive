@@ -344,6 +344,8 @@ class MidiServer:
         self.ctlscan_callback = callback
 
     def noteonscan(self, callback):
+        if self.noteonscan_callback is not None:
+            self.noteonscan_callback(-1, -1)
         self.noteonscan_callback = callback
         
     def bind(self, group, x, callback):
