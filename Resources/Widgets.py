@@ -351,9 +351,11 @@ class TransportButtons(wx.Panel):
         self.recordPressedIcon = wx.Bitmap(ICON_RECORD_PRESSED, wx.BITMAP_TYPE_PNG)
         
         self.play = wx.BitmapButton(self, wx.ID_ANY, self.playIcon)
+        self.play.SetToolTip(QLiveTooltip('Play / Stop'))
         self.play.Bind(wx.EVT_BUTTON, self.onPlay)
 
         self.record = wx.BitmapButton(self, wx.ID_ANY, self.recordIcon)
+        self.record.SetToolTip(QLiveTooltip('Record'))
         self.record.Bind(wx.EVT_BUTTON, self.onRecord)
         
         box = wx.BoxSizer(wx.HORIZONTAL)
