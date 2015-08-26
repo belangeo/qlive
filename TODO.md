@@ -2,7 +2,8 @@ TODO
 ----
 
 - Follower applied on transpo and gain parameters of the soundfile player
-- MIDI/Key learn pour cues (mode forward-backward and/or key-per-cue)
+- MIDI/Key learn pour cues (mode forward-backward and/or key-per-cue) **done**
+    - There is no "key learn" yet.
 - Software preferences (record options, audio driver setup) 
 - Interpolations (global, track, fx, parameter)
 - BPF - playback mode, window size
@@ -19,6 +20,19 @@ TODO
 - Warning audio out (?)
 - Documentation/archive prototype
 - Designing project architecture (save file)
+- Need a mecanism to disable play/edit button on the knob (ex. for the 
+global interpolation window).
 
+Global Interpolation Window
+---------------------------
+
+(.) current cue     () all cues
+
+(.) current track   () all tracks  
+
+
+        (interpKnob)
+        
+      [Apply] [Close] <-- only apply when pressing the "apply" button
 
 

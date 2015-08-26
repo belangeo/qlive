@@ -6,23 +6,45 @@ from constants import *
 import QLiveLib
 from Widgets import TransportButtons, CueButton, QLiveControlKnob, QLiveTooltip
 
-# TODO: This class needs revision... 
-class SetInterpTimeDialog(wx.Dialog):
-    def __init__(self):
-        wx.Dialog.__init__(self, None, size = (200, 120))
+class SetInterpTimeFrame(wx.Frame):
+    def __init__(self, parent):
+        wx.Frame.__init__(self, parent)
         panel = wx.Panel(self)
+        sizer = wx.BoxSizer(wx.VERTICAL)
 
-        knob = QLiveControlKnob(self, 0.01, 300, pos = (5,5))
+        title = wx.StaticText(panel, -1, "GLOBAL INTERPOLATION TIME")
+        sizer.Add(title, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP, 5)
+
+        sampleList = ["Current Cue", "All Cues"]
+        self.cueButton = wx.RadioBox(panel, -1, "", 
+                                       wx.DefaultPosition,
+                                       wx.DefaultSize, sampleList, 2, 
+                                       wx.RA_SPECIFY_COLS | wx.NO_BORDER)
+        sizer.Add(self.cueButton, 0, wx.TOP|wx.LEFT|wx.RIGHT, 5)
+
+        sampleList = ["Curr. Track", "All Tracks"]
+        self.trackButton = wx.RadioBox(panel, -1, "", 
+                                       wx.DefaultPosition,
+                                       wx.DefaultSize, sampleList, 2, 
+                                       wx.RA_SPECIFY_COLS | wx.NO_BORDER)
+        sizer.Add(self.trackButton, 0, wx.BOTTOM|wx.LEFT|wx.RIGHT, 5)
+
+        self.knob = QLiveControlKnob(panel, INTERPTIME_MIN, INTERPTIME_MAX, label="Time")
+        sizer.Add(self.knob, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.BOTTOM, 5)
         
-        button = wx.Button(self,label="set All" , pos = (60, 65))
-        button.Bind(wx.EVT_BUTTON, self.onSetAll)
+        applyButton = wx.Button(panel, -1, label="Apply")
+        applyButton.Bind(wx.EVT_BUTTON, self.onApply)
+        sizer.Add(applyButton, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.BOTTOM, 5)
 
-    def onSetAll(self, e):
-        value = knob.GetValue()
-        if QLiveLib.getVar("MainWindow") != None:
-            pass
-#            QLiveLib.getVar("FxTracks").cueEvent(value)
-        self.Close()
+        panel.SetSizerAndFit(sizer)
+        psize = panel.GetSize()
+        self.SetSize((psize[0]+5, psize[1]+35))
+
+    def onApply(self, evt):
+        cue = self.cueButton.GetSelection()
+        track = self.trackButton.GetSelection()
+        value = self.knob.GetValue()
+        print cue, track, value
 
 class CueEvent:
     def __init__(self, type, current, old, total):
@@ -65,9 +87,10 @@ class ControlPanel(wx.Panel):
         title = wx.StaticText(self, label="-- CUES --")
         self.mainSizer.Add(title, 0, wx.ALIGN_CENTER, 5)
 
-        #button = wx.Button(self,wx.ID_OK, label="Interp Time" )
-        #self.mainSizer.Add(button, 0, wx.ALIGN_CENTER, 5)
-        #button.Bind(wx.EVT_BUTTON, self.onSetInterpTime)
+        # Very ugly and temporary button!
+        button = wx.Button(self,wx.ID_OK, label="Interp", size=(50,30))
+        self.mainSizer.Add(button, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        button.Bind(wx.EVT_BUTTON, self.onSetInterpTime)
 
         bmp = wx.Bitmap(ICON_ADD, wx.BITMAP_TYPE_PNG)
         self.newButton = wx.BitmapButton(self, wx.ID_ANY, bmp)
@@ -186,8 +209,8 @@ class ControlPanel(wx.Panel):
             self.learnButton = None
         
     def onSetInterpTime(self, e):
-        panel = SetInterpTimeDialog()
-        panel.ShowModal()
+        win = SetInterpTimeFrame(None)
+        win.Show()
 
     def getSaveState(self):
         return {"midiBindings": self.midiBindings}
