@@ -27,6 +27,7 @@ class SliderWidget(wx.Panel):
                                 INTERPTIME_MAX, 0.01, 
                                 label=parameters[0], log=True,
                                 outFunction=self.outputInterpValue, 
+                                outOnShiftFunction=self.onChangeAllInterp,
                                 backColour=CONTROLSLIDER_BACK_COLOUR_INTERP)
         self.sizer.Add(self.interpKnob, 0, wx.ALL, 5)
 
@@ -57,6 +58,9 @@ class SliderWidget(wx.Panel):
 
     def outputInterpValue(self, value):
         self.fxbox.setInterpValue(self.name, value)
+
+    def onChangeAllInterp(self, value):
+        self.GetParent().GetParent().onChangeAllInterp(value)
 
     def setInterpValue(self, value, propagate=False):
         self.interpKnob.SetValue(value, propagate)
@@ -192,6 +196,10 @@ class FxSlidersView(wx.Frame):
 
         self.SetMinSize((500, -1))
         self.SetSize((500, -1))
+
+    def onChangeAllInterp(self, value):
+        for slider in self.widgets:
+            slider.setInterpValue(value, True)
 
     def onTabulate(self, evt):
         QLiveLib.getVar("FxTracks").setSelectedTrack()

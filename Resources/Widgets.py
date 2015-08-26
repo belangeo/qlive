@@ -37,7 +37,7 @@ class QLiveControlKnob(wx.Panel):
     def __init__(self, parent, minvalue, maxvalue, init=None, pos=(0,0), 
                  size=(50,85), log=False, outFunction=None, integer=False, 
                  backColour=None, label='', playFunction=None, 
-                 editFunction=None):
+                 editFunction=None, outOnShiftFunction=None):
         wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY, pos=pos, 
                           size=size, style=wx.NO_BORDER|wx.WANTS_CHARS)
         self.parent = parent
@@ -47,6 +47,7 @@ class QLiveControlKnob(wx.Panel):
         self.outFunction = outFunction
         self.playFunction = playFunction
         self.editFunction = editFunction
+        self.outOnShiftFunction = outOnShiftFunction
         self.integer = integer
         self.log = log
         self.label = label
@@ -182,9 +183,6 @@ class QLiveControlKnob(wx.Panel):
         wx.CallAfter(self.Refresh)
 
     def MouseDown(self, evt):
-        if evt.ShiftDown():
-            self.DoubleClick(evt)
-            return
         if self._enable:
             rec = wx.Rect(5, 13, 45, 45)
             pos = evt.GetPosition()
@@ -235,6 +233,8 @@ class QLiveControlKnob(wx.Panel):
                 # Send value
                 if self.outFunction:
                     self.outFunction(self.GetValue())
+                if evt.ShiftDown() and self.outOnShiftFunction:
+                    self.outOnShiftFunction(self.GetValue())
                 self.selected = False
                 wx.CallAfter(self.Refresh)
 

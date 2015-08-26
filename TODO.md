@@ -1,6 +1,7 @@
 TODO
 ----
 
+- Follower applied on transpo and gain parameters of the soundfile player
 - MIDI/Key learn pour cues (mode forward-backward and/or key-per-cue)
 - Software preferences (record options, audio driver setup) 
 - Interpolations (global, track, fx, parameter)
