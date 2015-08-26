@@ -78,6 +78,7 @@ class ControlPanel(wx.Panel):
         bmp = wx.Bitmap(ICON_DELETE, wx.BITMAP_TYPE_PNG)
         self.delButton = wx.BitmapButton(self, wx.ID_ANY, bmp)
         self.delButton.Bind(wx.EVT_BUTTON, self.onDelCue)
+        self.delButton.SetToolTip(QLiveTooltip('Remove current cue'))
         self.newAddSizer.Add(self.delButton, 1)
 
         self.mainSizer.Add(self.newAddSizer, 0, wx.EXPAND|wx.ALL, 5)
@@ -87,8 +88,7 @@ class ControlPanel(wx.Panel):
         self.upButton = wx.BitmapButton(self, wx.ID_ANY, self.upbmp)
         self.upButton.Bind(wx.EVT_BUTTON, self.onMoveCueUp)
         self.upButton.Bind(wx.EVT_RIGHT_DOWN, self.midiLearn)
-        self.upTooltip = wx.ToolTip("")
-        self.upButton.SetToolTip(self.upTooltip)
+        self.upButton.SetToolTip(QLiveTooltip('Move cue up'))
         self.upDownSizer.Add(self.upButton, 1)
 
         self.downbmp = wx.Bitmap(ICON_ARROW_DOWN, wx.BITMAP_TYPE_PNG)
@@ -96,8 +96,7 @@ class ControlPanel(wx.Panel):
         self.downButton = wx.BitmapButton(self, wx.ID_ANY, self.downbmp)
         self.downButton.Bind(wx.EVT_BUTTON, self.onMoveCueDown)
         self.downButton.Bind(wx.EVT_RIGHT_DOWN, self.midiLearn)
-        self.downTooltip = wx.ToolTip("")
-        self.downButton.SetToolTip(self.downTooltip)
+        self.downButton.SetToolTip(QLiveTooltip('Move cue down'))
         self.upDownSizer.Add(self.downButton, 1)
 
         self.mainSizer.Add(self.upDownSizer, 0, 
