@@ -5,10 +5,12 @@ TODO
 - MIDI/Key learn pour cues (mode forward-backward and/or key-per-cue) **done**
     - There is no "key learn" yet.
 - Software preferences (record options, audio driver setup) 
-- Interpolations (global, track, fx, parameter)
+- Interpolations (global, track, fx, parameter) **done**
 - BPF - playback mode, window size
 - Automatic fx connection (serial, parallel), GUI conection design
 - Handling SoundFilePlayer number of channels and routing to the tracks 
+- Add a current selected soundfile
+- Add Soundfile transpo and gain attributes to cue and interpolation design.
 - Record functions for both the input sound and the processed sound
 - Reset cue, standby function
 - Edit mode versus playing mode
@@ -22,17 +24,3 @@ TODO
 - Designing project architecture (save file)
 - Need a mecanism to disable play/edit button on the knob (ex. for the 
 global interpolation window).
-
-Global Interpolation Window
----------------------------
-
-(.) current cue     () all cues
-
-(.) current track   () all tracks  
-
-
-        (interpKnob)
-        
-      [Apply] [Close] <-- only apply when pressing the "apply" button
-
-

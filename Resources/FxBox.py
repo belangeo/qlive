@@ -159,6 +159,18 @@ class BaseFxBox(object):
         else:
             return None
 
+    def setGlobalInterpTime(self, value, allcues):
+        if self.view is None:
+            return
+        widgets = self.view.getWidgets()
+        num = len(widgets)
+        if allcues:
+            for cue in self.cues.keys():
+                self.cues[cue]["interps"] = [value] * num
+        # sets the current cue
+        for i, widget in enumerate(widgets):
+            widget.setInterpValue(value, propagate=True)
+            
     def saveCue(self):
         self.cues[self.currentCue] = self.getParams()
 

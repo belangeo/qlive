@@ -6,11 +6,14 @@ from constants import *
 import QLiveLib
 from Widgets import TransportButtons, CueButton, QLiveControlKnob, QLiveTooltip
 
-class SetInterpTimeFrame(wx.Frame):
-    def __init__(self, parent):
+class InterpTimeFrame(wx.Frame):
+    def __init__(self, parent, callback=None):
         wx.Frame.__init__(self, parent)
+        self.callback = callback
         panel = wx.Panel(self)
         sizer = wx.BoxSizer(wx.VERTICAL)
+        upSizer = wx.BoxSizer(wx.HORIZONTAL)
+        downSizer = wx.BoxSizer(wx.HORIZONTAL)
 
         title = wx.StaticText(panel, -1, "GLOBAL INTERPOLATION TIME")
         sizer.Add(title, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP, 5)
@@ -18,33 +21,56 @@ class SetInterpTimeFrame(wx.Frame):
         sampleList = ["Current Cue", "All Cues"]
         self.cueButton = wx.RadioBox(panel, -1, "", 
                                        wx.DefaultPosition,
-                                       wx.DefaultSize, sampleList, 2, 
+                                       wx.DefaultSize, sampleList, 1, 
                                        wx.RA_SPECIFY_COLS | wx.NO_BORDER)
-        sizer.Add(self.cueButton, 0, wx.TOP|wx.LEFT|wx.RIGHT, 5)
+        upSizer.Add(self.cueButton, 0, wx.BOTTOM|wx.LEFT|wx.RIGHT, 5)
 
-        sampleList = ["Curr. Track", "All Tracks"]
+        sampleList = ["Current Track", "All Tracks"]
         self.trackButton = wx.RadioBox(panel, -1, "", 
                                        wx.DefaultPosition,
-                                       wx.DefaultSize, sampleList, 2, 
+                                       wx.DefaultSize, sampleList, 1, 
                                        wx.RA_SPECIFY_COLS | wx.NO_BORDER)
-        sizer.Add(self.trackButton, 0, wx.BOTTOM|wx.LEFT|wx.RIGHT, 5)
+        upSizer.Add(self.trackButton, 0, wx.BOTTOM|wx.LEFT|wx.RIGHT, 5)
+
+        sampleList = ["Current Soundfile", "All Soundfiles"]
+        self.sndButton = wx.RadioBox(panel, -1, "", 
+                                       wx.DefaultPosition,
+                                       wx.DefaultSize, sampleList, 1, 
+                                       wx.RA_SPECIFY_COLS | wx.NO_BORDER)
+        upSizer.Add(self.sndButton, 0, wx.BOTTOM|wx.LEFT|wx.RIGHT, 5)
+
+        sizer.Add(upSizer, 0)
 
         self.knob = QLiveControlKnob(panel, INTERPTIME_MIN, INTERPTIME_MAX, label="Time")
-        sizer.Add(self.knob, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.BOTTOM, 5)
+        self.knob.SetFocus()
+        sizer.Add(self.knob, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.BOTTOM, 10)
         
+        sizer.Add(wx.StaticLine(panel, size=(360,1)), 0, wx.LEFT|wx.RIGHT|wx.TOP, 4)
+
         applyButton = wx.Button(panel, -1, label="Apply")
         applyButton.Bind(wx.EVT_BUTTON, self.onApply)
-        sizer.Add(applyButton, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.BOTTOM, 5)
+        closeButton = wx.Button(panel, -1, label="Close")
+        closeButton.Bind(wx.EVT_BUTTON, self.onClose)
+        downSizer.Add(applyButton, 0, wx.RIGHT, 5)
+        downSizer.Add(closeButton, 0, wx.RIGHT, 5)
+        sizer.Add(downSizer, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALIGN_RIGHT | wx.TOP, 10)
 
         panel.SetSizerAndFit(sizer)
         psize = panel.GetSize()
         self.SetSize((psize[0]+5, psize[1]+35))
 
+        self.Show()
+
     def onApply(self, evt):
-        cue = self.cueButton.GetSelection()
-        track = self.trackButton.GetSelection()
-        value = self.knob.GetValue()
-        print cue, track, value
+        cue = self.cueButton.GetSelection() # 0 = current, 1 = all
+        track = self.trackButton.GetSelection() # 0 = current, 1 = all
+        snd = self.sndButton.GetSelection() # 0 = current, 1 = all
+        value = self.knob.GetValue() # interpolation time in secs
+        if self.callback is not None:
+            self.callback(cue, track, snd, value)
+
+    def onClose(self, evt):
+        self.Destroy()
 
 class CueEvent:
     def __init__(self, type, current, old, total):
@@ -86,11 +112,6 @@ class ControlPanel(wx.Panel):
 
         title = wx.StaticText(self, label="-- CUES --")
         self.mainSizer.Add(title, 0, wx.ALIGN_CENTER, 5)
-
-        # Very ugly and temporary button!
-        button = wx.Button(self,wx.ID_OK, label="Interp", size=(50,30))
-        self.mainSizer.Add(button, 0, wx.ALIGN_CENTER|wx.ALL, 5)
-        button.Bind(wx.EVT_BUTTON, self.onSetInterpTime)
 
         bmp = wx.Bitmap(ICON_ADD, wx.BITMAP_TYPE_PNG)
         self.newButton = wx.BitmapButton(self, wx.ID_ANY, bmp)
@@ -207,10 +228,6 @@ class ControlPanel(wx.Panel):
             elif self.learnButton == self.downButton:
                 wx.CallAfter(self.learnButton.SetBitmapLabel, self.downbmp)
             self.learnButton = None
-        
-    def onSetInterpTime(self, e):
-        win = SetInterpTimeFrame(None)
-        win.Show()
 
     def getSaveState(self):
         return {"midiBindings": self.midiBindings}
@@ -336,3 +353,10 @@ class CuesPanel(scrolled.ScrolledPanel):
         dict["numberOfCues"] = len(self.cueButtons)
         dict["buttons"] = [but.getSaveDict() for but in self.cueButtons]
         return dict
+
+if __name__ == "__main__":
+    def pp(cue, track, value):
+        print cue, track, snd, value
+    app = wx.App()
+    f = InterpTimeFrame(None, callback=pp)
+    app.MainLoop()

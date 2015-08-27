@@ -161,6 +161,11 @@ class FxTrack:
         y = self.trackPosition + self.trackHeight
         dc.DrawLine(0, y, MAX_WIDTH, y)
  
+    def setTrackGlobalInterpTime(self, value, allcues):
+        tmp = self.buttonsFxs + self.buttonsInputs
+        for but in tmp:
+            but.setGlobalInterpTime(value, allcues)
+        
     def getSaveDict(self):
         dict = {}
         dict["fxsValues"] = []

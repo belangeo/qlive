@@ -4,7 +4,7 @@ import QLiveLib
 from AudioServer import AudioServer, MidiServer
 from AudioMixer import AudioMixer
 from FxTracks import FxTracks
-from CuesPanel import ControlPanel, CuesPanel
+from CuesPanel import ControlPanel, CuesPanel, InterpTimeFrame
 from MixerPanel import MixerPanel
 from IntroDialog import IntroDialog
 from SoundFilePanel import SoundFilePanel
@@ -84,9 +84,12 @@ class MainWindow(wx.Frame):
         menubar.Append(menu2, 'Tracks')
 
         menu3 = wx.Menu()
+        menu3.Append(INTERP_TIME_ID, "Set Global Interpolation Time\tCtrl+G")
+        self.Bind(wx.EVT_MENU, self.onNewInterpTime, id=INTERP_TIME_ID)        
+        menu3.AppendSeparator()
         menu3.AppendCheckItem(LINK_STEREO_ID, "Link Mixer Sliders\tCtrl+L")
         self.Bind(wx.EVT_MENU, self.onLinkSliders, id=LINK_STEREO_ID)        
-        menubar.Append(menu3, 'Mixer')
+        menubar.Append(menu3, 'Actions')
 
         self.SetMenuBar(menubar)
 
@@ -356,6 +359,14 @@ class MainWindow(wx.Frame):
 
     def onDeleteTrack(self, evt):
         self.tracks.removeTrack()
+
+    def onNewInterpTime(self, evt):
+        self.globalInterpTimeWindow = InterpTimeFrame(self, 
+                                                      self.setGlobalInterpTime)
+
+    def setGlobalInterpTime(self, cue, track, snd, value):
+        #print cue, track, snd, value
+        self.tracks.setTracksGlobalInterpTime(value, cue, track)
 
     def onLinkSliders(self, evt):
         QLiveLib.getVar("MixerPanel").linkInputs(evt.GetInt())

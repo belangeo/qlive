@@ -43,10 +43,15 @@ class QLiveControlKnob(wx.Panel):
         self.parent = parent
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)  
         self.SetBackgroundColour(BACKGROUND_COLOUR)
-        self.SetMinSize(self.GetSize())
         self.outFunction = outFunction
         self.playFunction = playFunction
         self.editFunction = editFunction
+        if self.playFunction is None and self.editFunction is None:
+            self.drawBottomPart = False
+            self.SetSize((50, 70))
+        else:
+            self.drawBottomPart = True
+        self.SetMinSize(self.GetSize())
         self.outOnShiftFunction = outOnShiftFunction
         self.integer = integer
         self.log = log
@@ -315,25 +320,26 @@ class QLiveControlKnob(wx.Panel):
         dc.SetTextForeground(CONTROLSLIDER_TEXT_COLOUR)
         dc.DrawLabel(val, recval, wx.ALIGN_CENTER)
 
-        if self.autoPlay:
-            gc.SetBrush(wx.Brush("#55DD55"))
-        else:
-            gc.SetBrush(wx.Brush("#333333", wx.TRANSPARENT))
-        gc.SetPen(wx.Pen("#333333", 1.5))
-        tri = [(8,70), (8,80), (16,75), (8, 70)]
-        gc.DrawLines(tri)
+        if self.drawBottomPart:
+            if self.autoPlay:
+                gc.SetBrush(wx.Brush("#55DD55"))
+            else:
+                gc.SetBrush(wx.Brush("#333333", wx.TRANSPARENT))
+            gc.SetPen(wx.Pen("#333333", 1.5))
+            tri = [(8,70), (8,80), (16,75), (8, 70)]
+            gc.DrawLines(tri)
 
-        gc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT, 
-                           wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 
-                           face=FONT_FACE))
-        if self.autoEdit:
-            gc.SetPen(wx.Pen("#333333", 1.5))
-            gc.SetBrush(wx.Brush("#DD5555"))
-        else:
-            gc.SetPen(wx.Pen("#333333", 1.5))
-            gc.SetBrush(wx.Brush("#333333", wx.TRANSPARENT))
-        gc.DrawRoundedRectangle(32, 70, 10, 10, 2)
-        gc.DrawText("e", 35, 69)
+            gc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT, 
+                               wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 
+                               face=FONT_FACE))
+            if self.autoEdit:
+                gc.SetPen(wx.Pen("#333333", 1.5))
+                gc.SetBrush(wx.Brush("#DD5555"))
+            else:
+                gc.SetPen(wx.Pen("#333333", 1.5))
+                gc.SetBrush(wx.Brush("#333333", wx.TRANSPARENT))
+            gc.DrawRoundedRectangle(32, 70, 10, 10, 2)
+            gc.DrawText("e", 35, 69)
 
         evt.Skip()
        

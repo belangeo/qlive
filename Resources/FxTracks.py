@@ -193,6 +193,13 @@ class FxTracks(wx.ScrolledWindow):
             self.drawAndRefresh()
         evt.Skip()
 
+    def setTracksGlobalInterpTime(self, value, allcues, alltracks):
+        if alltracks:
+            for track in self.tracks:
+                track.setTrackGlobalInterpTime(value, allcues)
+        else:
+            self.tracks[self.selectedTrack].setTrackGlobalInterpTime(value, allcues)
+
     def getSaveDict(self):
         return [track.getSaveDict() for track in self.tracks]
 
