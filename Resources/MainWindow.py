@@ -9,6 +9,7 @@ from MixerPanel import MixerPanel
 from IntroDialog import IntroDialog
 from SoundFilePanel import SoundFilePanel
 from PreferencePanel import PreferenceFrame
+from CurrentCuePanel import CurrentCuePanel
 
 class MainWindow(wx.Frame):
     def __init__(self, pos, size):
@@ -87,6 +88,9 @@ class MainWindow(wx.Frame):
         menu3.Append(INTERP_TIME_ID, "Set Global Interpolation Time\tCtrl+G")
         self.Bind(wx.EVT_MENU, self.onNewInterpTime, id=INTERP_TIME_ID)        
         menu3.AppendSeparator()
+        menu3.AppendCheckItem(VIEW_CUE_WINDOW_ID, "Show Current Cue Window\tCtrl+C")
+        self.Bind(wx.EVT_MENU, self.onViewCurrentCue, id=VIEW_CUE_WINDOW_ID)
+        menu3.AppendSeparator()
         menu3.AppendCheckItem(LINK_STEREO_ID, "Link Mixer Sliders\tCtrl+L")
         self.Bind(wx.EVT_MENU, self.onLinkSliders, id=LINK_STEREO_ID)        
         menubar.Append(menu3, 'Actions')
@@ -138,6 +142,9 @@ class MainWindow(wx.Frame):
         
         self.cues = CuesPanel(self.mainPanel, size=(csize[0], 1000))
         QLiveLib.setVar("CuesPanel", self.cues)
+
+        self.currentCueWindow = CurrentCuePanel(self)
+        QLiveLib.setVar("CurrentCueWindow", self.currentCueWindow)
 
         splitter = wx.SplitterWindow(self.mainPanel, 
                                      style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
@@ -372,12 +379,19 @@ class MainWindow(wx.Frame):
         QLiveLib.getVar("MixerPanel").linkInputs(evt.GetInt())
         QLiveLib.getVar("MixerPanel").linkOutputs(evt.GetInt())
 
+    def onViewCurrentCue(self, evt):
+        if evt.GetInt() == 1:
+            self.currentCueWindow.Show()
+        if evt.GetInt() == 0:
+            self.currentCueWindow.Hide()
+
     def openPrefs(self, evt):
         self.prefs = PreferenceFrame(self)
         self.prefs.ShowModal()
         self.prefs.Center()
 
     def OnClose(self, evt):
+        self.currentCueWindow.Destroy()
         self.timer.Stop()
         if not self.askForSaving():
             return

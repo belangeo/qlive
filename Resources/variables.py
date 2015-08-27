@@ -7,6 +7,7 @@ QLiveVariables["projectFolder"] = ""
 QLiveVariables["MainWindow"] = None
 QLiveVariables["ControlPanel"] = None
 QLiveVariables["CuesPanel"] = None
+QLiveVariables["CurrentCueWindow"] = None
 QLiveVariables["FxTracks"] = None
 QLiveVariables["AudioMixer"] = None
 QLiveVariables["AudioServer"] = None
