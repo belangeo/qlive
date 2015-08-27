@@ -234,6 +234,8 @@ class CuesPanel(scrolled.ScrolledPanel):
 
         self.appendCueButton()
 
+        self.currentCueWindow = self.GetParent().GetParent().currentCueWindow
+
     def setSelectedCue(self, number):
         if number >= 0 and number < len(self.cueButtons):
             if self.currentCue < len(self.cueButtons):
@@ -267,6 +269,7 @@ class CuesPanel(scrolled.ScrolledPanel):
         if QLiveLib.getVar("MainWindow") != None:
             QLiveLib.getVar("FxTracks").cueEvent(evt)
             QLiveLib.getVar("Soundfiles").cueEvent(evt)
+        self.currentCueWindow.refresh(self.getCurrentCue())
 
     def onCueSelection(self, x):
         old = self.currentCue

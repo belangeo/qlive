@@ -9,6 +9,7 @@ from MixerPanel import MixerPanel
 from IntroDialog import IntroDialog
 from SoundFilePanel import SoundFilePanel
 from PreferencePanel import PreferenceFrame
+from CurrentCuePanel import CurrentCuePanel
 
 class MainWindow(wx.Frame):
     def __init__(self, pos, size):
@@ -84,9 +85,15 @@ class MainWindow(wx.Frame):
         menubar.Append(menu2, 'Tracks')
 
         menu3 = wx.Menu()
-        menu3.AppendCheckItem(LINK_STEREO_ID, "Link Mixer Sliders\tCtrl+L")
+        menu3.AppendCheckItem(VIEW_CUE_WINDOW_ID, "Current cue window\tCtrl+C")
+        self.Bind(wx.EVT_MENU, self.onViewCurrentCue, id=VIEW_CUE_WINDOW_ID)
+        menubar.Append(menu3, 'View')
+        self.currentCueWindow = CurrentCuePanel(self)
+
+        menu4 = wx.Menu()
+        menu4.AppendCheckItem(LINK_STEREO_ID, "Link Mixer Sliders\tCtrl+L")
         self.Bind(wx.EVT_MENU, self.onLinkSliders, id=LINK_STEREO_ID)        
-        menubar.Append(menu3, 'Mixer')
+        menubar.Append(menu4, 'Mixer')
 
         self.SetMenuBar(menubar)
 
@@ -360,6 +367,12 @@ class MainWindow(wx.Frame):
     def onLinkSliders(self, evt):
         QLiveLib.getVar("MixerPanel").linkInputs(evt.GetInt())
         QLiveLib.getVar("MixerPanel").linkOutputs(evt.GetInt())
+
+    def onViewCurrentCue(self, evt):
+        if evt.GetInt() == 1:
+            self.currentCueWindow.Show()
+        if evt.GetInt() == 0:
+            self.currentCueWindow.Hide()
 
     def openPrefs(self, evt):
         self.prefs = PreferenceFrame(self)
