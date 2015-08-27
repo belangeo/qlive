@@ -12,7 +12,7 @@ TODO
 - Record functions for both the input sound and the processed sound
 - Reset cue, standby function
 - Edit mode versus playing mode
-- Floating window to show current cue number
+- Floating window to show current cue number **done**
 - Master effects for both input and output section
 - Spatialisation (partially done with the Pan object)
 - Licensing
