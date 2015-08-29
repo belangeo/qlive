@@ -17,7 +17,10 @@ QLiveVariables["Soundfiles"] = None
 QLiveVariables["FxViews"] = []
 QLiveVariables["CanProcessCueKeys"] = True
 
-PREFS_TO_SAVE = {"useTooltips": False}
+# QLiveVariables which will be loaded/saved in prefs file go here:
+PREFS_TO_SAVE = {"useTooltips": False,
+                "audioHostAPI": "portaudio",
+                "bufferSize": "64"}
 
 #TODO: check app version and add missing prefs in the current prefs file
 def readQLivePrefsFromFile():

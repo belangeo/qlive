@@ -187,12 +187,19 @@ AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn, "Lowpass": FxLowpass,
 
 class AudioServer:
     def __init__(self):
-        self.server = Server(buffersize=64)
+        bufsize, host = self.getPrefs()
+        self.server = Server(buffersize=bufsize, audio=host)
         self.server.deactivateMidi()
         self.server.boot()
         self.soundfiles = []
         self.audioObjects = []
         self.recording = False
+
+    #TODO: get all prefs from QLive variables
+    def getPrefs(self):
+        bufsize = int(QLiveLib.getVar("bufferSize"))
+        host = QLiveLib.getVar("audioHostAPI")
+        return bufsize, host
 
     def getSaveState(self):
         return {}
