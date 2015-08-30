@@ -22,7 +22,6 @@ PREFS_TO_SAVE = {"useTooltips": False,
                 "audioHostAPI": "portaudio",
                 "bufferSize": "64"}
 
-#TODO: check app version and add missing prefs in the current prefs file
 def readQLivePrefsFromFile():
     if not os.path.isfile(PREFERENCES_PATH):
         with open(PREFERENCES_PATH, "w") as f:
@@ -31,6 +30,10 @@ def readQLivePrefsFromFile():
     else:
         with open(PREFERENCES_PATH, "r") as f:
             prefs = eval(f.read())
+            # Load prefs which are not in the prefs file
+            for p in PREFS_TO_SAVE:
+                if p not in prefs:
+                    prefs[p] = PREFS_TO_SAVE[p]
 
     QLiveVariables.update(prefs)
 
