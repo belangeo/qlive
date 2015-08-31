@@ -418,7 +418,7 @@ class CueButton(wx.Panel):
             self.select(0)
             midi.noteonscan(None)
             if self.midinote is not None:
-                midi.unbind("noteon", self.midinote)
+                midi.unbind("noteon", self.midinote, self.midi)
             self.midinote = None
             self.SetToolTip(QLiveTooltip(""))
         # stop midi learn

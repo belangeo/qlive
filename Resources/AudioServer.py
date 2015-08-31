@@ -338,14 +338,16 @@ class MidiServer:
                 self.noteonscan_callback(data1, midichnl)
                 self.noteonscan_callback = None
             elif data1 in self.bindings["noteon"]:
-                self.bindings["noteon"][data1](data1, data2)
+                for callback in self.bindings["noteon"][data1]:
+                    callback(data1, data2)
         if status & 0xF0 == 0xB0: # control change
             midichnl = status - 0xB0 + 1
             if self.ctlscan_callback is not None:
                 self.ctlscan_callback(data1, midichnl)
                 self.ctlscan_callback = None
             if data1 in self.bindings["ctls"]:
-                self.bindings["ctls"][data1](data2)
+                for callback in self.bindings["ctls"][data1]:
+                    callback(data2)
 
     def ctlscan(self, callback):
         self.ctlscan_callback = callback
@@ -356,9 +358,14 @@ class MidiServer:
         self.noteonscan_callback = callback
         
     def bind(self, group, x, callback):
-        self.bindings[group][x] = callback
+        if x in self.bindings[group]:
+            self.bindings[group][x].append(callback)
+        else:
+            self.bindings[group][x] = [callback]
         
-    def unbind(self, group, x):
-        if x is not None:
-            if x in self.bindings[group]:
-                del self.bindings[group][x]
+    def unbind(self, group, x, callback):
+        if x in self.bindings[group]:
+            if callback in self.bindings[group][x]:
+                self.bindings[group][x].remove(callback)
+                if not self.bindings[group][x]:
+                    del self.bindings[group][x]

@@ -203,7 +203,7 @@ class ControlPanel(wx.Panel):
             midi.noteonscan(None)
             self.learnButton = None
             if num != -1:
-                midi.unbind("noteon", num)
+                midi.unbind("noteon", num, self.midi)
         # stop midi learn
         elif self.learnButton == obj:
             if obj == self.upButton:

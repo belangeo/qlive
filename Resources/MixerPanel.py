@@ -36,7 +36,7 @@ class QLiveControlSlider(MeterControlSlider):
 
     def MouseRightDown(self, evt):
         if evt.ShiftDown():
-            QLiveLib.getVar("MidiServer").unbind("ctls", self.midictl)
+            QLiveLib.getVar("MidiServer").unbind("ctls", self.midictl, self.midi)
             self.setMidiCtl(None)
             return
         if not self.midiscanning:
@@ -57,7 +57,7 @@ class QLiveControlSlider(MeterControlSlider):
         QLiveLib.getVar("MidiServer").bind("ctls", ctlnum, self.midi)
 
     def midi(self, value):
-        self.SetValue(rescale(value, 0, 127, -80, 18))
+        self.SetValue(rescale(value, 0, 127, -90, 18))
 
 class MixerPanel(wx.Panel):
     def __init__(self, parent, audioMixer):
@@ -84,7 +84,7 @@ class MixerPanel(wx.Panel):
                      wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT, 2)
         for i in range(NUM_INPUTS):
             channel = self.audioMixer.getInputChannel(i)
-            slide = QLiveControlSlider(self, -60, 18, 0, size=(28,100), 
+            slide = QLiveControlSlider(self, -90, 18, 0, size=(28,100), 
                                        orient=wx.VERTICAL, 
                                        outFunction=channel.setVolume)
             slide.setChannelObject(channel)
@@ -106,7 +106,7 @@ class MixerPanel(wx.Panel):
                       wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT, 2)
         for i in range(NUM_OUTPUTS):
             channel = self.audioMixer.getOutputChannel(i)            
-            slide = QLiveControlSlider(self, -60, 18, 0, size=(28,100), 
+            slide = QLiveControlSlider(self, -90, 18, 0, size=(28,100), 
                                        orient=wx.VERTICAL, 
                                        outFunction=channel.setVolume)
             slide.setChannelObject(channel)

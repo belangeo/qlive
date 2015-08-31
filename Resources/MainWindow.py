@@ -391,10 +391,10 @@ class MainWindow(wx.Frame):
         self.prefs.Center()
 
     def OnClose(self, evt):
-        self.currentCueWindow.Destroy()
         self.timer.Stop()
         if not self.askForSaving():
             return
+        self.currentCueWindow.Destroy()
         if self.audioServer.isStarted():
             self.audioServer.stop()
             time.sleep(0.25)
