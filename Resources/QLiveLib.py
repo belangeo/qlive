@@ -2,8 +2,8 @@ from constants import *
 import variables as vars
 
 # getter/setter for global variables defined at runtime (see variables.py)
-def getVar(var):
-    return vars.QLiveVariables[var]
+def getVar(var, default=None):
+    return vars.QLiveVariables.get(var, default)
 
 def setVar(var, value):
     vars.QLiveVariables[var] = value
