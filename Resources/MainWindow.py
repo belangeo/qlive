@@ -177,7 +177,7 @@ class MainWindow(wx.Frame):
     def updateUsage(self, evt):
         cpu = self.process.cpu_percent()
         self.status.SetStatusText("CPU: %.1f %%" % cpu, 0)
-        mem = self.process.get_memory_info()[0] / float(2 ** 20)
+        mem = self.process.memory_info()[0] / float(2 ** 20)
         self.status.SetStatusText("MEM: %.2f Mb" % mem, 1)
 
     def showIntro(self):
