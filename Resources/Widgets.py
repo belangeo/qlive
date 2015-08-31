@@ -471,6 +471,7 @@ class CueButton(wx.Panel):
         else:
             wx.CallAfter(self.SetBackgroundColour, CUEBUTTON_UNSELECTED_COLOUR)
             wx.CallAfter(self.labtext.SetBackgroundColour, CUEBUTTON_UNSELECTED_COLOUR)
+        wx.CallAfter(self.Refresh)
 
     def getSaveDict(self):
         return {"number": self.number, "midinote": self.midinote}
