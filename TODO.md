@@ -5,6 +5,7 @@ TODO
 - MIDI/Key learn pour cues (mode forward-backward and/or key-per-cue) **done**
     - There is no "key learn" yet.
 - Software preferences (record options, audio driver setup) 
+    - partially done, missing nchnls, inchnls and portaudio pane
 - Interpolations (global, track, fx, parameter) **done**
 - BPF - playback mode, window size
 - Automatic fx connection (serial, parallel), GUI conection design
