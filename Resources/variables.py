@@ -19,7 +19,12 @@ QLiveVariables["CanProcessCueKeys"] = True
 
 # QLiveVariables which will be loaded/saved in prefs file go here:
 PREFS_TO_SAVE = {"useTooltips": False,
-                "audioHostAPI": "portaudio",
+                "audio": "portaudio",
+                "sr": "44100",
+                "duplex": "1",
+                "nchnls": "2",
+                "inchnls": None,
+                "jackname": "qlive",
                 "bufferSize": "64"}
 
 def readQLivePrefsFromFile():

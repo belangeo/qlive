@@ -187,19 +187,25 @@ AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn, "Lowpass": FxLowpass,
 
 class AudioServer:
     def __init__(self):
-        bufsize, host = self.getPrefs()
-        self.server = Server(buffersize=bufsize, audio=host)
+        sr, bufferSize, audio, jackname, nchnls, inchnls, duplex = self.getPrefs()
+        self.server = Server(sr=sr, buffersize=bufferSize, audio=audio, jackname=jackname, nchnls=nchnls, duplex=duplex)
+        if inchnls != None:
+            self.server.setIchnls(int(inchnls))
         self.server.deactivateMidi()
         self.server.boot()
         self.soundfiles = []
         self.audioObjects = []
         self.recording = False
 
-    #TODO: get all prefs from QLive variables
     def getPrefs(self):
-        bufsize = int(QLiveLib.getVar("bufferSize"))
-        host = QLiveLib.getVar("audioHostAPI")
-        return bufsize, host
+        sr = int(QLiveLib.getVar("sr"))
+        bufferSize = int(QLiveLib.getVar("bufferSize"))
+        audio = QLiveLib.getVar("audio")
+        jackname = QLiveLib.getVar("jackname")
+        nchnls = int(QLiveLib.getVar("nchnls"))
+        inchnls = QLiveLib.getVar("inchnls")
+        duplex = int(QLiveLib.getVar("duplex"))
+        return sr, bufferSize, audio, jackname, nchnls, inchnls, duplex
 
     def getSaveState(self):
         return {}

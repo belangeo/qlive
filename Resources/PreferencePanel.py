@@ -29,14 +29,11 @@ class AudioPrefsTab(wx.Panel):
         wx.Panel.__init__(self, parent)
 
         # Setting audio driver
-        audioDriverDefault = QLiveLib.getVar("audioHostAPI")
+        audioDriverDefault = QLiveLib.getVar("audio")
         audioDriverChoices = AUDIO_DRIVERS
         audioDriverLabel = wx.StaticText(self, -1, "Audio driver:")
         self.audioDriverCB = wx.ComboBox(self, -1, audioDriverDefault, wx.DefaultPosition,
-                         (140, -1), audioDriverChoices,
-                         wx.CB_READONLY
-                         | wx.TE_PROCESS_ENTER
-                         )
+                         (140, -1), audioDriverChoices, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
         self.audioDriverCB.Bind(wx.EVT_COMBOBOX, self.setAudioDriver, self.audioDriverCB)
 
         # Setting buffer size
@@ -73,7 +70,7 @@ class AudioPrefsTab(wx.Panel):
         self.SetSizer(border)
 
     def setAudioDriver(self, evt):
-        QLiveLib.setVar("audioHostAPI", evt.GetString())
+        QLiveLib.setVar("audio", evt.GetString())
 
     def setBufferSize(self, evt):
         QLiveLib.setVar("bufferSize", evt.GetString())
