@@ -112,8 +112,8 @@ class MainWindow(wx.Frame):
         self.cue9Id = KEY_EVENT_FIRST_ID + 11
         self.cue10Id = KEY_EVENT_FIRST_ID + 12
         accel_tbl = wx.AcceleratorTable([(wx.ACCEL_NORMAL,  wx.WXK_TAB, tabId),
-                                        (wx.ACCEL_NORMAL,  wx.WXK_UP, self.prevId),
-                                        (wx.ACCEL_NORMAL,  wx.WXK_DOWN, self.nextId),
+                                        (wx.ACCEL_NORMAL,  wx.WXK_LEFT, self.prevId),
+                                        (wx.ACCEL_NORMAL,  wx.WXK_RIGHT, self.nextId),
                                         (wx.ACCEL_NORMAL,  wx.WXK_ESCAPE, self.cueZeroId),
                                         (wx.ACCEL_NORMAL,  ord("1"), self.cue1Id),
                                         (wx.ACCEL_NORMAL,  ord("2"), self.cue2Id),
