@@ -27,6 +27,7 @@ class MainWindow(wx.Frame):
         # Retrieve the current process
         self.process = psutil.Process()
 
+
         # Start a timer to update CPU and memory usage
         self.timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.updateUsage, self.timer)
@@ -36,6 +37,9 @@ class MainWindow(wx.Frame):
         QLiveLib.setVar("AudioServer", self.audioServer)
         self.midiServer = MidiServer()
         QLiveLib.setVar("MidiServer", self.midiServer)
+
+        # Query & load available Audio and MIDI drivers
+        QLiveLib.queryAudioMidiDrivers()
 
         self.saveState = None
 

@@ -207,6 +207,19 @@ class AudioServer:
         duplex = int(QLiveLib.getVar("duplex"))
         return sr, bufferSize, audio, jackname, nchnls, inchnls, duplex
 
+    def getAvailableAudioMidiDrivers(self):
+        inputDriverList, inputDriverIndexes = pa_get_input_devices()
+        defaultInputDriver = inputDriverList[inputDriverIndexes.index(pa_get_default_input())]
+        outputDriverList, outputDriverIndexes = pa_get_output_devices()
+        defaultOutputDriver = outputDriverList[outputDriverIndexes.index(pa_get_default_output())]
+        midiDriverList, midiDriverIndexes = pm_get_input_devices()
+        if midiDriverList == []:
+            defaultMidiDriver = ""
+        else:
+            defaultMidiDriver = midiDriverList[midiDriverIndexes.index(pm_get_default_input())]
+        return inputDriverList, inputDriverIndexes, defaultInputDriver, outputDriverList, outputDriverIndexes, \
+                defaultOutputDriver, midiDriverList, midiDriverIndexes, defaultMidiDriver
+
     def getSaveState(self):
         return {}
 
@@ -255,7 +268,7 @@ class AudioServer:
                                               but.getCurrentInterps())
                     but.setAudioRef(obj)
                     self.audioObjects.append(obj)
-            
+
     def resetPlayerRefs(self):
         objs = QLiveLib.getVar("Soundfiles").getSoundFileObjects()
         for obj in objs:
