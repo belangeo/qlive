@@ -31,7 +31,7 @@ class AudioPrefsTab(wx.Panel):
         audioDriverDefault = QLiveLib.getVar("audio")
         audioDriverLabel = wx.StaticText(self, -1, "Audio driver:")
         self.audioDriverCB = wx.ComboBox(self, -1, audioDriverDefault, wx.DefaultPosition,
-                         (140, 20), AUDIO_DRIVERS, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+                         wx.DefaultSize, AUDIO_DRIVERS, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
         self.audioDriverCB.Bind(wx.EVT_COMBOBOX, self.setAudioDriver, self.audioDriverCB)
 
         # Portaudio: Audio Input devices
@@ -48,7 +48,7 @@ class AudioPrefsTab(wx.Panel):
             else:
                 initInput = ''
         self.inputDeviceCB = wx.ComboBox(self, -1, initInput, wx.DefaultPosition,
-                         (140, 20), availableAudioIns, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+                         wx.DefaultSize, availableAudioIns, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
         self.inputDeviceCB.Bind(wx.EVT_COMBOBOX, self.setInputDevice, self.inputDeviceCB)
 
         # Portaudio: Audio Output devices
@@ -64,21 +64,21 @@ class AudioPrefsTab(wx.Panel):
             else:
                 initOutput = ''
         self.outputDeviceCB = wx.ComboBox(self, -1, initOutput, wx.DefaultPosition,
-                         (140, 20), availableAudioOuts, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+                         wx.DefaultSize, availableAudioOuts, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
         self.outputDeviceCB.Bind(wx.EVT_COMBOBOX, self.setOutputDevice, self.outputDeviceCB)
 
         # Setting buffer size
         bufferSizeDefault = QLiveLib.getVar("bufferSize")
         bufferSizeLabel = wx.StaticText(self, -1, "Buffer size:")
         self.bufferSizeCB = wx.ComboBox(self, -1, bufferSizeDefault, wx.DefaultPosition,
-                         (140, 20), BUFFER_SIZES, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+                         wx.DefaultSize, BUFFER_SIZES, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
         self.bufferSizeCB.Bind(wx.EVT_COMBOBOX, self.setBufferSize, self.bufferSizeCB)
 
         # Setting sampling rate
         samplingRateDefault = QLiveLib.getVar("sr")
         samplingRateLabel = wx.StaticText(self, -1, "Sampling rate:")
         self.samplingRateCB = wx.ComboBox(self, -1, samplingRateDefault, wx.DefaultPosition,
-                         (140, 20), SAMPLE_RATES, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+                         wx.DefaultSize, SAMPLE_RATES, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
         self.samplingRateCB.Bind(wx.EVT_COMBOBOX, self.setSamplingRate, self.samplingRateCB)
 
         # Setting duplex True/False
@@ -128,12 +128,12 @@ class AudioPrefsTab(wx.Panel):
 
         border = wx.BoxSizer()
         border.Add(vsizer, -1, wx.EXPAND|wx.ALL, 5)
-        self.SetSizer(border)
+        self.SetSizerAndFit(border)
 
         self.EnableDisablePortaudioOpts()
 
     def EnableDisablePortaudioOpts(self):
-        if QLiveLib.getVar("audio") == "portaudio":
+        if QLiveLib.getVar("audio") in ["portaudio", "coreaudio"]:
             enablePortaudioOpts = True
         else:
             enablePortaudioOpts = False
@@ -170,28 +170,31 @@ class AudioPrefsTab(wx.Panel):
 class PreferenceFrame(wx.Dialog):
     def __init__(self, parent):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT
-        wx.Dialog.__init__(self, parent, title="QLive Preferences", style=style, size=(350, 275))
+        wx.Dialog.__init__(self, parent, title="QLive Preferences", style=style, size=(500, 350))
         self.parent = parent
 
         # Create a panel and notebook (tabs holder)
-        p = wx.Panel(self)
-        nb = wx.Notebook(p)
-        closeButton = wx.Button(p, -1, size=(50,-1), label="Close")
+        panel = wx.Panel(self)
+        nb = wx.Notebook(panel)
+        closeButton = wx.Button(panel, -1, label="Close")
         closeButton.Bind(wx.EVT_BUTTON, self.onClose)
+        self.Bind(wx.EVT_CLOSE, self.onClose)
 
         # Create the tab windows
-        tab1 = GeneralPrefsTab(nb)
-        tab2 = AudioPrefsTab(nb)
+        tab1 = AudioPrefsTab(nb)
+        tab2 = GeneralPrefsTab(nb)
 
         # Add the windows to tabs and name them.
-        nb.AddPage(tab1, "General")
-        nb.AddPage(tab2, "Audio")
+        nb.AddPage(tab1, "Audio")
+        nb.AddPage(tab2, "General")
 
         # Set noteboook in a sizer to create the layout
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(nb, 0, wx.EXPAND)
-        sizer.Add(closeButton, 0, wx.ALL|wx.ALIGN_RIGHT, 5)
-        p.SetSizer(sizer)
+        sizer.Add(closeButton, 0, wx.ALL|wx.CENTER, 5)
+        panel.SetSizerAndFit(sizer)
+        Y = panel.GetSize()[1]
+        self.SetSize((500, Y+35))
 
     def onClose(self, evt):
         self.Destroy()

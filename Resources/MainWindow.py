@@ -27,7 +27,6 @@ class MainWindow(wx.Frame):
         # Retrieve the current process
         self.process = psutil.Process()
 
-
         # Start a timer to update CPU and memory usage
         self.timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.updateUsage, self.timer)
@@ -391,7 +390,7 @@ class MainWindow(wx.Frame):
 
     def openPrefs(self, evt):
         self.prefs = PreferenceFrame(self)
-        self.prefs.ShowModal()
+        self.prefs.Show()
         self.prefs.Center()
 
     def OnClose(self, evt):
