@@ -17,7 +17,17 @@ QLiveVariables["Soundfiles"] = None
 QLiveVariables["FxViews"] = []
 QLiveVariables["CanProcessCueKeys"] = True
 
-# QLiveVariables which will be loaded/saved in prefs file go here:
+# Audio / Midi
+QLiveVariables['availableAudioOutputs'] = []
+QLiveVariables['availableAudioOutputIndexes'] = []
+QLiveVariables['availableAudioInputs'] = []
+QLiveVariables['availableAudioInputIndexes'] = []
+QLiveVariables['availableMidiOutputs'] = []
+QLiveVariables['availableMidiOutputIndexes'] = []
+QLiveVariables['availableMidiInputs'] = []
+QLiveVariables['availableMidiInputIndexes'] = []
+
+# Declare here QLiveVariables which will be loaded/saved in prefs file:
 PREFS_TO_SAVE = {"useTooltips": False,
                  "audio":       "portaudio",
                  "sr":          "44100",

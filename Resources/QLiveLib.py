@@ -14,6 +14,37 @@ def saveVars():
 def loadVars():
     vars.readQLivePrefsFromFile()
 
+def queryAudioMidiDrivers():
+    inputs, inputIndexes, defaultInput, outputs, outputIndexes, defaultOutput, midiInputs, midiInputIndexes, defaultMidiInput = getVar("AudioServer").getAvailableAudioMidiDrivers()
+
+    setVar("availableAudioOutputs",  outputs)
+    setVar("availableAudioOutputIndexes",  outputIndexes)
+    if getVar("audioOutput") not in outputIndexes:
+        try:
+            setVar("audioOutput", outputIndexes[outputs.index(defaultOutput)])
+        except:
+            setVar("audioOutput", 0)
+
+    setVar("availableAudioInputs", inputs)
+    setVar("availableAudioInputIndexes", inputIndexes)
+    if getVar("audioInput") not in inputIndexes:
+        try:
+            setVar("audioInput", inputIndexes[inputs.index(defaultInput)])
+        except:
+            setVar("audioInput", 0)
+
+    if midiInputs == []:
+        setVar("useMidi", 0)
+    else:
+        setVar("useMidi", 1)
+    setVar("availableMidiInputs", midiInputs)
+    setVar("availableMidiInputIndexes", midiInputIndexes)
+    if getVar("midiDeviceIn") not in midiInputIndexes:
+        try:
+            setVar("midiDeviceIn", midiInputIndexes[midiInputs.index(defaultMidiInput)])
+        except:
+            setVar("midiDeviceIn", 0)
+
 # PRINT should be used instead of print function to enable/disable printing.
 def PRINT(*args):
     if DEBUG:
