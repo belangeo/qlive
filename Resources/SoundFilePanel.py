@@ -501,6 +501,11 @@ class SoundFileGrid(gridlib.Grid):
                 self.copyToSoundsFolder(path)
                 self.loadSound(os.path.basename(path))
             dlg.Destroy()
+        elif self.selCol == ID_COL_TRANSPO:
+            print "open the Automation Window for transpo.", self.selRow
+        elif self.selCol == ID_COL_GAIN:
+            print "open the Automation Window for gain.", self.selRow
+            
         evt.Skip()
 
     def OnLabelRightClick(self, evt):

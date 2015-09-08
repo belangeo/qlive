@@ -23,5 +23,32 @@ TODO
 - Warning audio out (?)
 - Documentation/archive prototype
 - Designing project architecture (save file)
-- Need a mecanism to disable play/edit button on the knob (ex. for the 
-global interpolation window).
+- Need a mecanism to disable play/edit button on the knob (ex. for the global 
+interpolation window). **done** (just give nothing to playFunction and editFunction arguments)
+
+Automation Panel Design
+=======================
+Need to design the possible couplings (add, mul, jit, avg, ...)
+---------------------------------------------------------------
+[ ] BPF
+
+[ ] LFO
+
+[ ] RANDOM
+
+[ ] ENVELOPE FOLLOWER
+
+    -- Input Selection ----------------
+        1   2   3   4   5   6   7   8
+        
+    -- Input Interpolation Time : 0.01 sec.
+        
+    [] Slider Values    [] Interpolation Times
+
+        LPCUTOFF -- OUTMIN -- OUTMAX
+    
+[ ] PITCH FOLLOWER
+
+[ ] ZERO-CROSSING
+
+[ ] CENTROID
