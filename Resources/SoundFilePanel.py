@@ -29,6 +29,10 @@ class SoundFileObject:
         self.endpoint = self.duration
         self.crossfade = crossfade
         self.channel = channel
+        self.transpox = 0.01
+        self.gainx = 0.01
+
+        self.showInterp = 0
         
         self.playerRef = None
 
@@ -42,6 +46,12 @@ class SoundFileObject:
         else:
             self.playerRef = weakref.ref(obj)
 
+    def setShowInterp(self, x):
+        self.showInterp = x
+
+    def getShowInterp(self):
+        return self.showInterp
+
     def getAttributes(self):
         return {
                 ID_COL_FILENAME: self.filename, 
@@ -53,7 +63,9 @@ class SoundFileObject:
                 ID_COL_STARTPOINT: self.startpoint, 
                 ID_COL_ENDPOINT: self.endpoint, 
                 ID_COL_CROSSFADE: self.crossfade,
-                ID_COL_CHANNEL: self.channel
+                ID_COL_CHANNEL: self.channel,
+                ID_COL_TRANSPOX: self.transpox,
+                ID_COL_GAINX: self.gainx
                 }
 
     def setAttributes(self, dict):
@@ -67,6 +79,8 @@ class SoundFileObject:
         self.endpoint = dict[ID_COL_ENDPOINT]
         self.crossfade = dict[ID_COL_CROSSFADE]
         self.channel = dict[ID_COL_CHANNEL]
+        self.transpox = dict.get(ID_COL_TRANSPOX, 0.01)
+        self.gainx = dict.get(ID_COL_GAINX, 0.01)
 
     def copy(self, obj):
         self.setAttributes(copy.deepcopy(obj.getAttributes()))
@@ -114,6 +128,16 @@ class SoundFileObject:
     def setCues(self, cues):
         self.cues = cues
 
+    def setGlobalInterpTime(self, value, allcues):
+        if allcues:
+            for key in self.cues.keys():
+                self.cues[key][ID_COL_TRANSPOX] = value
+                self.cues[key][ID_COL_GAINX] = value
+        else:
+            self.cues[self.currentCue][ID_COL_TRANSPOX] = value
+            self.cues[self.currentCue][ID_COL_GAINX] = value
+        self.transpox = self.gainx = value
+
     def isValid(self):
         return self.valid
 
@@ -142,12 +166,26 @@ class SoundFileObject:
         self.transpo = x
         self.setPlayerAttribute(ID_COL_TRANSPO, x)
 
+    def getTranspox(self):
+        return self.transpox
+        
+    def setTranspox(self, x):
+        self.transpox = x
+        self.setPlayerAttribute(ID_COL_TRANSPOX, x)
+
     def getGain(self):
         return self.gain
 
     def setGain(self, x):
         self.gain = x
         self.setPlayerAttribute(ID_COL_GAIN, x)
+
+    def getGainx(self):
+        return self.gainx
+
+    def setGainx(self, x):
+        self.gainx = x
+        self.setPlayerAttribute(ID_COL_GAINX, x)
 
     def getPlaying(self):
         return self.playing
@@ -216,7 +254,7 @@ class SoundFileGrid(gridlib.Grid):
 
         self.selRow = self.selCol = -1
         self.objects = []
-
+        
         self.setInitialValuesToNone()
 
         self.textColour = self.GetDefaultCellTextColour()
@@ -226,7 +264,7 @@ class SoundFileGrid(gridlib.Grid):
         self.SetCellHighlightROPenWidth(0)
         self.SetSelectionBackground("#FFFFFF")
         self.SetSelectionForeground("#000000")
-        self.font = wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.NORMAL,
+        self.font = wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
                             wx.FONTWEIGHT_NORMAL, face="Monospace")
         self.SetRowLabelSize(50)
 
@@ -245,6 +283,7 @@ class SoundFileGrid(gridlib.Grid):
         self.Bind(gridlib.EVT_GRID_EDITOR_SHOWN, self.OnCellEditorShown)
         self.Bind(gridlib.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(gridlib.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
+        self.Bind(gridlib.EVT_GRID_LABEL_LEFT_CLICK, self.OnLabelLeftClick)
         self.Bind(gridlib.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         self.GetGridWindow().Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
         self.GetGridWindow().Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
@@ -303,7 +342,7 @@ class SoundFileGrid(gridlib.Grid):
         attr.SetReadOnly(True)
         self.SetAttr(row, ID_COL_GAIN, attr)
         rd = gridlib.GridCellFloatRenderer()
-        rd.SetPrecision(2)
+        rd.SetPrecision(4)
         self.SetCellRenderer(row, ID_COL_GAIN, rd)
         # Playing
         attr = gridlib.GridCellAttr()
@@ -354,6 +393,18 @@ class SoundFileGrid(gridlib.Grid):
                 self.SetCellValue(row, key, LOOPMODES[attrs[key]])
             elif key == ID_COL_PLAYING:
                 self.SetCellValue(row, key, PLAYING[attrs[key]])
+            elif key == ID_COL_TRANSPO:
+                if obj.getShowInterp() == 0:
+                    self.SetCellValue(row, key, str(attrs[key]))
+            elif key == ID_COL_TRANSPOX:
+                if obj.getShowInterp() == 1:
+                    self.SetCellValue(row, ID_COL_TRANSPO, str(attrs[key]))
+            elif key == ID_COL_GAIN:
+                if obj.getShowInterp() == 0:
+                    self.SetCellValue(row, key, str(attrs[key]))
+            elif key == ID_COL_GAINX:
+                if obj.getShowInterp() == 1:
+                    self.SetCellValue(row, ID_COL_GAIN, str(attrs[key]))
             else:
                 self.SetCellValue(row, key, str(attrs[key]))
         self.SetCellTextColour(row, ID_COL_FILENAME, self.textColour)
@@ -362,9 +413,15 @@ class SoundFileGrid(gridlib.Grid):
         self.selRow, self.selCol = evt.GetRow(), evt.GetCol()
         val = self.GetCellValue(self.selRow, self.selCol)
         if self.selCol == ID_COL_TRANSPO:
-            self.objects[self.selRow].setTranspo(float(val))
+            if self.objects[self.selRow].getShowInterp() == 0:
+                self.objects[self.selRow].setTranspo(float(val))
+            else:
+                self.objects[self.selRow].setTranspox(float(val))
         elif self.selCol == ID_COL_GAIN:
-            self.objects[self.selRow].setGain(float(val))
+            if self.objects[self.selRow].getShowInterp() == 0:
+                self.objects[self.selRow].setGain(float(val))
+            else:
+                self.objects[self.selRow].setGainx(float(val))
         elif self.selCol == ID_COL_STARTPOINT:
             self.objects[self.selRow].setStartPoint(float(val))
         elif self.selCol == ID_COL_ENDPOINT:
@@ -384,9 +441,15 @@ class SoundFileGrid(gridlib.Grid):
             self.clickPosition = evt.GetPosition()[1]
             self.GetGridWindow().CaptureMouse()
             if self.selCol == ID_COL_TRANSPO:
-                self.initialTranspo = self.objects[self.selRow].getTranspo()
+                if self.objects[self.selRow].getShowInterp() == 0:
+                    self.initialTranspo = self.objects[self.selRow].getTranspo()
+                else:
+                    self.initialTranspo = self.objects[self.selRow].getTranspox()
             elif self.selCol == ID_COL_GAIN:
-                self.initialGain = self.objects[self.selRow].getGain()
+                if self.objects[self.selRow].getShowInterp() == 0:
+                    self.initialGain = self.objects[self.selRow].getGain()
+                else:
+                    self.initialGain = self.objects[self.selRow].getGainx()
             elif self.selCol == ID_COL_STARTPOINT:
                 self.initialStart = self.objects[self.selRow].getStartPoint()
             elif self.selCol == ID_COL_ENDPOINT:
@@ -426,10 +489,16 @@ class SoundFileGrid(gridlib.Grid):
                 fdiff = diff * inc[1]
             if self.selCol == ID_COL_TRANSPO:
                 val = self.clip(self.initialTranspo + fdiff, 0.0, 4.0)
-                self.objects[self.selRow].setTranspo(val)
+                if self.objects[self.selRow].getShowInterp() == 0:
+                    self.objects[self.selRow].setTranspo(val)
+                else:
+                    self.objects[self.selRow].setTranspox(val)
             elif self.selCol == ID_COL_GAIN:
                 val = self.clip(self.initialGain + fdiff, -120.0, 24.0)
-                self.objects[self.selRow].setGain(val)
+                if self.objects[self.selRow].getShowInterp() == 0:
+                    self.objects[self.selRow].setGain(val)
+                else:
+                    self.objects[self.selRow].setGainx(val)
             elif self.selCol == ID_COL_STARTPOINT:
                 val = self.clip(self.initialStart + fdiff, 0.0, dur)
                 self.objects[self.selRow].setStartPoint(val)
@@ -508,13 +577,26 @@ class SoundFileGrid(gridlib.Grid):
             
         evt.Skip()
 
+    def OnLabelLeftClick(self, evt):
+        if evt.GetRow() < len(self.objects):
+            self.selRow = evt.GetRow()
+        evt.Skip()
+
     def OnLabelRightClick(self, evt):
         row = evt.GetRow()
         if row != -1:
+            actions = [("Duplicate Row", wx.ITEM_NORMAL), 
+                       ("Delete Row", wx.ITEM_NORMAL), 
+                       ("Show Parameter Values", wx.ITEM_RADIO), 
+                       ("Show Interpolation Times", wx.ITEM_RADIO)]
             self.selRow = row
             menu = wx.Menu()
-            for i, act in enumerate(["Duplicate", "Delete"]):
-                menu.Append(i+1, act)
+            for i, act in enumerate(actions):
+                menu.Append(i+1, act[0], kind=act[1])
+                if i == 1:
+                    menu.AppendSeparator()
+            menu.Check(self.objects[self.selRow].getShowInterp()+3, True)
+
             menu.Bind(wx.EVT_MENU, self.doLabelAction, id=1, id2=i+1)
             self.PopupMenu(menu, evt.GetPosition())
             menu.Destroy()
@@ -538,6 +620,11 @@ class SoundFileGrid(gridlib.Grid):
         elif evt.GetId() == 2: # Delete
             del self.objects[self.selRow]
             self.DeleteRows(self.selRow, 1, True)
+        
+        if evt.GetId() >= 3: # Show parameter values/interpolation times
+            self.objects[self.selRow].setShowInterp(evt.GetId() - 3)
+            self.putObjectAttrOnCells(self.objects[self.selRow], self.selRow)
+
         for i, obj in enumerate(self.objects):
             obj.setId(i)
 
@@ -585,6 +672,16 @@ class SoundFileGrid(gridlib.Grid):
 
     def getSoundFileObjects(self):
         return self.objects
+        
+    def getSelectedSoundFile(self):
+        if self.selRow == -1 or self.selRow >= len(self.objects):
+            return None
+        else:
+            return self.objects[self.selRow]
+
+    def refresh(self):
+        for i in range(len(self.objects)):
+            self.putObjectAttrOnCells(self.objects[i], i)
 
 class SoundFilePanel(wx.Panel):
     def __init__(self, parent):
@@ -644,3 +741,13 @@ class SoundFilePanel(wx.Panel):
 
     def getSoundFileObjects(self):
         return self.grid.getSoundFileObjects()
+
+    def setGlobalInterpTime(self, value, allcues, allsnds):
+        if allsnds:
+            for object in self.grid.getSoundFileObjects():
+                object.setGlobalInterpTime(value, allcues)
+        else:
+            selected = self.grid.getSelectedSoundFile()
+            if selected is not None:
+                selected.setGlobalInterpTime(value, allcues)
+        self.grid.refresh()

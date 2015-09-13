@@ -11,15 +11,18 @@ class SoundFilePlayer:
         sndfolder = os.path.join(QLiveLib.getVar("projectFolder"), "sounds")        
         path = os.path.join(sndfolder, self.filename)
         self.table = SndTable(path)
-        self.gain = SigTo(0, time=0.02, init=0)
-        self.looper = Looper(self.table, mul=self.gain).stop()
+        self.transpo = SigTo(1, time=0.01, init=1)
+        self.gain = SigTo(0, time=0.01, init=0)
+        self.looper = Looper(self.table, pitch=self.transpo, mul=self.gain).stop()
         self.directout = False
         self.mixerInputId = -1
 
     def setAttributes(self, dict):
         self.looper.mode = dict[ID_COL_LOOPMODE]
-        self.looper.pitch = dict[ID_COL_TRANSPO]
+        self.transpo.value = dict[ID_COL_TRANSPO]
+        self.transpo.time = dict.get(ID_COL_TRANSPOX, 0.01)
         self.gain.value = pow(10, dict[ID_COL_GAIN] * 0.05)
+        self.gain.time = dict.get(ID_COL_GAINX, 0.01)
         self.looper.start = dict[ID_COL_STARTPOINT]
         self.looper.dur = dict[ID_COL_ENDPOINT] - dict[ID_COL_STARTPOINT]
         self.looper.xfade = dict[ID_COL_CROSSFADE]
@@ -42,9 +45,13 @@ class SoundFilePlayer:
         if id == ID_COL_LOOPMODE:
             self.looper.mode = value
         elif id == ID_COL_TRANSPO:
-            self.looper.pitch = value
+            self.transpo.value = value
+        elif id == ID_COL_TRANSPOX:
+            self.transpo.time = value
         elif id == ID_COL_GAIN:
             self.gain.value = pow(10, value * 0.05)
+        elif id == ID_COL_GAINX:
+            self.gain.time = value
         elif id == ID_COL_STARTPOINT:
             self.looper.start = value
         elif id == ID_COL_ENDPOINT:

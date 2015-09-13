@@ -28,7 +28,7 @@ interpolation window). **done** (just give nothing to playFunction and editFunct
 
 Automation Panel Design
 =======================
-Need to design the possible couplings (add, mul, jit, avg, ...)
+Need to design the possible couplings (add, mul, avg, ...)
 ---------------------------------------------------------------
 [ ] BPF
 
@@ -38,6 +38,8 @@ Need to design the possible couplings (add, mul, jit, avg, ...)
 
 [ ] ENVELOPE FOLLOWER
 
+                                    Active : []
+                    
     -- Input Selection ----------------
         1   2   3   4   5   6   7   8
         

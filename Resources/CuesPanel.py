@@ -25,14 +25,14 @@ class InterpTimeFrame(wx.Frame):
                                        wx.RA_SPECIFY_COLS | wx.NO_BORDER)
         upSizer.Add(self.cueButton, 0, wx.BOTTOM|wx.LEFT|wx.RIGHT, 5)
 
-        sampleList = ["Current Track", "All Tracks"]
+        sampleList = ["Current Track", "All Tracks", "Not Applied to Tracks"]
         self.trackButton = wx.RadioBox(panel, -1, "", 
                                        wx.DefaultPosition,
                                        wx.DefaultSize, sampleList, 1, 
                                        wx.RA_SPECIFY_COLS | wx.NO_BORDER)
         upSizer.Add(self.trackButton, 0, wx.BOTTOM|wx.LEFT|wx.RIGHT, 5)
 
-        sampleList = ["Current Soundfile", "All Soundfiles"]
+        sampleList = ["Current Soundfile", "All Soundfiles", "Not Applied to Soundfiles"]
         self.sndButton = wx.RadioBox(panel, -1, "", 
                                        wx.DefaultPosition,
                                        wx.DefaultSize, sampleList, 1, 
@@ -45,7 +45,7 @@ class InterpTimeFrame(wx.Frame):
         self.knob.SetFocus()
         sizer.Add(self.knob, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.BOTTOM, 10)
         
-        sizer.Add(wx.StaticLine(panel, size=(360,1)), 0, wx.LEFT|wx.RIGHT|wx.TOP, 4)
+        sizer.Add(wx.StaticLine(panel, size=(360,1)), 0, wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, 4)
 
         applyButton = wx.Button(panel, -1, label="Apply")
         applyButton.Bind(wx.EVT_BUTTON, self.onApply)
@@ -57,14 +57,14 @@ class InterpTimeFrame(wx.Frame):
 
         panel.SetSizerAndFit(sizer)
         psize = panel.GetSize()
-        self.SetSize((psize[0]+5, psize[1]+35))
+        self.SetSize((psize[0]+5, psize[1]+40))
 
         self.Show()
 
     def onApply(self, evt):
         cue = self.cueButton.GetSelection() # 0 = current, 1 = all
-        track = self.trackButton.GetSelection() # 0 = current, 1 = all
-        snd = self.sndButton.GetSelection() # 0 = current, 1 = all
+        track = self.trackButton.GetSelection() # 0 = current, 1 = all, 2 = none
+        snd = self.sndButton.GetSelection() # 0 = current, 1 = all = 2 = none
         value = self.knob.GetValue() # interpolation time in secs
         if self.callback is not None:
             self.callback(cue, track, snd, value)

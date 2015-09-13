@@ -25,7 +25,7 @@ def toLog(t, v1, v2):
 def toExp(t, v1, v2):
     return math.pow(10, t * (math.log10(v2) - math.log10(v1)) + math.log10(v1))
 
-POWOFTWO = {2:1, 4:2, 8:3, 16:4, 32:5, 64:6, 128:7, 256:8, 512:9, 1024:10, 
+POWOFTWO = {2:1, 4:2, 8:3, 16:4, 32:5, 64:6, 128:7, 256:8, 512:9, 1024:10,
             2048:11, 4096:12, 8192:13, 16384:14, 32768:15, 65536:16}
 def powOfTwo(x):
     return 2**x
@@ -34,14 +34,14 @@ def powOfTwoToInt(x):
     return POWOFTWO[x]
 
 class QLiveControlKnob(wx.Panel):
-    def __init__(self, parent, minvalue, maxvalue, init=None, pos=(0,0), 
-                 size=(50,85), log=False, outFunction=None, integer=False, 
-                 backColour=None, label='', playFunction=None, 
+    def __init__(self, parent, minvalue, maxvalue, init=None, pos=(0,0),
+                 size=(50,85), log=False, outFunction=None, integer=False,
+                 backColour=None, label='', playFunction=None,
                  editFunction=None, outOnShiftFunction=None):
-        wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY, pos=pos, 
+        wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY, pos=pos,
                           size=size, style=wx.NO_BORDER|wx.WANTS_CHARS)
         self.parent = parent
-        self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)  
+        self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
         self.SetBackgroundColour(BACKGROUND_COLOUR)
         self.outFunction = outFunction
         self.playFunction = playFunction
@@ -70,10 +70,10 @@ class QLiveControlKnob(wx.Panel):
         self.colours = {0: "#000000", 1: "#FF0000", 2: "#00FF00"}
         if backColour: self.backColour = backColour
         else: self.backColour = CONTROLSLIDER_BACK_COLOUR
-        if init != None: 
+        if init != None:
             self.SetValue(init)
             self.init = init
-        else: 
+        else:
             self.SetValue(minvalue)
             self.init = minvalue
         self.Bind(wx.EVT_LEFT_DOWN, self.MouseDown)
@@ -111,8 +111,8 @@ class QLiveControlKnob(wx.Panel):
 
     def getLog(self):
         return self.log
-        
-    def SetRange(self, minvalue, maxvalue):   
+
+    def SetRange(self, minvalue, maxvalue):
         self.minvalue = minvalue
         self.maxvalue = maxvalue
 
@@ -216,7 +216,7 @@ class QLiveControlKnob(wx.Panel):
             w, h = self.GetSize()
             pos = event.GetPosition()
             reclab = wx.Rect(3, 60, w-3, 10)
-            recpt = wx.Rect(self.knobPointPos[0]-3, 
+            recpt = wx.Rect(self.knobPointPos[0]-3,
                             self.knobPointPos[1]-3, 9, 9)
             if reclab.Contains(pos):
                 self.selected = True
@@ -233,7 +233,7 @@ class QLiveControlKnob(wx.Panel):
                 offX = pos[0] - self.clickPos[0]
                 off = offY + offX
                 off *= 0.005 * (self.maxvalue - self.minvalue)
-                self.value = clamp(self.oldValue + off, self.minvalue, 
+                self.value = clamp(self.oldValue + off, self.minvalue,
                                    self.maxvalue)
                 # Send value
                 if self.outFunction:
@@ -267,7 +267,8 @@ class QLiveControlKnob(wx.Panel):
         gc.SetPen(wx.Pen("#777777", width=self.borderWidth, style=wx.SOLID))
         gc.DrawRoundedRectangle(0, 0, w-1, h-1, 3)
 
-        dc.SetFont(wx.Font(9, wx.ROMAN, wx.NORMAL, wx.NORMAL, face=FONT_FACE))
+        dc.SetFont(wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
+                           wx.FONTWEIGHT_NORMAL, face=FONT_FACE))
         dc.SetTextForeground(CONTROLSLIDER_TEXT_COLOUR)
 
         # Draw text label
@@ -278,7 +279,7 @@ class QLiveControlKnob(wx.Panel):
 
         if self.selected:
             gc.SetBrush(wx.Brush(CONTROLSLIDER_SELECTED_COLOUR, wx.SOLID))
-            gc.SetPen(wx.Pen(CONTROLSLIDER_SELECTED_COLOUR, self.borderWidth))  
+            gc.SetPen(wx.Pen(CONTROLSLIDER_SELECTED_COLOUR, self.borderWidth))
             gc.DrawRoundedRectangle(2, 55, w-4, 12, 2)
 
         r = math.sqrt(.1)
@@ -294,16 +295,16 @@ class QLiveControlKnob(wx.Panel):
         gc.StrokeLine(25, 35, X+25, Y+35)
 
         if not self.midiLearn:
-            dc.SetFont(wx.Font(CONTROLSLIDER_FONT-1, wx.FONTFAMILY_DEFAULT, 
-                               wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 
-                               face=FONT_FACE))    
-            dc.DrawLabel(self.midictlLabel, wx.Rect(2, 12, 40, 40), 
+            dc.SetFont(wx.Font(CONTROLSLIDER_FONT-1, wx.FONTFAMILY_DEFAULT,
+                               wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL,
+                               face=FONT_FACE))
+            dc.DrawLabel(self.midictlLabel, wx.Rect(2, 12, 40, 40),
                          wx.ALIGN_CENTER)
         else:
             dc.DrawLabel("?...", wx.Rect(2, 12, 40, 40), wx.ALIGN_CENTER)
 
-        dc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT, 
-                           wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 
+        dc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT,
+                           wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL,
                            face=FONT_FACE))
         # Draw text value
         if self.selected and self.new:
@@ -329,8 +330,8 @@ class QLiveControlKnob(wx.Panel):
             tri = [(8,70), (8,80), (16,75), (8, 70)]
             gc.DrawLines(tri)
 
-            gc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT, 
-                               wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 
+            gc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT,
+                               wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL,
                                face=FONT_FACE))
             if self.autoEdit:
                 gc.SetPen(wx.Pen("#333333", 1.5))
@@ -342,7 +343,63 @@ class QLiveControlKnob(wx.Panel):
             gc.DrawText("e", 35, 69)
 
         evt.Skip()
-       
+
+class NumericCtrl(wx.TextCtrl):
+    def __init__(self, parent, id=-1, value=0, interp=0.01,
+                 pos=wx.DefaultPosition, size=wx.DefaultSize,
+                 style=wx.TE_PROCESS_ENTER):
+        wx.TextCtrl.__init__(self, parent, id, pos=pos, size=size, style=style)
+        self.value = value
+        self.interp = interp
+        self.previous_value = ""
+        self.previous_interp = ""
+        self.previous = ""
+        self.mode = 0
+        self.SetValue(str(value))
+        self.Bind(wx.EVT_TEXT, self.filter)
+        self.Bind(wx.EVT_KEY_DOWN, self.apply)
+        self.Bind(wx.EVT_KILL_FOCUS, self.output)
+
+    def filter(self, evt):
+        value = self.GetValue().strip()
+        # numeric check
+        if value.count(".") > 1 or value.count("-") > 1:
+            self.ChangeValue(self.previous)
+        elif value and all(x in '0123456789.-' for x in value):
+            self.previous = value
+            if self.mode == 0:
+                self.value = float(value)
+            else:
+                self.interp = float(value)
+        else:
+            self.ChangeValue(self.previous)
+
+    def output(self, evt):
+        if self.mode == 0:
+            print self.value
+        else:
+            print self.interp
+
+    def apply(self, evt):
+        keycode = evt.GetKeyCode()
+        if keycode == wx.WXK_RETURN or keycode == wx.WXK_NUMPAD_ENTER or keycode == wx.WXK_TAB:
+            self.Navigate()
+        else:
+            evt.Skip()
+
+    def changeMode(self, x):
+        if x == self.mode:
+            return
+        self.mode = x
+        if x == 0:
+            self.previous_interp = self.previous
+            self.ChangeValue(str(self.value))
+            self.previous = self.previous_value
+        else:
+            self.previous_value = self.previous
+            self.ChangeValue(str(self.interp))
+            self.previous = self.previous_interp
+
 class TransportButtons(wx.Panel):
     def __init__(self, parent, playCallback=None, recordCallback=None):
         super(TransportButtons, self).__init__(parent)
@@ -355,7 +412,7 @@ class TransportButtons(wx.Panel):
         self.playPressedIcon = wx.Bitmap(ICON_PLAY_PRESSED, wx.BITMAP_TYPE_PNG)
         self.recordIcon = wx.Bitmap(ICON_RECORD, wx.BITMAP_TYPE_PNG)
         self.recordPressedIcon = wx.Bitmap(ICON_RECORD_PRESSED, wx.BITMAP_TYPE_PNG)
-        
+
         self.play = wx.BitmapButton(self, wx.ID_ANY, self.playIcon)
         self.play.SetToolTip(QLiveTooltip('Play / Stop'))
         self.play.Bind(wx.EVT_BUTTON, self.onPlay)
@@ -363,7 +420,7 @@ class TransportButtons(wx.Panel):
         self.record = wx.BitmapButton(self, wx.ID_ANY, self.recordIcon)
         self.record.SetToolTip(QLiveTooltip('Record'))
         self.record.Bind(wx.EVT_BUTTON, self.onRecord)
-        
+
         box = wx.BoxSizer(wx.HORIZONTAL)
         box.Add(self.play, 0, wx.ALIGN_CENTER|wx.TOP|wx.BOTTOM, 5)
         box.Add(self.record, 0, wx.ALIGN_CENTER|wx.TOP|wx.BOTTOM, 5)
@@ -399,7 +456,7 @@ class CueButton(wx.Panel):
         self.SetBackgroundColour(CUEBUTTON_UNSELECTED_COLOUR)
         self.learning = False
         self.midinote = None
-        self.labtext = stattext.GenStaticText(self, -1, label="", 
+        self.labtext = stattext.GenStaticText(self, -1, label="",
                                               style=wx.ALIGN_CENTER)
         self.labtext.SetBackgroundColour(CUEBUTTON_UNSELECTED_COLOUR)
         self.evtHandler = evtHandler
@@ -431,7 +488,7 @@ class CueButton(wx.Panel):
             self.learning = True
             self.SetBackgroundColour(MIDILEARN_COLOUR)
             self.labtext.SetBackgroundColour(MIDILEARN_COLOUR)
-            midi.noteonscan(self.getMidiScan)            
+            midi.noteonscan(self.getMidiScan)
 
     def assignMidi(self, num):
         self.midinote = num
@@ -443,10 +500,10 @@ class CueButton(wx.Panel):
             self.assignMidi(num)
         self.learning = False
         self.select(0)
- 
+
     def midi(self, pitch, vel):
         self.evtHandler(self.getNumber())
-        
+
     def OnLeftDown(self, evt):
         self.evtHandler(self.getNumber())
 
@@ -483,8 +540,8 @@ class CueButton(wx.Panel):
         self.setNumber(dict["number"])
 
 class MeterControlSlider(wx.Panel):
-    def __init__(self, parent, minvalue, maxvalue, init=None, pos=(0,0), 
-                 size=(28,150), outFunction=None, outLinValue=False, 
+    def __init__(self, parent, minvalue, maxvalue, init=None, pos=(0,0),
+                 size=(28,150), outFunction=None, outLinValue=False,
                  backColour=None):
         wx.Panel.__init__(self, parent, id=wx.ID_ANY, pos=pos, size=size,
                             style=wx.NO_BORDER | wx.WANTS_CHARS | wx.EXPAND)
@@ -541,10 +598,10 @@ class MeterControlSlider(wx.Panel):
         self.Bind(wx.EVT_KILL_FOCUS, self.LooseFocus)
 
         if sys.platform in ['win32', 'linux2']:
-            self.font = wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.NORMAL, 
+            self.font = wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
                                 wx.FONTWEIGHT_BOLD, face="Monospace")
         else:
-            self.font = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.NORMAL, 
+            self.font = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
                                 wx.FONTWEIGHT_NORMAL, face="Monospace")
 
     def createKnobBitmap(self):
@@ -785,7 +842,7 @@ class MeterControlSlider(wx.Panel):
 
         dc.SetFont(self.font)
         dc.SetTextForeground('#000000')
-        dc.DrawLabel(self.label, self.textrect, 
+        dc.DrawLabel(self.label, self.textrect,
                      wx.ALIGN_LEFT|wx.ALIGN_CENTER_VERTICAL)
 
         if self.midiBackgroundColour:
@@ -814,7 +871,7 @@ class MeterControlSlider(wx.Panel):
         dc.SetBrush(self.greybrush)
         dc.DrawRectangle(11, 0, self.meterWidth, h-self.meterOffset+1)
         if self.meterHeight > 0:
-            dc.SetClippingRegion(11, h-self.meterHeight, 
+            dc.SetClippingRegion(11, h-self.meterHeight,
                                  self.meterWidth, self.meterHeight)
             dc.DrawBitmap(self.bitmap, 11, 0)
             dc.DestroyClippingRegion()
@@ -840,7 +897,7 @@ if __name__ == "__main__":
             wx.Frame.__init__(self, None)
             panel = wx.Panel(self)
             panel.SetBackgroundColour(BACKGROUND_COLOUR)
-            knob = QLiveControlKnob(panel, 20, 20000, 1000, pos=(20,20), 
+            knob = QLiveControlKnob(panel, 20, 20000, 1000, pos=(20,20),
                                     label="Freq", outFunction = self.callback)
             self.Show()
 

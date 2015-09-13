@@ -55,6 +55,7 @@ INTERP_TIME_ID = 2900
 VIEW_CUE_WINDOW_ID = 3000
 LINK_STEREO_ID = 4000
 KEY_EVENT_FIRST_ID = 10000 # keep at least 100 ids from this one
+AUTOMATION_PANEL_FIRST_ID = 10100 # keep at least 15 ids from this one
 
 # Cue IDs
 CUE_TYPE_SELECT = 0
@@ -73,6 +74,8 @@ ID_COL_STARTPOINT = 6
 ID_COL_ENDPOINT = 7
 ID_COL_CROSSFADE = 8
 ID_COL_CHANNEL = 9
+ID_COL_TRANSPOX = 10
+ID_COL_GAINX = 11
 
 LABELS = ["Filename", "Loop Mode", "Transpo", "Gain (dB)", "Playing", 
           "Output", "Start Sec", "End Sec", "Xfade (%)", "Out Chan"]
