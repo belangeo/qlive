@@ -25,6 +25,12 @@ FX_DICT = { "None": {"ctrls": []},
                                         DRYWET_DEF
                                     ]
                         },
+            "Bandpass": {"ctrls":   [   FREQ_DEF,
+                                        Q_DEF,
+                                        GAIN_DEF,
+                                        DRYWET_DEF
+                                    ]
+                        },
             "Freeverb": {"ctrls":   [   ["size", 0.5, 0, 1, "", False],
                                         ["damp", 0.5, 0, 1, "", False],
                                         GAIN_DEF,
@@ -81,7 +87,7 @@ FX_DICT = { "None": {"ctrls": []},
           }
 
 # Effects ordered names
-FX_LIST = ["None", "Lowpass", "Highpass", "Freeverb", "StereoVerb", "Disto",
+FX_LIST = ["None", "Lowpass", "Highpass", "Bandpass", "Freeverb", "StereoVerb", "Disto",
            "Delay", "Compressor", "FreqShift", "Harmonizer", "Panning", "AudioOut"]
 
 # Input defintions

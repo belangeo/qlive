@@ -76,6 +76,8 @@ ID_COL_CROSSFADE = 8
 ID_COL_CHANNEL = 9
 ID_COL_TRANSPOX = 10
 ID_COL_GAINX = 11
+ID_TRANSPO_AUTO = 12
+ID_GAIN_AUTO = 13
 
 LABELS = ["Filename", "Loop Mode", "Transpo", "Gain (dB)", "Playing", 
           "Output", "Start Sec", "End Sec", "Xfade (%)", "Out Chan"]
@@ -83,6 +85,21 @@ COLSIZES = [150, 100, 70, 70, 70, 70, 80, 80, 80, 80]
 LOOPMODES = ["No Loop", "Forward", "Backward", "Back-and-Forth"]
 PLAYING = ["Stop", "Play", "Through"]
 
+# Automation IDs and constants
+ID_AUTO_MIX_METHOD = 0
+
+ID_ENV_ACTIVE = 1
+ID_ENV_INPUTS = 2
+ID_ENV_INPUT_INTERP = 3
+ID_ENV_THRESHOLD = 4
+ID_ENV_THRESHOLD_INTERP = 5
+ID_ENV_CUTOFF = 6
+ID_ENV_CUTOFF_INTERP = 7
+ID_ENV_MIN = 8
+ID_ENV_MIN_INTERP = 9
+ID_ENV_MAX = 10
+ID_ENV_MAX_INTERP = 11
+ 
 # GUI Constants
 BUTTON_WIDTH = 80
 BUTTON_HEIGHT = 25

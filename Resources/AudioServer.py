@@ -123,6 +123,13 @@ class FxHighpass(BaseAudioObject):
         self.process = Interp(self.input, self.filter, self.dryWet)
         self.output = Sig(self.process)
 
+class FxBandpass(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)        
+        self.filter = Biquadx(self.input, freq=self.freq, q=self.Q, type=2, stages=2, mul=self.gain)
+        self.process = Interp(self.input, self.filter, self.dryWet)
+        self.output = Sig(self.process)
+
 class FxFreeverb(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)        
@@ -187,7 +194,7 @@ class FxAudioOut(BaseAudioObject):
         self.output = Sig(self.process, mul=self.gain)
 
 AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn, "Lowpass": FxLowpass,
-                "Highpass": FxHighpass, "Freeverb": FxFreeverb, 
+                "Highpass": FxHighpass, "Bandpass": FxBandpass, "Freeverb": FxFreeverb, 
                 "StereoVerb": FxStereoVerb, "Disto": FxDisto, "Delay": FxDelay, 
                 "Compressor": FxCompressor, "FreqShift": FxFreqShift,
                 "Harmonizer": FxHarmonizer, "Panning": FxPanning, "AudioOut": FxAudioOut}

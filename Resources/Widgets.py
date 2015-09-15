@@ -347,7 +347,7 @@ class QLiveControlKnob(wx.Panel):
 class NumericCtrl(wx.TextCtrl):
     def __init__(self, parent, id=-1, value=0, interp=0.01,
                  pos=wx.DefaultPosition, size=wx.DefaultSize,
-                 style=wx.TE_PROCESS_ENTER):
+                 callback=None, style=wx.TE_PROCESS_ENTER):
         wx.TextCtrl.__init__(self, parent, id, pos=pos, size=size, style=style)
         self.value = value
         self.interp = interp
@@ -355,6 +355,7 @@ class NumericCtrl(wx.TextCtrl):
         self.previous_interp = ""
         self.previous = ""
         self.mode = 0
+        self.callback = callback
         self.SetValue(str(value))
         self.Bind(wx.EVT_TEXT, self.filter)
         self.Bind(wx.EVT_KEY_DOWN, self.apply)
@@ -367,18 +368,20 @@ class NumericCtrl(wx.TextCtrl):
             self.ChangeValue(self.previous)
         elif value and all(x in '0123456789.-' for x in value):
             self.previous = value
+            try:
+                tmp = float(value)
+            except:
+                tmp = 0
             if self.mode == 0:
-                self.value = float(value)
+                self.value = tmp
             else:
-                self.interp = float(value)
+                self.interp = tmp
         else:
             self.ChangeValue(self.previous)
 
     def output(self, evt):
-        if self.mode == 0:
-            print self.value
-        else:
-            print self.interp
+        if self.callback is not None:
+            self.callback(self.value, self.interp)
 
     def apply(self, evt):
         keycode = evt.GetKeyCode()
@@ -387,6 +390,14 @@ class NumericCtrl(wx.TextCtrl):
         else:
             evt.Skip()
 
+    def setValues(self, value, interp):
+        self.value = value
+        self.interp = interp
+        if self.mode == 0:
+            self.ChangeValue(str(self.value))
+        else:
+            self.ChangeValue(str(self.interp))
+        
     def changeMode(self, x):
         if x == self.mode:
             return

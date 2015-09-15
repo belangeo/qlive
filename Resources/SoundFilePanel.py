@@ -35,6 +35,8 @@ class SoundFileObject:
         self.showInterp = 0
         
         self.playerRef = None
+        self.transpoAutoWindow = None
+        self.gainAutoWindow = None
 
         self.currentCue = 0
         self.cues = {}
