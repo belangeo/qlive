@@ -11,7 +11,6 @@ class AudioChannel:
         self.ampOut = PeakAmp(self.output)
 
     def mute(self, muted):
-        print muted
         if muted:
             self.gain.mul = 0
         else:
