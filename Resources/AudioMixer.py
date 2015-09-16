@@ -6,10 +6,17 @@ from constants import *
 class AudioChannel:
     def __init__(self, input=0):
         self.input = Sig(input)
-        self.gain = SigTo(1, init=1)
+        self.gain = SigTo(1, time=0.001, init=1, mul=0)
         self.output = Sig(self.input, mul=self.gain)
         self.ampOut = PeakAmp(self.output)
 
+    def mute(self, muted):
+        print muted
+        if muted:
+            self.gain.mul = 0
+        else:
+            self.gain.mul = 1
+            
     def setInput(self, input):
         self.input.setValue(input)
         
@@ -28,6 +35,7 @@ class AudioChannel:
 
 class AudioMixer:
     def __init__(self):
+        self.muted = True
         self.inChannels = [AudioChannel(Input(i)) for i in range(NUM_INPUTS)] 
         self.mixer = Mixer(outs=NUM_OUTPUTS, chnls=1)       
         self.outChannels = [AudioChannel(
@@ -44,6 +52,17 @@ class AudioMixer:
             return self.outChannels[index]
         else:
             return None
+
+    def cueEvent(self, evt):
+        mute = self.muted
+        if evt.getCurrent() == 0 and not self.muted:
+            mute = True
+        elif evt.getCurrent() > 0 and self.muted:
+            mute = False
+        if mute != self.muted:
+            self.muted = mute
+            for outChannel in self.outChannels:
+                outChannel.mute(self.muted)
 
     def addToMixer(self, voice, sig):
         mixerInputId = len(self.mixer.getKeys())

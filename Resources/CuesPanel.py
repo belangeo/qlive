@@ -284,6 +284,7 @@ class CuesPanel(scrolled.ScrolledPanel):
         if QLiveLib.getVar("MainWindow") != None:
             QLiveLib.getVar("FxTracks").cueEvent(evt)
             QLiveLib.getVar("Soundfiles").cueEvent(evt)
+            QLiveLib.getVar("AudioMixer").cueEvent(evt)
         currentCueWindow = QLiveLib.getVar("CurrentCueWindow")
         currentCueWindow.refresh(self.getCurrentCue())
 

@@ -9,11 +9,11 @@ TODO
 - Interpolations (global, track, fx, parameter) **done**
 - BPF - playback mode, window size
 - Automatic fx connection (serial, parallel), GUI conection design
-- Handling SoundFilePlayer number of channels and routing to the tracks 
-- Add a current selected soundfile
-- Add Soundfile transpo and gain attributes to cue and interpolation design.
+- Handling SoundFilePlayer number of channels and routing to the tracks **done**
+- Add a current selected soundfile **done**
+- Add Soundfile transpo and gain attributes to cue and interpolation design. **done**
 - Record functions for both the input sound and the processed sound
-- Reset cue, standby function
+- Reset cue, standby function **done**
 - Edit mode versus playing mode
 - Floating window to show current cue number **done**
 - Master effects for both input and output section
