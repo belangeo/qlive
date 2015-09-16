@@ -11,11 +11,18 @@ class SoundFilePlayer:
         sndfolder = os.path.join(QLiveLib.getVar("projectFolder"), "sounds")        
         path = os.path.join(sndfolder, self.filename)
         self.table = SndTable(path)
+        self.chnls = len(self.table)
         self.transpo = SigTo(1, time=0.01, init=1)
         self.gain = SigTo(0, time=0.01, init=0)
         self.looper = Looper(self.table, pitch=self.transpo, mul=self.gain).stop()
         self.directout = False
         self.mixerInputId = -1
+
+    def getId(self):
+        return self.id
+
+    def getChnls(self):
+        return self.chnls
 
     def setAttributes(self, dict):
         self.looper.mode = dict[ID_COL_LOOPMODE]
@@ -26,18 +33,11 @@ class SoundFilePlayer:
         self.looper.start = dict[ID_COL_STARTPOINT]
         self.looper.dur = dict[ID_COL_ENDPOINT] - dict[ID_COL_STARTPOINT]
         self.looper.xfade = dict[ID_COL_CROSSFADE]
+        self.chnl = dict[ID_COL_CHANNEL]
         if dict[ID_COL_PLAYING] == 1:
             self.looper.reset()
             self.looper.play()
-            audioMixer = QLiveLib.getVar("AudioMixer")
-            if dict[ID_COL_DIRECTOUT] and not self.directout:
-                self.directout = True
-                for i in range(len(self.looper)):
-                    chnl = (i + dict[ID_COL_CHANNEL]) % NUM_CHNLS
-                    self.mixerInputId = audioMixer.addToMixer(chnl, self.looper[i])
-            elif not dict[ID_COL_DIRECTOUT] and self.directout:
-                self.directout = False
-                audioMixer.delFromMixer(self.mixerInputId)
+            self.handleRouting(dict[ID_COL_DIRECTOUT])
         elif dict[ID_COL_PLAYING] == 0:
             self.looper.stop()
 
@@ -63,7 +63,22 @@ class SoundFilePlayer:
                 self.looper.play()
             elif value == "Stop":
                 self.looper.stop()
-        # handle ID_COL_DIRECTOUT and ID_COL_CHANNEL
+        elif id == ID_COL_DIRECTOUT:
+            self.handleRouting(value)
+        elif id == ID_COL_CHANNEL:
+            self.chnl = value
+            # TODO: automatic routing update
+
+    def handleRouting(self, state):
+        audioMixer = QLiveLib.getVar("AudioMixer")
+        if state and not self.directout:
+            self.directout = True
+            for i in range(len(self.looper)):
+                chnl = (i + self.chnl) % NUM_OUTPUTS
+                self.mixerInputId = audioMixer.addToMixer(chnl, self.looper[i])
+        elif not state and self.directout:
+            self.directout = False
+            audioMixer.delFromMixer(self.mixerInputId)
 
 class BaseAudioObject:
     def __init__(self, chnls, ctrls, values, interps):
@@ -102,6 +117,14 @@ class AudioNone(BaseAudioObject):
         self.output.value = [[0.0] * self.chnls, self.input][x]
     
 class AudioIn(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.output = Sig(self.input, mul=self.gain)
+
+    def setEnable(self, x):
+        self.output.value = [[0.0] * self.chnls, self.input][x]
+
+class SoundfileIn(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
         self.output = Sig(self.input, mul=self.gain)
@@ -193,7 +216,7 @@ class FxAudioOut(BaseAudioObject):
         self.process = self.input
         self.output = Sig(self.process, mul=self.gain)
 
-AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn, "Lowpass": FxLowpass,
+AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn, "Soundfile": SoundfileIn, "Lowpass": FxLowpass,
                 "Highpass": FxHighpass, "Bandpass": FxBandpass, "Freeverb": FxFreeverb, 
                 "StereoVerb": FxStereoVerb, "Disto": FxDisto, "Delay": FxDelay, 
                 "Compressor": FxCompressor, "FreqShift": FxFreqShift,
@@ -250,6 +273,9 @@ class AudioServer:
             self.soundfiles.append(player)
             obj.setPlayerRef(player)
 
+    def getSoundfiles(self):
+        return self.soundfiles
+        
     def createBoxObjects(self):
         tracks = QLiveLib.getVar("FxTracks").getTracks()
         for track in tracks:
@@ -263,6 +289,12 @@ class AudioServer:
                     ismulti = but.getIsMultiChannels()
                     if ismulti:
                         chnls = max(chnls, numchnls)
+                    else:
+                        chnls = 1
+                elif name == "Soundfile":
+                    id = but.getSoundfileId()
+                    if id is not None:
+                        chnls = self.soundfiles[id].getChnls()
                     else:
                         chnls = 1
                 ctrls = INPUT_DICT[name]["ctrls"]

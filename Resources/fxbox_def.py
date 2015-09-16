@@ -94,7 +94,9 @@ FX_LIST = ["None", "Lowpass", "Highpass", "Bandpass", "Freeverb", "StereoVerb", 
 INPUT_DICT = {  "None":     {"ctrls":   []},
                 "AudioIn":  {"ctrls":   [GAIN_DEF],
                              "inselect": [str(x+1) for x in range(NUM_INPUTS)]},
+                "Soundfile": {"ctrls":   [GAIN_DEF],
+                              "select": None},
              }
 
 # Input ordered names
-INPUT_LIST = ["None", "AudioIn"]
+INPUT_LIST = ["None", "AudioIn", "Soundfile"]

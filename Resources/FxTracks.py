@@ -193,6 +193,10 @@ class FxTracks(wx.ScrolledWindow):
             self.drawAndRefresh()
         evt.Skip()
 
+    def checkForDeletedSoundfile(self, id):
+        for track in self.tracks:
+            track.checkForDeletedSoundfile(id)
+
     def setTracksGlobalInterpTime(self, value, allcues, alltracks):
         if alltracks:
             for track in self.tracks:

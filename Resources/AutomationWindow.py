@@ -4,23 +4,26 @@ import QLiveLib
 from Widgets import *
 
 class AutomationWindow(wx.Frame):
-    def __init__(self, parent, title):
+    def __init__(self, parent, title, object=None):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT
         wx.Frame.__init__(self, parent, -1, title=title, style=style)
-        panel = AutomationPanel(self)
+        self.panel = AutomationPanel(self, object)
         self.Show()
 
 class AutomationPanel(wx.Panel):
-    def __init__(self, parent):
+    def __init__(self, parent, object=None):
         wx.Panel.__init__(self, parent, -1)
         cpstyle = wx.CP_DEFAULT_STYLE|wx.CP_NO_TLW_RESIZE
         self.SetBackgroundColour(BACKGROUND_COLOUR)
+
+        # parameter object reference
+        self.object = object
 
         # global attributes
         self.mixingMethod = 0
         
         # envelope follower attributes
-        self.envActive = False
+        self.envActive = 0
         self.envInputs = [0] * NUM_INPUTS
         self.envInputsInterp = 0.01
         self.envThreshold, self.envThresholdInterp = -90, 0.01

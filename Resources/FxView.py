@@ -163,6 +163,19 @@ class FxSlidersView(wx.Frame):
                 selectorSizer.Add(check, 1, wx.EXPAND|wx.ALL, 5)
             self.sizer.Add(selectorSizer, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
 
+        if self.parameters.has_key("select"):
+            self.selectedSoundfile = "None"
+            soundfiles = QLiveLib.getVar("Soundfiles").getSoundFileObjects()
+            choices = ["None"] + [str(snd.getId()+1) for snd in soundfiles]
+            popupSizer = wx.BoxSizer(wx.HORIZONTAL)
+            popupTitle = wx.StaticText(self.panel, -1, "Choose a Soundfile:")
+            popupSizer.Add(popupTitle, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
+            self.soundfilesPopup = wx.Choice(self.panel, -1, choices=choices)
+            self.soundfilesPopup.SetSelection(0)
+            self.soundfilesPopup.Bind(wx.EVT_CHOICE, self.chooseSoundfile)
+            popupSizer.Add(self.soundfilesPopup, 0, wx.ALL, 5)
+            self.sizer.Add(popupSizer, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
+            
         # Controller box
         if self.parameters.has_key("ctrls"):
             knobSizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -194,8 +207,24 @@ class FxSlidersView(wx.Frame):
         self.frameSizer.Add(self.panel, 1, wx.EXPAND)
         self.SetSizerAndFit(self.frameSizer)
 
+        self.Bind(wx.EVT_ENTER_WINDOW, self.getFocus)
         self.SetMinSize((500, -1))
         self.SetSize((500, -1))
+
+    def getFocus(self, evt):
+        if self.parameters.has_key("select"):
+            soundfiles = QLiveLib.getVar("Soundfiles").getSoundFileObjects()
+            choices = ["None"] + [str(snd.getId()+1) for snd in soundfiles]
+            self.soundfilesPopup.SetItems(choices)
+            self.soundfilesPopup.SetStringSelection(self.selectedSoundfile)
+
+    def chooseSoundfile(self, evt):
+        self.selectedSoundfile = evt.GetEventObject().GetStringSelection()
+        self.fxbox.setSoundfile(self.selectedSoundfile)
+
+    def setSoundfile(self, snd):
+        self.selectedSoundfile = snd
+        self.soundfilesPopup.SetStringSelection(snd)
 
     def onChangeAllInterp(self, value):
         for slider in self.widgets:

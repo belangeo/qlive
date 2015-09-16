@@ -152,11 +152,11 @@ class MainWindow(wx.Frame):
         splitter = wx.SplitterWindow(self.mainPanel, 
                                      style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
         
-        self.tracks = FxTracks(splitter)
-        QLiveLib.setVar("FxTracks", self.tracks)
-
         self.soundfiles = SoundFilePanel(splitter)
         QLiveLib.setVar("Soundfiles", self.soundfiles)
+
+        self.tracks = FxTracks(splitter)
+        QLiveLib.setVar("FxTracks", self.tracks)
 
         splitter.SetMinimumPaneSize(60)
         splitter.SplitHorizontally(self.tracks, self.soundfiles, 350)
@@ -264,13 +264,13 @@ class MainWindow(wx.Frame):
             QLiveLib.setVar("projectFolder", os.path.dirname(path))
             self.newRecent(path)
         self.saveState = copy.deepcopy(dictSave)
+        if "soundfiles" in self.saveState:
+            self.soundfiles.setSaveState(self.saveState["soundfiles"])
         self.tracks.setSaveState(self.saveState["tracks"])
         self.cues.setSaveDict(self.saveState["cues"])
         self.mixer.setSaveDict(self.saveState["mixer"])
         self.controlPanel.setSaveState(self.saveState.get("control", {}))
         #self.audioServer.setSaveState(self.saveState.get("server", {}))
-        if "soundfiles" in self.saveState:
-            self.soundfiles.setSaveState(self.saveState["soundfiles"])
         linkMenuItem = self.GetMenuBar().FindItemById(LINK_STEREO_ID)
         linkMenuItem.Check(dictSave["mixer"].get("inputLinked", False))
 

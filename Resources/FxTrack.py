@@ -99,6 +99,8 @@ class FxTrack:
 
     def connectAudioMixer(self):
         audioMixer = QLiveLib.getVar("AudioMixer")
+        audioServer = QLiveLib.getVar("AudioServer")
+
         for obj in self.buttonsInputs:
             if obj.name == "AudioIn":
                 inchnls = obj.getInChannels()
@@ -108,6 +110,13 @@ class FxTrack:
                 if not ismulti:
                     channels = sum(channels)
                 obj.setInput(channels)
+            elif obj.name == "Soundfile":
+                id = obj.getSoundfileId()
+                if id is not None:
+                    source = audioServer.getSoundfiles()[id]
+                    if source:
+                        obj.setInput(source.looper)
+
         for i, obj in enumerate(self.buttonsFxs):
             if obj.name == "AudioOut":
                 chnls = len(obj.getOutput())
@@ -117,6 +126,20 @@ class FxTrack:
                     audioMixer.addToMixer(channels[j % len(channels)], 
                                           obj.getOutput()[j])
 
+    def checkForDeletedSoundfile(self, id):
+        for obj in self.buttonsInputs:
+            if obj.name == "Soundfile":
+                oid = obj.getSoundfileId()
+                if oid != "None":
+                    if oid == id:
+                        obj.setSoundfile("None")
+                        if obj.view is not None:
+                            obj.view.setSoundfile("None")
+                    elif oid > id:
+                        obj.setSoundfile(str(str(oid)))
+                        if obj.view is not None:
+                            obj.view.setSoundfile(str(oid))
+                    
     def onPaint(self, dc, buttonBitmap, disableButtonBitmap, selectedTrack):
         gc = wx.GraphicsContext_Create(dc)
 

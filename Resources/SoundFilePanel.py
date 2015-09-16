@@ -5,6 +5,7 @@ import wx.grid as gridlib
 from pyo import sndinfo
 from constants import *
 import QLiveLib
+from AutomationWindow import AutomationWindow
 
 class SoundFileObject:
     def __init__(self, id, filename, loopmode=0, transpo=1, gain=0,
@@ -17,9 +18,11 @@ class SoundFileObject:
         if info is None:
             self.valid = False
             self.duration = -1
+            self.sndchnls = -1
         else:
             self.valid = True
             self.duration = info[1]
+            self.sndchnls = info[3]
         self.loopmode = loopmode
         self.transpo = transpo
         self.gain = gain
@@ -47,6 +50,16 @@ class SoundFileObject:
             self.playerRef = None
         else:
             self.playerRef = weakref.ref(obj)
+
+    def openTranspoAutomationWindow(self):
+        parent = QLiveLib.getVar("MainWindow")
+        title = "Transpo Automations on Soundfile %d" % (self.id+1)
+        self.transpoAutoWindow = AutomationWindow(parent, title, self)
+
+    def openGainAutomationWindow(self):
+        parent = QLiveLib.getVar("MainWindow")
+        title = "Gain Automations on Soundfile %d" % (self.id+1)
+        self.gainAutoWindow = AutomationWindow(parent, title, self)
 
     def setShowInterp(self, x):
         self.showInterp = x
@@ -142,6 +155,9 @@ class SoundFileObject:
 
     def isValid(self):
         return self.valid
+
+    def getChnls(self):
+        return self.sndchnls
 
     def getId(self):
         return self.id
@@ -573,9 +589,9 @@ class SoundFileGrid(gridlib.Grid):
                 self.loadSound(os.path.basename(path))
             dlg.Destroy()
         elif self.selCol == ID_COL_TRANSPO:
-            print "open the Automation Window for transpo.", self.selRow
+            self.objects[self.selRow].openTranspoAutomationWindow()
         elif self.selCol == ID_COL_GAIN:
-            print "open the Automation Window for gain.", self.selRow
+            self.objects[self.selRow].openGainAutomationWindow()
             
         evt.Skip()
 
@@ -620,6 +636,7 @@ class SoundFileGrid(gridlib.Grid):
                 attr = self.GetOrCreateCellAttr(self.selRow, id)
                 attr.SetReadOnly(False)
         elif evt.GetId() == 2: # Delete
+            QLiveLib.getVar("FxTracks").checkForDeletedSoundfile(self.selRow)
             del self.objects[self.selRow]
             self.DeleteRows(self.selRow, 1, True)
         

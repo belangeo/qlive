@@ -77,6 +77,15 @@ class BaseFxBox(object):
     def getOutChannels(self):
         return self.outChannels
 
+    def setSoundfile(self, snd):
+        self.soundfile = snd
+
+    def getSoundfileId(self):
+        if self.soundfile == "None":
+            return None
+        else:
+            return int(self.soundfile) - 1
+
     def setId(self, id):
         self.id = id
         
@@ -103,21 +112,29 @@ class BaseFxBox(object):
 
     def select(self, evt):
         sel = self.choices[evt.GetId() - BOX_MENU_ITEM_FIRST_ID]
-        self.initModule(sel)
+        self.loadModule(sel)
         
-    def initModule(self, name):
+    def loadModule(self, name):
         self.name = name
-        self.cues = {}
+        self.initModule()
         self.createView()
         currentCue = QLiveLib.getVar("CuesPanel").getCurrentCue()
         self.addCue(currentCue)
 
+    def initModule(self):
+        self.cues = {}
+        if self.name == "AudioIn":
+            self.inChannels = [1] + [0] * (NUM_INPUTS - 1)
+            self.isMultiChannels = 0
+        if self.name == "AudioOut":
+            self.outChannels = [1] + [0] * (NUM_OUTPUTS - 1)
+        if self.name == "Soundfile":
+            self.soundfile = "None"
+        
     def createView(self):
         if self.name:
             parameters = self.module_dict[self.name]
             self.view = FxSlidersView(QLiveLib.getVar("MainWindow"), self, parameters)
-            if self.name == "AudioOut":
-                self.outChannels = [1] + [0] * (NUM_OUTPUTS - 1)
 
     def delete(self):
         if self.view is not None:
@@ -225,10 +242,13 @@ class BaseFxBox(object):
             dict["isMultiChannels"] = self.isMultiChannels
         if hasattr(self, "outChannels"):
             dict["outChannels"] = self.outChannels
+        if hasattr(self, "soundfile"):
+            dict["soundfile"] = self.soundfile
         return dict
             
     def setSaveDict(self, saveDict):
         self.name = saveDict["name"]
+        self.initModule()
         self.id = saveDict["id"]
         self.cues = saveDict["cues"]
         self.createView()
@@ -241,7 +261,9 @@ class BaseFxBox(object):
             if hasattr(self, "outChannels"):
                 self.outChannels = saveDict["outChannels"]
                 self.view.setOutChannelChecks(self.outChannels)
-            
+            if hasattr(self, "soundfile"):
+                self.soundfile = saveDict.get("soundfile", "None")
+                self.view.setSoundfile(self.soundfile)
         self.loadCue(0)
 
 class FxBox(BaseFxBox):
@@ -260,8 +282,6 @@ class InputBox(BaseFxBox):
         BaseFxBox.__init__(self, parent)
         self.module_dict = INPUT_DICT
         self.choices = INPUT_LIST
-        self.inChannels = [1] + [0] * (NUM_INPUTS - 1)
-        self.isMultiChannels = 0
 
     def getRect(self):
         x = 35
