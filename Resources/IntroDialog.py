@@ -49,13 +49,22 @@ class IntroDialog(wx.Dialog):
         sizer.Add(btnsizer, 0, 
                   wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL|wx.TOP|wx.BOTTOM, 5)
 
+        if PLATFORM == "darwin":
+            openbut.SetDefault()
+        else:
+            openbut.SetFocus()
+
         self.SetSizer(sizer)
         sizer.Fit(self)
 
     def showPath(self, path):
         w, _ = self.GetSize()
-        tw, _ = self.GetTextExtent("O")
-        n = w / (tw + 1)
+        if PLATFORM == "darwin":
+            tw, _ = self.GetTextExtent("a")
+            n = w / tw
+        else:
+            tw, _ = self.GetTextExtent("O")
+            n = w / (tw + 1)
         head = "Selected Project:\n\n"
         path = textwrap.fill(path, n) 
         self.pathtext.SetLabel(head+path)
@@ -72,7 +81,10 @@ class IntroDialog(wx.Dialog):
             self.createDir = False
             self.showPath(self.filepath)
         dlg.Destroy()
-        self.okbtn.SetFocus()
+        if PLATFORM == "darwin":
+            self.okbtn.SetDefault()
+        else:
+            self.okbtn.SetFocus()
     
     def new(self, evt):
         dlg = wx.FileDialog(self, 
@@ -85,7 +97,10 @@ class IntroDialog(wx.Dialog):
             self.createDir = True
             self.showPath(self.filepath)
         dlg.Destroy()
-        self.okbtn.SetFocus()
+        if PLATFORM == "darwin":
+            self.okbtn.SetDefault()
+        else:
+            self.okbtn.SetFocus()
 
 if __name__ == "__main__":
     class TestWindow(wx.Frame):

@@ -43,9 +43,10 @@ class SoundFileObject:
         self.transpoAutoWindow = None
         self.gainAutoWindow = None
 
-        self.currentCue = 0
         self.cues = {}
-        self.saveCue()
+        currentCue = QLiveLib.getVar("CuesPanel").getCurrentCue()
+        self.addCue(0)
+        self.addCue(currentCue)
 
     def setPlayerRef(self, obj):
         if obj is None:
