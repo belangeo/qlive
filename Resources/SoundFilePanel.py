@@ -7,8 +7,6 @@ from constants import *
 import QLiveLib
 from AutomationWindow import AutomationWindow
 
-# TODO: GridCellFloatRenderer and GridCellNumberRenderer don't accept 
-# numbers (only letters!) on OSX. The wxdemo works as expected.
 class SoundFileObject:
     def __init__(self, id, filename, loopmode=0, transpo=1, gain=0,
                  playing=0, directout=True, startpoint=0,

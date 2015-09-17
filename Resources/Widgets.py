@@ -155,6 +155,7 @@ class QLiveControlKnob(wx.Panel):
 
     def LooseFocus(self, event):
         self.selected = False
+        QLiveLib.setVar("CanProcessCueKeys", True)
         wx.CallAfter(self.Refresh)
 
     def keyDown(self, event):
@@ -185,6 +186,7 @@ class QLiveControlKnob(wx.Panel):
                         self.outFunction(self.GetValue())
                     self.new = ''
                 self.selected = False
+                QLiveLib.setVar("CanProcessCueKeys", True)
         wx.CallAfter(self.Refresh)
 
     def MouseDown(self, evt):
@@ -204,6 +206,7 @@ class QLiveControlKnob(wx.Panel):
                 self.autoEdit = not self.autoEdit
                 if self.editFunction is not None:
                     self.editFunction(self.autoEdit)
+            QLiveLib.setVar("CanProcessCueKeys", True)
             wx.CallAfter(self.Refresh)
         evt.Skip()
 
@@ -220,6 +223,7 @@ class QLiveControlKnob(wx.Panel):
                             self.knobPointPos[1]-3, 9, 9)
             if reclab.Contains(pos):
                 self.selected = True
+                QLiveLib.setVar("CanProcessCueKeys", False)
             elif recpt.Contains(pos):
                 self.mode = (self.mode+1) % 3
             wx.CallAfter(self.Refresh)

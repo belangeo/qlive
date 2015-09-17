@@ -214,6 +214,8 @@ class MainWindow(wx.Frame):
             elif evt.GetId() >= self.cue1Id and evt.GetId() <= self.cue10Id:
                 which = evt.GetId() - self.cue1Id + 1
                 cues.onCueSelection(which)
+        else:
+            evt.Skip()
 
     def createProjectFolder(self, filepath):
         fil = os.path.basename(filepath)
