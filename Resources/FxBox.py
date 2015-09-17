@@ -119,6 +119,7 @@ class BaseFxBox(object):
         self.initModule()
         self.createView()
         currentCue = QLiveLib.getVar("CuesPanel").getCurrentCue()
+        self.addCue(0)
         self.addCue(currentCue)
 
     def initModule(self):
