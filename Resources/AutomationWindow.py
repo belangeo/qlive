@@ -4,11 +4,24 @@ import QLiveLib
 from Widgets import *
 
 class AutomationWindow(wx.Frame):
-    def __init__(self, parent, title, object=None):
+    def __init__(self, parent, title, object=None, closeCallback=None):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT
         wx.Frame.__init__(self, parent, -1, title=title, style=style)
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.closeCallback = closeCallback
         self.panel = AutomationPanel(self, object)
         self.Show()
+    
+    def getAttributes(self):
+        return self.panel.getAttributes()
+
+    def setAttributes(self, dict):
+        self.panel.setAttributes(dict)
+
+    def OnClose(self, evt):
+        if self.closeCallback is not None:
+            self.closeCallback()
+        self.Destroy()
 
 class AutomationPanel(wx.Panel):
     def __init__(self, parent, object=None):
@@ -95,6 +108,7 @@ class AutomationPanel(wx.Panel):
             check.Bind(wx.EVT_CHECKBOX, self.envOnCheckInputs)
             if i == 0:
                 check.SetValue(1)
+                self.envInputs[0] = 1
             self.envChannelChecks.append(check)
             selectorSizer.Add(check, 1, wx.EXPAND|wx.ALL, 5)
 
