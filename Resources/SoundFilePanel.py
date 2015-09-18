@@ -34,6 +34,8 @@ class SoundFileObject:
         self.channel = channel
         self.transpox = 0.01
         self.gainx = 0.01
+        self.transpoDict = None
+        self.gainDict = None
 
         self.showInterp = 0
         
@@ -55,12 +57,18 @@ class SoundFileObject:
     def openTranspoAutomationWindow(self):
         parent = QLiveLib.getVar("MainWindow")
         title = "Transpo Automations on Soundfile %d" % (self.id+1)
-        self.transpoAutoWindow = AutomationWindow(parent, title, self)
+        self.transpoAutoWindow = AutomationWindow(parent, title, self, self.closeTranspoWindow)
+
+    def closeTranspoWindow(self):
+        self.transpoAutoWindow = None
 
     def openGainAutomationWindow(self):
         parent = QLiveLib.getVar("MainWindow")
         title = "Gain Automations on Soundfile %d" % (self.id+1)
-        self.gainAutoWindow = AutomationWindow(parent, title, self)
+        self.gainAutoWindow = AutomationWindow(parent, title, self, self.closeGainWindow)
+
+    def closeGainWindow(self):
+        self.gainAutoWindow = None
 
     def setShowInterp(self, x):
         self.showInterp = x
@@ -69,6 +77,14 @@ class SoundFileObject:
         return self.showInterp
 
     def getAttributes(self):
+        if self.transpoAutoWindow is not None:
+            transpoDict = self.transpoAutoWindow.getAttributes()
+        else:
+            transpoDict = None
+        if self.gainAutoWindow is not None:
+            gainDict = self.gainAutoWindow.getAttributes()
+        else:
+            gainDict = None
         return {
                 ID_COL_FILENAME: self.filename, 
                 ID_COL_LOOPMODE: self.loopmode, 
@@ -81,7 +97,9 @@ class SoundFileObject:
                 ID_COL_CROSSFADE: self.crossfade,
                 ID_COL_CHANNEL: self.channel,
                 ID_COL_TRANSPOX: self.transpox,
-                ID_COL_GAINX: self.gainx
+                ID_COL_GAINX: self.gainx,
+                ID_TRANSPO_AUTO: transpoDict,
+                ID_GAIN_AUTO: gainDict
                 }
 
     def setAttributes(self, dict):
@@ -97,7 +115,15 @@ class SoundFileObject:
         self.channel = dict[ID_COL_CHANNEL]
         self.transpox = dict.get(ID_COL_TRANSPOX, 0.01)
         self.gainx = dict.get(ID_COL_GAINX, 0.01)
-
+        self.transpoDict = dict.get(ID_TRANSPO_AUTO, None)
+        self.gainDict = dict.get(ID_GAIN_AUTO, None)
+        if self.transpoDict is not None:
+            if self.transpoAutoWindow is not None:
+                self.transpoAutoWindow.setAttributes(self.transpoDict)
+        if self.gainDict is not None:
+            if self.gainAutoWindow is not None:
+                self.gainAutoWindow.setAttributes(self.gainDict)
+            
     def copy(self, obj):
         self.setAttributes(copy.deepcopy(obj.getAttributes()))
         self.currentCue = obj.getCurrentCue()
@@ -424,6 +450,8 @@ class SoundFileGrid(gridlib.Grid):
             elif key == ID_COL_GAINX:
                 if obj.getShowInterp() == 1:
                     self.SetCellValue(row, ID_COL_GAIN, str(attrs[key]))
+            elif key in [ID_TRANSPO_AUTO, ID_GAIN_AUTO]:
+                pass
             else:
                 self.SetCellValue(row, key, str(attrs[key]))
         self.SetCellTextColour(row, ID_COL_FILENAME, self.textColour)

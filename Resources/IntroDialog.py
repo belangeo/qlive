@@ -1,4 +1,4 @@
-import wx, textwrap
+import wx, textwrap, sys
 from constants import *
 
 class IntroDialog(wx.Dialog):
@@ -6,6 +6,8 @@ class IntroDialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, wx.ID_ANY, "QLive Intro", 
                            size=wx.DefaultSize, pos=wx.DefaultPosition, 
                            style=wx.DEFAULT_DIALOG_STYLE)
+
+        self.Bind(wx.EVT_CLOSE, self.onQuit)
 
         self.filepath = ""
         self.createDir = False
@@ -42,8 +44,6 @@ class IntroDialog(wx.Dialog):
         self.okbtn = wx.Button(self, wx.ID_OK)
         btnsizer.AddButton(self.okbtn)
 
-        btn = wx.Button(self, wx.ID_CANCEL)
-        btnsizer.AddButton(btn)
         btnsizer.Realize()
 
         sizer.Add(btnsizer, 0, 
@@ -56,6 +56,10 @@ class IntroDialog(wx.Dialog):
 
         self.SetSizer(sizer)
         sizer.Fit(self)
+
+    def onQuit(self, evt):
+        self.Destroy()
+        sys.exit()
 
     def showPath(self, path):
         w, _ = self.GetSize()
