@@ -25,32 +25,24 @@ TODO
 - Designing project architecture (save file)
 - Need a mecanism to disable play/edit button on the knob (ex. for the global 
 interpolation window). **done** (just give nothing to playFunction and editFunction arguments)
+- Do we offer synthesis algorithms as input boxes?
 
-Automation Panel Design
-=======================
-Need to design the possible couplings (add, mul, avg, ...)
----------------------------------------------------------------
-[ ] BPF
+Play mode
+---------
+- No "saveCue()" before loading a new cue
+- Can't add or delete a soundfile
+- Can't add or delete a cue
+- Can't add, delete or replace an fxbox or a track
 
-[ ] LFO
+Master effects for input
+------------------------
+- EQ four bands
+- Compressor / Gate
+- DCBlock
 
-[ ] RANDOM
-
-[ ] ENVELOPE FOLLOWER
-
-                                    Active : []
-                    
-    -- Input Selection ----------------
-        1   2   3   4   5   6   7   8
-        
-    -- Input Interpolation Time : 0.01 sec.
-        
-    [] Slider Values    [] Interpolation Times
-
-        LPCUTOFF -- OUTMIN -- OUTMAX
-    
-[ ] PITCH FOLLOWER
-
-[ ] ZERO-CROSSING
-
-[ ] CENTROID
+Master effects for output
+-------------------------
+- EQ four bands
+- Compressor / Gate
+- DCBlock
+- Reverbs

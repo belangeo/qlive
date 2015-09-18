@@ -8,7 +8,7 @@ from Widgets import *
 class AutomationWindow(wx.Frame):
     def __init__(self, parent, title, object=None):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT
-        wx.Frame.__init__(self, parent, -1, title=title, style=style)
+        wx.Frame.__init__(self, parent, -1, title=title, size=(400,600), style=style)
         self.panel = AutomationPanel(self, object)
         self.Show()
 
