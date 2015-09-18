@@ -42,7 +42,6 @@ SOUNDS_PATH = os.path.join(RESOURCES_PATH, "sounds")
 NEW_FILE_PATH = os.path.join(RESOURCES_PATH, "qlive_new_file.qlp")
 
 DEBUG = True
-LOAD_DEFAULT_FILE = False
 
 NUM_CHNLS = 2
 NUM_INPUTS = 8

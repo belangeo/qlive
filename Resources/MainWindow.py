@@ -192,9 +192,6 @@ class MainWindow(wx.Frame):
                 self.createProjectFolder(filepath)
             else:
                 self.loadFile(filepath)
-        else:
-            if LOAD_DEFAULT_FILE:
-                self.loadFile(NEW_FILE_PATH)
         dlg.Destroy()
         self.Show()
 
