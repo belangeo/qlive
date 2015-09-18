@@ -3,6 +3,8 @@ from constants import *
 import QLiveLib
 from Widgets import *
 
+# TODO: Need to handle cues from keys here.
+
 class AutomationWindow(wx.Frame):
     def __init__(self, parent, title, object=None, closeCallback=None):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT

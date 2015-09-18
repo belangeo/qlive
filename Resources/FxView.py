@@ -88,19 +88,40 @@ class FxSlidersView(wx.Frame):
         self.graph_object = None
 
         tabId = wx.NewId()
-        self.prevId = wx.NewId()
-        self.nextId = wx.NewId()
         closeId = wx.NewId()
-        accel_tbl = wx.AcceleratorTable(
-                            [(wx.ACCEL_NORMAL,  wx.WXK_TAB, tabId),
-                             (wx.ACCEL_NORMAL,  wx.WXK_LEFT, self.prevId),
-                             (wx.ACCEL_NORMAL,  wx.WXK_RIGHT, self.nextId),
-                             (wx.ACCEL_CTRL, ord('W'), closeId)
-                             ])
+
+        self.prevId = KEY_EVENT_FIRST_ID
+        self.nextId = KEY_EVENT_FIRST_ID + 1
+        self.cueZeroId = KEY_EVENT_FIRST_ID + 2
+        self.cue1Id = KEY_EVENT_FIRST_ID + 3
+        self.cue2Id = KEY_EVENT_FIRST_ID + 4
+        self.cue3Id = KEY_EVENT_FIRST_ID + 5
+        self.cue4Id = KEY_EVENT_FIRST_ID + 6
+        self.cue5Id = KEY_EVENT_FIRST_ID + 7
+        self.cue6Id = KEY_EVENT_FIRST_ID + 8
+        self.cue7Id = KEY_EVENT_FIRST_ID + 9
+        self.cue8Id = KEY_EVENT_FIRST_ID + 10
+        self.cue9Id = KEY_EVENT_FIRST_ID + 11
+        self.cue10Id = KEY_EVENT_FIRST_ID + 12
+        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('W'), closeId),
+                                        (wx.ACCEL_NORMAL,  wx.WXK_TAB, tabId),
+                                        (wx.ACCEL_NORMAL,  wx.WXK_LEFT, self.prevId),
+                                        (wx.ACCEL_NORMAL,  wx.WXK_RIGHT, self.nextId),
+                                        (wx.ACCEL_NORMAL,  wx.WXK_ESCAPE, self.cueZeroId),
+                                        (wx.ACCEL_NORMAL,  ord("1"), self.cue1Id),
+                                        (wx.ACCEL_NORMAL,  ord("2"), self.cue2Id),
+                                        (wx.ACCEL_NORMAL,  ord("3"), self.cue3Id),
+                                        (wx.ACCEL_NORMAL,  ord("4"), self.cue4Id),
+                                        (wx.ACCEL_NORMAL,  ord("5"), self.cue5Id),
+                                        (wx.ACCEL_NORMAL,  ord("6"), self.cue6Id),
+                                        (wx.ACCEL_NORMAL,  ord("7"), self.cue7Id),
+                                        (wx.ACCEL_NORMAL,  ord("8"), self.cue8Id),
+                                        (wx.ACCEL_NORMAL,  ord("9"), self.cue9Id),
+                                        (wx.ACCEL_NORMAL,  ord("0"), self.cue10Id)])
         self.SetAcceleratorTable(accel_tbl)
         
         self.Bind(wx.EVT_MENU, self.onTabulate, id=tabId)
-        self.Bind(wx.EVT_MENU, self.onMoveCue, id=self.prevId, id2=self.nextId)
+        self.Bind(wx.EVT_MENU, self.onMoveCue, id=KEY_EVENT_FIRST_ID, id2=KEY_EVENT_FIRST_ID+100)
         self.Bind(wx.EVT_MENU, self.onClose, id=closeId)
         self.Bind(wx.EVT_CLOSE, self.onClose)
 
@@ -241,6 +262,13 @@ class FxSlidersView(wx.Frame):
                 cues.onCueSelection(current - 1)
             elif evt.GetId() == self.nextId:
                 cues.onCueSelection(current + 1)
+            elif evt.GetId() == self.cueZeroId:
+                cues.onCueSelection(0)
+            elif evt.GetId() >= self.cue1Id and evt.GetId() <= self.cue10Id:
+                which = evt.GetId() - self.cue1Id + 1
+                cues.onCueSelection(which)
+        else:
+            evt.Skip()
 
     def onEditButton(self, obj, state):
         gsz = self.graph.GetSize()

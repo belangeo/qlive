@@ -43,9 +43,10 @@ class SoundFileObject:
         self.transpoAutoWindow = None
         self.gainAutoWindow = None
 
-        self.currentCue = 0
         self.cues = {}
-        self.saveCue()
+        currentCue = QLiveLib.getVar("CuesPanel").getCurrentCue()
+        self.addCue(0)
+        self.addCue(currentCue)
 
     def setPlayerRef(self, obj):
         if obj is None:
@@ -422,7 +423,7 @@ class SoundFileGrid(gridlib.Grid):
         attr.SetReadOnly(True)
         self.SetAttr(row, ID_COL_CHANNEL, attr)
         rd = gridlib.GridCellNumberRenderer()
-        self.SetCellRenderer(row, ID_COL_CROSSFADE, rd)
+        self.SetCellRenderer(row, ID_COL_CHANNEL, rd)
         
         self.SetCellAlignment(row, 0, wx.ALIGN_LEFT, wx.ALIGN_CENTER)
         for i in range(1, len(LABELS)):
