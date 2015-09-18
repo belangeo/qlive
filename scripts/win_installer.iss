@@ -5,9 +5,9 @@
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{40AF40BB-C73D-46DF-A2F9-A19CCDEEF1DD}
+AppId={{A54A6BE9-9A15-49D6-B31F-4D71E2488297}
 AppName=QLive
-AppVersion=0.1
+AppVersion=0.1.0
 AppPublisher=iACT.umontreal.ca
 ; AppPublisherURL=http://ajaxsoundstudio.com/software/soundgrain
 ; AppSupportURL=http://ajaxsoundstudio.com/software/soundgrain
@@ -16,7 +16,7 @@ DefaultDirName={pf}\QLive
 DisableDirPage=yes
 DefaultGroupName=QLive
 AllowNoIcons=yes
-OutputBaseFilename=QLive_0.1_setup
+OutputBaseFilename=QLive_0.1.0_setup
 Compression=lzma
 SolidCompression=yes
 ChangesAssociations=yes
@@ -28,8 +28,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\olipet\git\QLive\QLive_Win\QLive.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\olipet\git\QLive\QLive_Win\Resources\*"; DestDir: "{app}\Resources"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\olivier\git\qlive\QLive_Win\QLive.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\olivier\git\qlive\QLive_Win\Resources\*"; DestDir: "{app}\Resources"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
