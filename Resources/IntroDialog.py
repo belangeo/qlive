@@ -42,6 +42,7 @@ class IntroDialog(wx.Dialog):
         btnsizer = wx.StdDialogButtonSizer()
 
         self.okbtn = wx.Button(self, wx.ID_OK)
+        self.okbtn.Disable()
         btnsizer.AddButton(self.okbtn)
 
         btnsizer.Realize()
@@ -84,6 +85,8 @@ class IntroDialog(wx.Dialog):
             self.filepath = dlg.GetPath()
             self.createDir = False
             self.showPath(self.filepath)
+            if self.filepath != "":
+                self.okbtn.Enable()
         dlg.Destroy()
         if PLATFORM == "darwin":
             self.okbtn.SetDefault()
@@ -100,6 +103,8 @@ class IntroDialog(wx.Dialog):
             self.filepath = dlg.GetPath()
             self.createDir = True
             self.showPath(self.filepath)
+            if self.filepath != "":
+                self.okbtn.Enable()
         dlg.Destroy()
         if PLATFORM == "darwin":
             self.okbtn.SetDefault()
