@@ -27,7 +27,7 @@ Meeting on 18/09/2015
     - default interpolation time option for future cues
     - overwrite option for interpolation time
     - add symbols to make it more intuitive
-    - push 'play' to the first column in soundfiles panel
+    - push 'play' to the first column in soundfiles panel **done**
     - replace play/record with a toggle
     - all available effects should be there for Master input/output
     - classer les effets par categorie (filtres, delay, reverb...)
