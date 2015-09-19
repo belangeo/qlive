@@ -22,7 +22,7 @@ Meeting on 18/09/2015
     - **urgent** set input/output devices from preferences panel
     - autoremove config/project file if not valid
     - fix: replacing a new project with same name doesn't work
-    - no more clicks pop-up for loading sounds -> single dialog
+    - no more clicks pop-up for loading sounds -> single dialog **done**
     - MIDI learn for each effect
     - default interpolation time option for future cues
     - overwrite option for interpolation time

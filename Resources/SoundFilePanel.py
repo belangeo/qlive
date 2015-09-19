@@ -575,15 +575,14 @@ class SoundFileGrid(gridlib.Grid):
             self.OnCellRightClick(evt)
         self.selRow, self.selCol = evt.GetRow(), evt.GetCol()
         if self.selCol == ID_COL_FILENAME:
-            menu = wx.Menu("Soundfiles")
-            self.snds = sorted([f for f in os.listdir(sndfolder)])
-            i = 0
-            for i, snd in enumerate(self.snds):
-                menu.Append(i+1, snd)
-            menu.Bind(wx.EVT_MENU, self.selectSound, id=1, id2=i+1)
-            if self.snds != []: # do not show an empty menu
-                self.PopupMenu(menu, evt.GetPosition())
-            menu.Destroy()
+            dlg = wx.FileDialog(self, 
+                                "Open Soundfile...", os.path.expanduser("~"), 
+                                "", AUDIO_FILE_WILDCARD, style=wx.OPEN)
+            if dlg.ShowModal() == wx.ID_OK:
+                path = dlg.GetPath()
+                self.copyToSoundsFolder(path)
+                self.loadSound(os.path.basename(path))
+            dlg.Destroy()
         if self.selRow != self.GetNumberRows() - 1:
             if self.selCol == ID_COL_LOOPMODE:
                 menu = wx.Menu("Loop Modes")
@@ -608,16 +607,7 @@ class SoundFileGrid(gridlib.Grid):
 
     def OnCellRightClick(self, evt):
         self.selRow, self.selCol = evt.GetRow(), evt.GetCol()
-        if self.selCol == ID_COL_FILENAME:
-            dlg = wx.FileDialog(self, 
-                                "Open Soundfile...", os.path.expanduser("~"), 
-                                "", AUDIO_FILE_WILDCARD, style=wx.OPEN)
-            if dlg.ShowModal() == wx.ID_OK:
-                path = dlg.GetPath()
-                self.copyToSoundsFolder(path)
-                self.loadSound(os.path.basename(path))
-            dlg.Destroy()
-        elif self.selCol == ID_COL_TRANSPO:
+        if self.selCol == ID_COL_TRANSPO:
             self.objects[self.selRow].openTranspoAutomationWindow()
         elif self.selCol == ID_COL_GAIN:
             self.objects[self.selRow].openGainAutomationWindow()
