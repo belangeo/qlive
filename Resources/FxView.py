@@ -87,8 +87,9 @@ class FxSlidersView(wx.Frame):
         self.last_enable = 1
         self.graph_object = None
 
-        tabId = wx.NewId()
         closeId = wx.NewId()
+
+        tabId = wx.NewId()
 
         self.prevId = KEY_EVENT_FIRST_ID
         self.nextId = KEY_EVENT_FIRST_ID + 1
@@ -120,8 +121,10 @@ class FxSlidersView(wx.Frame):
                                         (wx.ACCEL_NORMAL,  ord("0"), self.cue10Id)])
         self.SetAcceleratorTable(accel_tbl)
         
-        self.Bind(wx.EVT_MENU, self.onTabulate, id=tabId)
-        self.Bind(wx.EVT_MENU, self.onMoveCue, id=KEY_EVENT_FIRST_ID, id2=KEY_EVENT_FIRST_ID+100)
+        mainWin = QLiveLib.getVar("MainWindow")
+        self.Bind(wx.EVT_MENU, mainWin.onTabulate, id=tabId)
+        self.Bind(wx.EVT_MENU, mainWin.onMoveCue, id=KEY_EVENT_FIRST_ID, id2=KEY_EVENT_FIRST_ID+100)
+
         self.Bind(wx.EVT_MENU, self.onClose, id=closeId)
         self.Bind(wx.EVT_CLOSE, self.onClose)
 
@@ -250,25 +253,6 @@ class FxSlidersView(wx.Frame):
     def onChangeAllInterp(self, value):
         for slider in self.widgets:
             slider.setInterpValue(value, True)
-
-    def onTabulate(self, evt):
-        QLiveLib.getVar("FxTracks").setSelectedTrack()
-
-    def onMoveCue(self, evt):
-        if QLiveLib.getVar("CanProcessCueKeys"):
-            cues = QLiveLib.getVar("CuesPanel")
-            current = cues.getCurrentCue()
-            if evt.GetId() == self.prevId:
-                cues.onCueSelection(current - 1)
-            elif evt.GetId() == self.nextId:
-                cues.onCueSelection(current + 1)
-            elif evt.GetId() == self.cueZeroId:
-                cues.onCueSelection(0)
-            elif evt.GetId() >= self.cue1Id and evt.GetId() <= self.cue10Id:
-                which = evt.GetId() - self.cue1Id + 1
-                cues.onCueSelection(which)
-        else:
-            evt.Skip()
 
     def onEditButton(self, obj, state):
         gsz = self.graph.GetSize()

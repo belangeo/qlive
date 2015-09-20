@@ -80,12 +80,18 @@ class SoundFileObject:
         if self.transpoAutoWindow is not None:
             transpoDict = self.transpoAutoWindow.getAttributes()
         else:
-            transpoDict = None
+            if self.transpoDict is not None:
+                transpoDict = self.transpoDict
+            else:
+                transpoDict = None
         if self.gainAutoWindow is not None:
             gainDict = self.gainAutoWindow.getAttributes()
         else:
-            gainDict = None
-        return {
+            if self.gainDict is not None:
+                gainDict = self.gainDict
+            else:
+                gainDict = None
+        return copy.deepcopy({
                 ID_COL_FILENAME: self.filename, 
                 ID_COL_LOOPMODE: self.loopmode, 
                 ID_COL_TRANSPO: self.transpo, 
@@ -100,9 +106,10 @@ class SoundFileObject:
                 ID_COL_GAINX: self.gainx,
                 ID_TRANSPO_AUTO: transpoDict,
                 ID_GAIN_AUTO: gainDict
-                }
+                })
 
     def setAttributes(self, dict):
+        dict = copy.deepcopy(dict)
         self.filename = dict[ID_COL_FILENAME]
         self.loopmode = dict[ID_COL_LOOPMODE]
         self.transpo = dict[ID_COL_TRANSPO]
@@ -606,7 +613,7 @@ class SoundFileGrid(gridlib.Grid):
 
     def OnLabelRightClick(self, evt):
         row = evt.GetRow()
-        if row != -1:
+        if row != -1 and row < len(self.objects):
             actions = [("Duplicate Row", wx.ITEM_NORMAL), 
                        ("Delete Row", wx.ITEM_NORMAL), 
                        ("Show Parameter Values", wx.ITEM_RADIO), 

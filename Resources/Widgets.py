@@ -361,15 +361,27 @@ class NumericCtrl(wx.TextCtrl):
         self.mode = 0
         self.callback = callback
         self.SetValue(str(value))
+        self.Bind(wx.EVT_LEFT_DCLICK, self.doubleClick)
         self.Bind(wx.EVT_TEXT, self.filter)
         self.Bind(wx.EVT_KEY_DOWN, self.apply)
         self.Bind(wx.EVT_KILL_FOCUS, self.output)
+        self.Bind(wx.EVT_SET_FOCUS, self.onfocus)
+
+    def onfocus(self, evt):
+        QLiveLib.setVar("CanProcessCueKeys", False)
+
+    def doubleClick(self, evt):
+        self.SelectAll()
+        QLiveLib.setVar("CanProcessCueKeys", False)
 
     def filter(self, evt):
+        QLiveLib.setVar("CanProcessCueKeys", False)
         value = self.GetValue().strip()
         # numeric check
         if value.count(".") > 1 or value.count("-") > 1:
             self.ChangeValue(self.previous)
+        elif value in ["", ".", "-"]:
+            self.previous = value
         elif value and all(x in '0123456789.-' for x in value):
             self.previous = value
             try:
@@ -384,8 +396,13 @@ class NumericCtrl(wx.TextCtrl):
             self.ChangeValue(self.previous)
 
     def output(self, evt):
+        if self.previous in ["", ".", "-"]:
+            self.previous = "0"
+            self.value = 0
+            self.ChangeValue(self.previous)
         if self.callback is not None:
             self.callback(self.value, self.interp)
+        QLiveLib.setVar("CanProcessCueKeys", True)
 
     def apply(self, evt):
         keycode = evt.GetKeyCode()

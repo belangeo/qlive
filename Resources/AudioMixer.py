@@ -40,6 +40,9 @@ class AudioMixer:
         self.outChannels = [AudioChannel(
                             self.mixer[i]).out(i) for i in range(NUM_OUTPUTS)]
 
+    def getInputChannels(self):
+        return self.inChannels
+
     def getInputChannel(self, index):
         if index < len(self.inChannels):
             return self.inChannels[index]
@@ -60,6 +63,8 @@ class AudioMixer:
             mute = False
         if mute != self.muted:
             self.muted = mute
+            for inChannel in self.inChannels:
+                inChannel.mute(self.muted)
             for outChannel in self.outChannels:
                 outChannel.mute(self.muted)
 

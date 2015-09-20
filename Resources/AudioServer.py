@@ -4,6 +4,60 @@ from constants import *
 from fxbox_def import *
 import QLiveLib
 
+class Automator:
+    def __init__(self, init=0):
+        self.param = SigTo(init, 0.01, init)
+        self.server = QLiveLib.getVar("AudioServer")
+        self.mixer = QLiveLib.getVar("AudioMixer")
+        self.envInputs = [0] * NUM_INPUTS
+        self.envActive = 0
+        self.envThreshold = SigTo(-90, time=0.01, init=-90)
+        self.envCutoff = SigTo(20, time=0.01, init=20)
+        self.envMin = SigTo(0, time=0.01, init=0)
+        self.envMax = SigTo(1, time=0.01, init=1)
+        self.envInput = Gate(Sig(0), thresh=self.envThreshold)
+        self.envFol = Follower(self.envInput, freq=self.envCutoff)
+        self.env = Scale(self.envFol, 0, 1, self.envMin, self.envMax)
+        self.output = Interp(self.param, self.env, 0)
+
+    def sig(self):
+        return self.output
+
+    def setParam(self, value, time):
+        self.param.time = time
+        self.param.value = value
+
+    def setEnvAttributes(self, dict):
+        active = dict[ID_ENV_ACTIVE]
+        if active and not self.envActive:
+            self.output.interp = 1
+            # start env objects
+            pass
+        elif not active and self.envActive:
+            self.output.interp = 0
+            # stop env objects
+            pass
+        self.envActive = active
+        if self.envInputs != dict[ID_ENV_INPUTS]:
+            self.envInputs = dict[ID_ENV_INPUTS]
+            new = sum([self.mixer.getInputChannel(x).getOutput() for x in self.envInputs if x == 1])
+            self.envInput.setInput(new, dict[ID_ENV_INPUTS_INTERP])
+        self.envThreshold.time = dict[ID_ENV_THRESHOLD_INTERP]
+        self.envThreshold.value = dict[ID_ENV_THRESHOLD]
+        self.envCutoff.time = dict[ID_ENV_CUTOFF_INTERP]
+        self.envCutoff.value = dict[ID_ENV_CUTOFF]
+        self.envMin.time = dict[ID_ENV_MIN_INTERP]
+        self.envMin.value = dict[ID_ENV_MIN]
+        self.envMax.time = dict[ID_ENV_MAX_INTERP]
+        self.envMax.value = dict[ID_ENV_MAX]
+
+    def setAttributes(self, dict):
+        if dict is not None:
+            envDict = dict.get("env", None)
+            if envDict is not None:
+                self.setEnvAttributes(envDict)
+                
+        
 class SoundFilePlayer:
     def __init__(self, id, filename):
         self.id = id
@@ -12,9 +66,9 @@ class SoundFilePlayer:
         path = os.path.join(sndfolder, self.filename)
         self.table = SndTable(path)
         self.chnls = len(self.table)
-        self.transpo = SigTo(1, time=0.01, init=1)
-        self.gain = SigTo(0, time=0.01, init=0)
-        self.looper = Looper(self.table, pitch=self.transpo, mul=self.gain).stop()
+        self.transpo = Automator(init=1)
+        self.gain = Automator(init=0)
+        self.looper = Looper(self.table, pitch=self.transpo.sig(), mul=self.gain.sig()).stop()
         self.directout = False
         self.mixerInputId = -1
 
@@ -26,10 +80,8 @@ class SoundFilePlayer:
 
     def setAttributes(self, dict):
         self.looper.mode = dict[ID_COL_LOOPMODE]
-        self.transpo.value = dict[ID_COL_TRANSPO]
-        self.transpo.time = dict.get(ID_COL_TRANSPOX, 0.01)
-        self.gain.value = pow(10, dict[ID_COL_GAIN] * 0.05)
-        self.gain.time = dict.get(ID_COL_GAINX, 0.01)
+        self.transpo.setParam(dict[ID_COL_TRANSPO], dict.get(ID_COL_TRANSPOX, 0.01))
+        self.gain.setParam(pow(10, dict[ID_COL_GAIN] * 0.05), dict.get(ID_COL_GAINX, 0.01))
         self.looper.start = dict[ID_COL_STARTPOINT]
         self.looper.dur = dict[ID_COL_ENDPOINT] - dict[ID_COL_STARTPOINT]
         self.looper.xfade = dict[ID_COL_CROSSFADE]
@@ -40,7 +92,12 @@ class SoundFilePlayer:
             self.handleRouting(dict[ID_COL_DIRECTOUT])
         elif dict[ID_COL_PLAYING] == 0:
             self.looper.stop()
+        if dict[ID_TRANSPO_AUTO] is not None:
+            self.transpo.setAttributes(dict[ID_TRANSPO_AUTO])
+        if dict[ID_GAIN_AUTO] is not None:
+            self.gain.setAttributes(dict[ID_GAIN_AUTO])
 
+    # TODO: Handle automator live attribute changes
     def setAttribute(self, id, value):
         if id == ID_COL_LOOPMODE:
             self.looper.mode = value

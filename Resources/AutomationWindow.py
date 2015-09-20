@@ -9,6 +9,41 @@ class AutomationWindow(wx.Frame):
     def __init__(self, parent, title, object=None, closeCallback=None):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT
         wx.Frame.__init__(self, parent, -1, title=title, size=(400,600), style=style)
+
+        closeId = wx.NewId()
+        self.prevId = KEY_EVENT_FIRST_ID
+        self.nextId = KEY_EVENT_FIRST_ID + 1
+        self.cueZeroId = KEY_EVENT_FIRST_ID + 2
+        self.cue1Id = KEY_EVENT_FIRST_ID + 3
+        self.cue2Id = KEY_EVENT_FIRST_ID + 4
+        self.cue3Id = KEY_EVENT_FIRST_ID + 5
+        self.cue4Id = KEY_EVENT_FIRST_ID + 6
+        self.cue5Id = KEY_EVENT_FIRST_ID + 7
+        self.cue6Id = KEY_EVENT_FIRST_ID + 8
+        self.cue7Id = KEY_EVENT_FIRST_ID + 9
+        self.cue8Id = KEY_EVENT_FIRST_ID + 10
+        self.cue9Id = KEY_EVENT_FIRST_ID + 11
+        self.cue10Id = KEY_EVENT_FIRST_ID + 12
+        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('W'), closeId),
+                                        (wx.ACCEL_NORMAL,  wx.WXK_LEFT, self.prevId),
+                                        (wx.ACCEL_NORMAL,  wx.WXK_RIGHT, self.nextId),
+                                        (wx.ACCEL_NORMAL,  wx.WXK_ESCAPE, self.cueZeroId),
+                                        (wx.ACCEL_NORMAL,  ord("1"), self.cue1Id),
+                                        (wx.ACCEL_NORMAL,  ord("2"), self.cue2Id),
+                                        (wx.ACCEL_NORMAL,  ord("3"), self.cue3Id),
+                                        (wx.ACCEL_NORMAL,  ord("4"), self.cue4Id),
+                                        (wx.ACCEL_NORMAL,  ord("5"), self.cue5Id),
+                                        (wx.ACCEL_NORMAL,  ord("6"), self.cue6Id),
+                                        (wx.ACCEL_NORMAL,  ord("7"), self.cue7Id),
+                                        (wx.ACCEL_NORMAL,  ord("8"), self.cue8Id),
+                                        (wx.ACCEL_NORMAL,  ord("9"), self.cue9Id),
+                                        (wx.ACCEL_NORMAL,  ord("0"), self.cue10Id)])
+        self.SetAcceleratorTable(accel_tbl)
+        
+        mainWin = QLiveLib.getVar("MainWindow")
+        self.Bind(wx.EVT_MENU, mainWin.onMoveCue, id=KEY_EVENT_FIRST_ID, id2=KEY_EVENT_FIRST_ID+100)
+
+        self.Bind(wx.EVT_MENU, self.OnClose, id=closeId)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.closeCallback = closeCallback
         self.panel = AutomationPanel(self, object)
@@ -118,7 +153,9 @@ class AutomationPanel(wx.Panel):
         self.envInInterpSpin = wx.SpinCtrlDouble(panel, value='0.010', min=INTERPTIME_MIN, 
                                             max=INTERPTIME_MAX, inc=0.001, size=(100,-1))
         self.envInInterpSpin.SetDigits(3)
-        self.Bind(wx.EVT_SPINCTRLDOUBLE, self.envOnInputsInterp, self.envInInterpSpin)
+        self.envInInterpSpin.Bind(wx.EVT_SPINCTRLDOUBLE, self.envOnInputsInterp)
+        self.envInInterpSpin.Bind(wx.EVT_KILL_FOCUS, self.loosefocus) # TODO: weird behaviour in interact with cues.
+        self.envInInterpSpin.Bind(wx.EVT_SET_FOCUS, self.onfocus)
         interpSizer = wx.BoxSizer(wx.HORIZONTAL)
         interpSizer.Add(interpLabel, -1, wx.LEFT|wx.RIGHT|wx.ALIGN_CENTER_VERTICAL, 5)
         interpSizer.Add(self.envInInterpSpin)
@@ -153,6 +190,12 @@ class AutomationPanel(wx.Panel):
         sizer.Add(knobSizer, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
         panel.SetSizer(sizer)
 
+    def onfocus(self, evt):
+        QLiveLib.setVar("CanProcessCueKeys", False)
+
+    def loosefocus(self, evt):
+        QLiveLib.setVar("CanProcessCueKeys", True)
+
     def envOnActivate(self, evt):
         self.envActive = evt.GetInt()
 
@@ -164,6 +207,7 @@ class AutomationPanel(wx.Panel):
 
     def envOnInputsInterp(self, evt):
         self.envInputsInterp = self.envInInterpSpin.GetValue()
+        QLiveLib.setVar("CanProcessCueKeys", True)
 
     def envOnThresh(self, value, interp):
         self.envThreshold, self.envThresholdInterp = value, interp
