@@ -31,11 +31,15 @@ QLiveVariables['availableMidiInputIndexes'] = []
 PREFS_TO_SAVE = {"useTooltips": False,
                  "audio":       "portaudio",
                  "sr":          "44100",
-                 "duplex":      "1",
-                 "nchnls":      "2",
+                 "duplex":      1,
+                 "nchnls":      2,
                  "inchnls":     None,
                  "jackname":    "qlive",
-                 "bufferSize":  "64"
+                 "bufferSize":  "64",
+                 "audioOutput": 0,
+                 "audioInput": 0,
+                 "defaultFirstInput": 0,
+                 "defaultFirstOutput": 0
                 }
 
 def readQLivePrefsFromFile():
