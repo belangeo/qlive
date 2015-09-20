@@ -101,11 +101,9 @@ class ControlPanel(wx.Panel):
         self.learnButton = None
         self.midiBindings = {}
 
-        server = QLiveLib.getVar("AudioServer")
-        self.buttons = TransportButtons(self, 
-                                        playCallback=server.start,
-                                        recordCallback=server.record)
-        self.mainSizer.Add(self.buttons, 0, wx.ALIGN_CENTER_HORIZONTAL)
+        self.audioButton = wx.ToggleButton(self, -1, label="Start Audio")
+        self.audioButton.Bind(wx.EVT_TOGGLEBUTTON, self.onAudioButton)
+        self.mainSizer.Add(self.audioButton, 0, wx.ALL, 5)
 
         self.mainSizer.Add(wx.StaticLine(self, size=(1, 1)), 0, 
                            wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, 5)        
@@ -147,6 +145,11 @@ class ControlPanel(wx.Panel):
                            wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, 5)
 
         self.SetSizerAndFit(self.mainSizer)
+
+    def onAudioButton(self, evt):
+        server = QLiveLib.getVar("AudioServer")
+        server.start(evt.GetInt())
+        self.audioButton.SetLabel(["Start Audio", "Stop Audio"][evt.GetInt()])
 
     def onDelCue(self, evt):
         QLiveLib.getVar("CuesPanel").onDelCue()

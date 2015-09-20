@@ -22,13 +22,13 @@ Meeting on 18/09/2015
     - **urgent** set input/output devices from preferences panel
     - autoremove config/project file if not valid
     - fix: replacing a new project with same name doesn't work
-    - no more clicks pop-up for loading sounds -> single dialog
+    - no more clicks pop-up for loading sounds -> single dialog **done**
     - MIDI learn for each effect
     - default interpolation time option for future cues
     - overwrite option for interpolation time
     - add symbols to make it more intuitive
-    - push 'play' to the first column in soundfiles panel
-    - replace play/record with a toggle
+    - push 'play' to the first column in soundfiles panel **done**
+    - replace play/record with a toggle **done**
     - all available effects should be there for Master input/output
     - classer les effets par categorie (filtres, delay, reverb...)
         - regarder dans fxbox_def, doit être modifié pour ça

@@ -327,7 +327,6 @@ class SoundFileGrid(gridlib.Grid):
         self.Bind(gridlib.EVT_GRID_EDITOR_HIDDEN, self.OnCellEditorHidden)
         self.Bind(gridlib.EVT_GRID_EDITOR_SHOWN, self.OnCellEditorShown)
         self.Bind(gridlib.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
-        self.Bind(gridlib.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
         self.Bind(gridlib.EVT_GRID_LABEL_LEFT_CLICK, self.OnLabelLeftClick)
         self.Bind(gridlib.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         self.GetGridWindow().Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
@@ -568,22 +567,16 @@ class SoundFileGrid(gridlib.Grid):
         QLiveLib.setVar("CanProcessCueKeys", False)
 
     def OnCellLeftClick(self, evt):
-        # TODO: check and warning here...
-        sndfolder = os.path.join(QLiveLib.getVar("projectFolder"), "sounds")
-        self.snds = sorted([f for f in os.listdir(sndfolder)])
-        if self.snds == []:
-            self.OnCellRightClick(evt)
         self.selRow, self.selCol = evt.GetRow(), evt.GetCol()
         if self.selCol == ID_COL_FILENAME:
-            menu = wx.Menu("Soundfiles")
-            self.snds = sorted([f for f in os.listdir(sndfolder)])
-            i = 0
-            for i, snd in enumerate(self.snds):
-                menu.Append(i+1, snd)
-            menu.Bind(wx.EVT_MENU, self.selectSound, id=1, id2=i+1)
-            if self.snds != []: # do not show an empty menu
-                self.PopupMenu(menu, evt.GetPosition())
-            menu.Destroy()
+            dlg = wx.FileDialog(self, 
+                                "Open Soundfile...", os.path.expanduser("~"), 
+                                "", AUDIO_FILE_WILDCARD, style=wx.OPEN)
+            if dlg.ShowModal() == wx.ID_OK:
+                path = dlg.GetPath()
+                self.copyToSoundsFolder(path)
+                self.loadSound(os.path.basename(path))
+            dlg.Destroy()
         if self.selRow != self.GetNumberRows() - 1:
             if self.selCol == ID_COL_LOOPMODE:
                 menu = wx.Menu("Loop Modes")
@@ -606,24 +599,6 @@ class SoundFileGrid(gridlib.Grid):
                 self.SetCellValue(self.selRow, self.selCol, str(val))
         evt.Skip()
 
-    def OnCellRightClick(self, evt):
-        self.selRow, self.selCol = evt.GetRow(), evt.GetCol()
-        if self.selCol == ID_COL_FILENAME:
-            dlg = wx.FileDialog(self, 
-                                "Open Soundfile...", os.path.expanduser("~"), 
-                                "", AUDIO_FILE_WILDCARD, style=wx.OPEN)
-            if dlg.ShowModal() == wx.ID_OK:
-                path = dlg.GetPath()
-                self.copyToSoundsFolder(path)
-                self.loadSound(os.path.basename(path))
-            dlg.Destroy()
-        elif self.selCol == ID_COL_TRANSPO:
-            self.objects[self.selRow].openTranspoAutomationWindow()
-        elif self.selCol == ID_COL_GAIN:
-            self.objects[self.selRow].openGainAutomationWindow()
-            
-        evt.Skip()
-
     def OnLabelLeftClick(self, evt):
         if evt.GetRow() < len(self.objects):
             self.selRow = evt.GetRow()
@@ -635,12 +610,14 @@ class SoundFileGrid(gridlib.Grid):
             actions = [("Duplicate Row", wx.ITEM_NORMAL), 
                        ("Delete Row", wx.ITEM_NORMAL), 
                        ("Show Parameter Values", wx.ITEM_RADIO), 
-                       ("Show Interpolation Times", wx.ITEM_RADIO)]
+                       ("Show Interpolation Times", wx.ITEM_RADIO),
+                       ("Show Automations for Transpo Parameter", wx.ITEM_NORMAL),
+                       ("Show Automations for Gain Parameter", wx.ITEM_NORMAL)]
             self.selRow = row
             menu = wx.Menu()
             for i, act in enumerate(actions):
                 menu.Append(i+1, act[0], kind=act[1])
-                if i == 1:
+                if i in [1, 3]:
                     menu.AppendSeparator()
             menu.Check(self.objects[self.selRow].getShowInterp()+3, True)
 
@@ -669,10 +646,15 @@ class SoundFileGrid(gridlib.Grid):
             del self.objects[self.selRow]
             self.DeleteRows(self.selRow, 1, True)
         
-        if evt.GetId() >= 3: # Show parameter values/interpolation times
+        if evt.GetId() in [3, 4]: # Show parameter values/interpolation times
             self.objects[self.selRow].setShowInterp(evt.GetId() - 3)
             self.putObjectAttrOnCells(self.objects[self.selRow], self.selRow)
-
+        
+        if evt.GetId() == 5:
+            self.objects[self.selRow].openTranspoAutomationWindow()
+        elif evt.GetId() == 6:
+            self.objects[self.selRow].openGainAutomationWindow()
+            
         for i, obj in enumerate(self.objects):
             obj.setId(i)
 
