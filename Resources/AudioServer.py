@@ -6,9 +6,12 @@ import QLiveLib
 
 class Automator:
     def __init__(self, init=0):
-        self.param = SigTo(init, 0.01, init)
+        # Globals
         self.server = QLiveLib.getVar("AudioServer")
         self.mixer = QLiveLib.getVar("AudioMixer")
+        # Main value
+        self.param = SigTo(init, 0.01, init)
+        # Envelope follower signal chain
         self.envInputs = [0] * NUM_INPUTS
         self.envActive = 0
         self.envThreshold = SigTo(-90, time=0.01, init=-90)
@@ -18,6 +21,9 @@ class Automator:
         self.envInput = Gate(Sig(0), thresh=self.envThreshold)
         self.envFol = Follower(self.envInput, freq=self.envCutoff)
         self.env = Scale(self.envFol, 0, 1, self.envMin, self.envMax)
+        self.envStop()
+        
+        # Main output (TODO: handling mixing method)
         self.output = Interp(self.param, self.env, 0)
 
     def sig(self):
@@ -27,19 +33,36 @@ class Automator:
         self.param.time = time
         self.param.value = value
 
+    def envPlay(self):
+        self.envThreshold.play()
+        self.envCutoff.play()
+        self.envMin.play()
+        self.envMax.play()
+        self.envInput.play()
+        self.envFol.play()
+        self.env.play()
+
+    def envStop(self):
+        self.envThreshold.stop()
+        self.envCutoff.stop()
+        self.envMin.stop()
+        self.envMax.stop()
+        self.envInput.stop()
+        self.envFol.stop()
+        self.env.stop()
+
     def setEnvAttributes(self, dict):
         active = dict[ID_ENV_ACTIVE]
         if active and not self.envActive:
             self.output.interp = 1
-            # start env objects
-            pass
+            self.envPlay()
         elif not active and self.envActive:
             self.output.interp = 0
-            # stop env objects
-            pass
+            self.envStop()
         self.envActive = active
         if self.envInputs != dict[ID_ENV_INPUTS]:
             self.envInputs = dict[ID_ENV_INPUTS]
+            # TODO: Use Mix object instead of summation?
             new = sum([self.mixer.getInputChannel(x).getOutput() for x in self.envInputs if x == 1])
             self.envInput.setInput(new, dict[ID_ENV_INPUTS_INTERP])
         self.envThreshold.time = dict[ID_ENV_THRESHOLD_INTERP]
@@ -97,7 +120,7 @@ class SoundFilePlayer:
         if dict[ID_GAIN_AUTO] is not None:
             self.gain.setAttributes(dict[ID_GAIN_AUTO])
 
-    # TODO: Handle automator live attribute changes
+    # TODO: Handling automator live attribute changes
     def setAttribute(self, id, value):
         if id == ID_COL_LOOPMODE:
             self.looper.mode = value
@@ -124,7 +147,7 @@ class SoundFilePlayer:
             self.handleRouting(value)
         elif id == ID_COL_CHANNEL:
             self.chnl = value
-            # TODO: automatic routing update
+            # TODO: automatic channel routing update
 
     def handleRouting(self, state):
         audioMixer = QLiveLib.getVar("AudioMixer")

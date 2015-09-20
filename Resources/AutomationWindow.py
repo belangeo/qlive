@@ -4,11 +4,12 @@ import QLiveLib
 from Widgets import *
 
 # TODO: Need to handle cues from keys here.
+# TODO: Should be opened with current cue values, if any...
 
 class AutomationWindow(wx.Frame):
     def __init__(self, parent, title, object=None, closeCallback=None):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT
-        wx.Frame.__init__(self, parent, -1, title=title, size=(400,600), style=style)
+        wx.Frame.__init__(self, parent, -1, title=title, size=(450,600), style=style)
 
         closeId = wx.NewId()
         self.prevId = KEY_EVENT_FIRST_ID
@@ -86,10 +87,16 @@ class AutomationPanel(wx.Panel):
         title.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, 
                               wx.FONTWEIGHT_BOLD))
 
+        methodChoices = ["Addition to the main value", 
+                         "Multiplying the main value", 
+                         "Average with the main value",
+                         "Added and replace main value",
+                         "Times and replace main value",
+                         "Average and replace main value"]
         headSizer = wx.BoxSizer(wx.HORIZONTAL)
         headSizer.AddStretchSpacer(1)
         methodLabel = wx.StaticText(self, -1, label="Multiple Automations Mixing Method:")
-        self.method = wx.Choice(self, -1, choices=["Addition", "Multiplication", "Average"])
+        self.method = wx.Choice(self, -1, choices=methodChoices)
         self.method.SetSelection(0)
         self.method.Bind(wx.EVT_CHOICE, self.changeMixingMethod)
         headSizer.Add(methodLabel, 0, wx.RIGHT|wx.TOP, 5)
