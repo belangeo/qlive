@@ -346,6 +346,7 @@ class AudioServer:
             self.audioObjects = []
             QLiveLib.getVar("CuesPanel").onSaveCue()
 
+    # TODO: recording should be handled within the mixer panel.
     def record(self, state):
         if state:
             self.recording = True
