@@ -226,8 +226,9 @@ class AudioServer:
     def __init__(self):
         sr, bufferSize, audio, jackname, nchnls, inchnls, duplex, outdev, indev, firstin, firstout = self.getPrefs()
         self.server = Server(sr=sr, buffersize=bufferSize, audio=audio, jackname=jackname, nchnls=nchnls, duplex=duplex)
+        print self.getPrefs()
         if inchnls != None:
-            self.server.setIchnls(int(inchnls))
+            self.server.setIchnls(inchnls)
         self.server.deactivateMidi()
         self.soundfiles = []
         self.audioObjects = []
@@ -235,9 +236,8 @@ class AudioServer:
         self.server.setOutputDevice(outdev)
         self.server.setInputOffset(firstin)
         self.server.setOutputOffset(firstout)
-        if QLiveLib.getVar("enableAudioInput"):
+        if QLiveLib.getVar("duplex"):
             self.server.setInputDevice(indev)
-#        print outdev, indev, firstin, firstout
         self.server.boot()
 
     def getPrefs(self):
@@ -245,9 +245,9 @@ class AudioServer:
         bufferSize = int(QLiveLib.getVar("bufferSize"))
         audio = QLiveLib.getVar("audio")
         jackname = QLiveLib.getVar("jackname")
-        nchnls = int(QLiveLib.getVar("nchnls"))
+        nchnls = QLiveLib.getVar("nchnls")
         inchnls = QLiveLib.getVar("inchnls")
-        duplex = int(QLiveLib.getVar("duplex"))
+        duplex = QLiveLib.getVar("duplex")
         outdev = QLiveLib.getVar("audioOutput")
         indev = QLiveLib.getVar("audioInput")
         firstin = QLiveLib.getVar("defaultFirstInput")
