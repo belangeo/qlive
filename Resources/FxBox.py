@@ -164,19 +164,16 @@ class BaseFxBox(object):
             self.setEnable(params["enable"])
 
     def getCurrentValues(self):
-        if not self.cues:
-            return None
-        else:
-            if self.cues[self.currentCue] is not None and self.currentCue in self.cues:
+        if self.cues:
+            if self.currentCue in self.cues:
                 return self.cues[self.currentCue]["values"]
-            else:
-                return None
+        return None
 
     def getCurrentInterps(self):
-        if self.cues[self.currentCue] is not None:
-            return self.cues[self.currentCue]["interps"]
-        else:
-            return None
+        if self.cues:
+            if self.currentCue in self.cues:
+                return self.cues[self.currentCue]["interps"]
+        return None
 
     def setGlobalInterpTime(self, value, allcues):
         if self.view is None:
