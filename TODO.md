@@ -21,6 +21,7 @@ Meeting on 18/09/2015
 ---------------------
     - **urgent** set input/output devices from preferences panel
     - autoremove config/project file if not valid
+        - Need a sanity function to check loaded prefs...
     - fix: replacing a new project with same name doesn't work
     - no more clicks pop-up for loading sounds -> single dialog **done**
     - MIDI learn for each effect

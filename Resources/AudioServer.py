@@ -306,7 +306,6 @@ class AudioServer:
     def __init__(self):
         sr, bufferSize, audio, jackname, nchnls, inchnls, duplex, outdev, indev, firstin, firstout = self.getPrefs()
         self.server = Server(sr=sr, buffersize=bufferSize, audio=audio, jackname=jackname, nchnls=nchnls, duplex=duplex)
-        print self.getPrefs()
         if inchnls != None:
             self.server.setIchnls(inchnls)
         self.server.deactivateMidi()
@@ -332,6 +331,11 @@ class AudioServer:
         indev = QLiveLib.getVar("audioInput")
         firstin = QLiveLib.getVar("defaultFirstInput")
         firstout = QLiveLib.getVar("defaultFirstOutput")
+        _, inIndexes, defInput, _, outIndexes, defOutput, _, _, _ = self.getAvailableAudioMidiDrivers()
+        if indev not in inIndexes:
+            indev = defInput
+        if outdev not in outIndexes:
+            outdev = defOutput
         return sr, bufferSize, audio, jackname, nchnls, inchnls, duplex, outdev, indev, firstin, firstout
 
     def getAvailableAudioMidiDrivers(self):
