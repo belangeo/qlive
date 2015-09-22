@@ -24,7 +24,7 @@ Meeting on 18/09/2015
         - Need a sanity function to check loaded prefs...
     - fix: replacing a new project with same name doesn't work **done**
     - no more clicks pop-up for loading sounds -> single dialog **done**
-    - MIDI learn for each effect
+    - MIDI learn for each effect **done**
     - default interpolation time option for future cues
     - overwrite option for interpolation time
     - add symbols to make it more intuitive
