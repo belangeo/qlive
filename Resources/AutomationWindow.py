@@ -3,7 +3,6 @@ from constants import *
 import QLiveLib
 from Widgets import *
 
-# TODO: Need to handle cues from keys here.
 # TODO: Should be opened with current cue values, if any...
 
 class AutomationWindow(wx.Frame):
@@ -157,15 +156,10 @@ class AutomationPanel(wx.Panel):
             selectorSizer.Add(check, 1, wx.EXPAND|wx.ALL, 5)
 
         interpLabel = wx.StaticText(panel, -1, label="Input Interpolation Time in Seconds: ")
-        self.envInInterpSpin = wx.SpinCtrlDouble(panel, value='0.010', min=INTERPTIME_MIN, 
-                                            max=INTERPTIME_MAX, inc=0.001, size=(100,-1))
-        self.envInInterpSpin.SetDigits(3)
-        self.envInInterpSpin.Bind(wx.EVT_SPINCTRLDOUBLE, self.envOnInputsInterp)
-        self.envInInterpSpin.Bind(wx.EVT_KILL_FOCUS, self.loosefocus) # TODO: weird behaviour in interact with cues.
-        self.envInInterpSpin.Bind(wx.EVT_SET_FOCUS, self.onfocus)
+        self.envInInterpCtrl = NumericCtrl(panel, value=0.01, interp=0, size=(80, -1), callback=self.envOnInputsInterp)
         interpSizer = wx.BoxSizer(wx.HORIZONTAL)
         interpSizer.Add(interpLabel, -1, wx.LEFT|wx.RIGHT|wx.ALIGN_CENTER_VERTICAL, 5)
-        interpSizer.Add(self.envInInterpSpin)
+        interpSizer.Add(self.envInInterpCtrl)
 
         sampleList = ["Parameter Values", "Interpolation Times"]
         interpButton = wx.RadioBox(panel, -1, "", 
@@ -197,12 +191,6 @@ class AutomationPanel(wx.Panel):
         sizer.Add(knobSizer, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
         panel.SetSizer(sizer)
 
-    def onfocus(self, evt):
-        QLiveLib.setVar("CanProcessCueKeys", False)
-
-    def loosefocus(self, evt):
-        QLiveLib.setVar("CanProcessCueKeys", True)
-
     def envOnActivate(self, evt):
         self.envActive = evt.GetInt()
 
@@ -212,8 +200,8 @@ class AutomationPanel(wx.Panel):
         which = int(obj.GetLabel()) - 1
         self.envInputs[which] = state
 
-    def envOnInputsInterp(self, evt):
-        self.envInputsInterp = self.envInInterpSpin.GetValue()
+    def envOnInputsInterp(self, value, interp):
+        self.envInputsInterp = value
         QLiveLib.setVar("CanProcessCueKeys", True)
 
     def envOnThresh(self, value, interp):
@@ -263,7 +251,7 @@ class AutomationPanel(wx.Panel):
         self.envActiveCheck.SetValue(self.envActive)
         for i in range(NUM_INPUTS):
             self.envChannelChecks[i].SetValue(self.envInputs[i])
-        self.envInInterpSpin.SetValue(self.envInputsInterp)
+        self.envInInterpCtrl.setValues(self.envInputsInterp, 0)
         self.envWidgets[0].setValues(self.envThreshold, self.envThresholdInterp)
         self.envWidgets[1].setValues(self.envCutoff, self.envCutoffInterp)
         self.envWidgets[2].setValues(self.envMin, self.envMinInterp)
