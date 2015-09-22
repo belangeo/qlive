@@ -320,6 +320,11 @@ class AudioServer:
         self.server.boot()
 
     def getPrefs(self):
+        audioOutputs = QLiveLib.getVar("availableAudioOutputs")
+        audioInputs = QLiveLib.getVar("availableAudioInputs")
+        outputIndexes = QLiveLib.getVar("availableAudioOutputIndexes")
+        inputIndexes = QLiveLib.getVar("availableAudioInputIndexes")
+
         sr = int(QLiveLib.getVar("sr"))
         bufferSize = int(QLiveLib.getVar("bufferSize"))
         audio = QLiveLib.getVar("audio")
@@ -327,29 +332,11 @@ class AudioServer:
         nchnls = QLiveLib.getVar("nchnls")
         inchnls = QLiveLib.getVar("inchnls")
         duplex = QLiveLib.getVar("duplex")
-        outdev = QLiveLib.getVar("audioOutput")
-        indev = QLiveLib.getVar("audioInput")
+        outdev = outputIndexes[audioOutputs.index(QLiveLib.getVar("audioOutput"))]
+        indev = inputIndexes[audioInputs.index(QLiveLib.getVar("audioInput"))]
         firstin = QLiveLib.getVar("defaultFirstInput")
         firstout = QLiveLib.getVar("defaultFirstOutput")
-        _, inIndexes, defInput, _, outIndexes, defOutput, _, _, _ = self.getAvailableAudioMidiDrivers()
-        if indev not in inIndexes:
-            indev = defInput
-        if outdev not in outIndexes:
-            outdev = defOutput
         return sr, bufferSize, audio, jackname, nchnls, inchnls, duplex, outdev, indev, firstin, firstout
-
-    def getAvailableAudioMidiDrivers(self):
-        inputDriverList, inputDriverIndexes = pa_get_input_devices()
-        defaultInputDriver = inputDriverList[inputDriverIndexes.index(pa_get_default_input())]
-        outputDriverList, outputDriverIndexes = pa_get_output_devices()
-        defaultOutputDriver = outputDriverList[outputDriverIndexes.index(pa_get_default_output())]
-        midiDriverList, midiDriverIndexes = pm_get_input_devices()
-        if midiDriverList == []:
-            defaultMidiDriver = ""
-        else:
-            defaultMidiDriver = midiDriverList[midiDriverIndexes.index(pm_get_default_input())]
-        return inputDriverList, inputDriverIndexes, defaultInputDriver, outputDriverList, outputDriverIndexes, \
-                defaultOutputDriver, midiDriverList, midiDriverIndexes, defaultMidiDriver
 
     def getSaveState(self):
         return {}

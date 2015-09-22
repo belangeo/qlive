@@ -40,13 +40,7 @@ class AudioPrefsTab(wx.Panel):
         availableAudioIns = []
         for d in QLiveLib.getVar("availableAudioInputs"):
             availableAudioIns.append(QLiveLib.ensureNFD(d))
-        try:
-            initInput = availableAudioIns[QLiveLib.getVar("availableAudioInputIndexes").index(QLiveLib.getVar("audioInput"))]
-        except:
-            if len(availableAudioIns) >= 1:
-                initInput = availableAudioIns[0]
-            else:
-                initInput = ''
+        initInput = QLiveLib.ensureNFD(QLiveLib.getVar("audioInput"))
         self.inputDeviceCB = wx.ComboBox(self, -1, initInput, wx.DefaultPosition,
                          wx.DefaultSize, availableAudioIns, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
         self.inputDeviceCB.Bind(wx.EVT_COMBOBOX, self.setInputDevice, self.inputDeviceCB)
@@ -56,13 +50,7 @@ class AudioPrefsTab(wx.Panel):
         availableAudioOuts = []
         for d in QLiveLib.getVar("availableAudioOutputs"):
             availableAudioOuts.append(QLiveLib.ensureNFD(d))
-        try:
-            initOutput = availableAudioOuts[QLiveLib.getVar("availableAudioOutputIndexes").index(QLiveLib.getVar("audioOutput"))]
-        except:
-            if len(availableAudioOuts) >= 1:
-                initOutput = availableAudioOuts[0]
-            else:
-                initOutput = ''
+        initOutput = QLiveLib.ensureNFD(QLiveLib.getVar("audioOutput"))
         self.outputDeviceCB = wx.ComboBox(self, -1, initOutput, wx.DefaultPosition,
                          wx.DefaultSize, availableAudioOuts, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
         self.outputDeviceCB.Bind(wx.EVT_COMBOBOX, self.setOutputDevice, self.outputDeviceCB)
@@ -147,12 +135,14 @@ class AudioPrefsTab(wx.Panel):
         self.EnableDisablePortaudioOpts()
 
     def setInputDevice(self, evt):
-        inputIndexes = QLiveLib.getVar("availableAudioInputIndexes")
-        QLiveLib.setVar("audioInput", inputIndexes[QLiveLib.getVar("availableAudioInputs").index(evt.GetString())])
+        #inputIndexes = QLiveLib.getVar("availableAudioInputIndexes")
+        #QLiveLib.setVar("audioInput", inputIndexes[QLiveLib.getVar("availableAudioInputs").index(evt.GetString())])
+        QLiveLib.setVar("audioInput", evt.GetString())
 
     def setOutputDevice(self, evt):
-        outputIndexes = QLiveLib.getVar("availableAudioOutputIndexes")
-        QLiveLib.setVar("audioOutput", outputIndexes[QLiveLib.getVar("availableAudioOutputs").index(evt.GetString())])
+        #outputIndexes = QLiveLib.getVar("availableAudioOutputIndexes")
+        #QLiveLib.setVar("audioOutput", outputIndexes[QLiveLib.getVar("availableAudioOutputs").index(evt.GetString())])
+        QLiveLib.setVar("audioOutput", evt.GetString())
 
     def setBufferSize(self, evt):
         QLiveLib.setVar("bufferSize", evt.GetString())

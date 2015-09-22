@@ -36,8 +36,8 @@ PREFS_TO_SAVE = {"useTooltips": False,
                  "inchnls":     None,
                  "jackname":    "qlive",
                  "bufferSize":  "64",
-                 "audioOutput": -1,
-                 "audioInput": -1,
+                 "audioOutput": "",
+                 "audioInput": "",
                  "defaultFirstInput": 0,
                  "defaultFirstOutput": 0
                 }

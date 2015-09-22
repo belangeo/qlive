@@ -32,13 +32,13 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_TIMER, self.updateUsage, self.timer)
         self.timer.Start(1000)
 
+        # Query & load available Audio and MIDI drivers
+        QLiveLib.queryAudioMidiDrivers()
+
         self.audioServer = AudioServer()
         QLiveLib.setVar("AudioServer", self.audioServer)
         self.midiServer = MidiServer()
         QLiveLib.setVar("MidiServer", self.midiServer)
-
-        # Query & load available Audio and MIDI drivers
-        QLiveLib.queryAudioMidiDrivers()
 
         self.saveState = None
 

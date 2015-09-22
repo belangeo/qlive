@@ -19,7 +19,7 @@ TODO
 
 Meeting on 18/09/2015
 ---------------------
-    - **urgent** set input/output devices from preferences panel
+    - **urgent** set input/output devices from preferences panel **done**
     - autoremove config/project file if not valid
         - Need a sanity function to check loaded prefs...
     - fix: replacing a new project with same name doesn't work **done**

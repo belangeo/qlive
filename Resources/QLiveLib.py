@@ -1,5 +1,19 @@
 from constants import *
 import variables as vars
+from pyo import pa_get_input_devices, pa_get_default_input, pa_get_output_devices, pa_get_default_output, pm_get_input_devices, pm_get_default_input
+
+def getAvailableAudioMidiDrivers():
+    inputDriverList, inputDriverIndexes = pa_get_input_devices()
+    defaultInputDriver = inputDriverList[inputDriverIndexes.index(pa_get_default_input())]
+    outputDriverList, outputDriverIndexes = pa_get_output_devices()
+    defaultOutputDriver = outputDriverList[outputDriverIndexes.index(pa_get_default_output())]
+    midiDriverList, midiDriverIndexes = pm_get_input_devices()
+    if midiDriverList == []:
+        defaultMidiDriver = ""
+    else:
+        defaultMidiDriver = midiDriverList[midiDriverIndexes.index(pm_get_default_input())]
+    return inputDriverList, inputDriverIndexes, defaultInputDriver, outputDriverList, outputDriverIndexes, \
+            defaultOutputDriver, midiDriverList, midiDriverIndexes, defaultMidiDriver
 
 # getter/setter for global variables defined at runtime (see variables.py)
 def getVar(var, default=None):
@@ -15,23 +29,16 @@ def loadVars():
     vars.readQLivePrefsFromFile()
 
 def queryAudioMidiDrivers():
-    inputs, inputIndexes, defaultInput, outputs, outputIndexes, defaultOutput, midiInputs, midiInputIndexes, defaultMidiInput = getVar("AudioServer").getAvailableAudioMidiDrivers()
-
+    inputs, inputIndexes, defaultInput, outputs, outputIndexes, defaultOutput, midiInputs, midiInputIndexes, defaultMidiInput = getAvailableAudioMidiDrivers()
     setVar("availableAudioOutputs",  outputs)
     setVar("availableAudioOutputIndexes",  outputIndexes)
-    if getVar("audioOutput") not in outputIndexes:
-        try:
-            setVar("audioOutput", outputIndexes[outputs.index(defaultOutput)])
-        except:
-            setVar("audioOutput", 0)
+    if getVar("audioOutput") not in outputs:
+        setVar("audioOutput", defaultOutput)
 
     setVar("availableAudioInputs", inputs)
     setVar("availableAudioInputIndexes", inputIndexes)
-    if getVar("audioInput") not in inputIndexes:
-        try:
-            setVar("audioInput", inputIndexes[inputs.index(defaultInput)])
-        except:
-            setVar("audioInput", 0)
+    if getVar("audioInput") not in inputs:
+        setVar("audioInput", defaultInput)
 
     if midiInputs == []:
         setVar("useMidi", 0)
@@ -39,11 +46,8 @@ def queryAudioMidiDrivers():
         setVar("useMidi", 1)
     setVar("availableMidiInputs", midiInputs)
     setVar("availableMidiInputIndexes", midiInputIndexes)
-    if getVar("midiDeviceIn") not in midiInputIndexes:
-        try:
-            setVar("midiDeviceIn", midiInputIndexes[midiInputs.index(defaultMidiInput)])
-        except:
-            setVar("midiDeviceIn", 0)
+    if getVar("midiDeviceIn") not in midiInputs:
+        setVar("midiDeviceIn", defaultMidiInput)
 
 # PRINT should be used instead of print function to enable/disable printing.
 def PRINT(*args):
