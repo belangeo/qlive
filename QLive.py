@@ -9,7 +9,7 @@ class QLiveApp(wx.App):
     def __init__(self, *args, **kwargs):
         wx.App.__init__(self, *args, **kwargs)
         X, Y = wx.DisplaySize()
-        sizex, sizey = 1000, 670
+        sizex, sizey = 1100, 670
         if X < 1000:
             sizex = X - 40
         if Y < 670:

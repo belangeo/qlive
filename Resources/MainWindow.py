@@ -218,11 +218,14 @@ class MainWindow(wx.Frame):
         fil = os.path.basename(filepath)
         fld = os.path.splitext(fil)[0]
         dir = os.path.dirname(filepath)
-        os.mkdir(os.path.join(dir, fld))
-        os.mkdir(os.path.join(dir, fld, "doc"))
-        os.mkdir(os.path.join(dir, fld, "sounds"))
-        os.mkdir(os.path.join(dir, fld, "bounce"))
-        flpath = os.path.join(dir, fld, fld+".qlp")
+        fldpath = os.path.join(dir, fld)
+        if os.path.isdir(fldpath):
+            shutil.rmtree(fldpath)
+        os.mkdir(fldpath)
+        os.mkdir(os.path.join(fldpath, "doc"))
+        os.mkdir(os.path.join(fldpath, "sounds"))
+        os.mkdir(os.path.join(fldpath, "bounce"))
+        flpath = os.path.join(fldpath, fld+".qlp")
         shutil.copy(NEW_FILE_PATH, flpath)
         self.loadFile(flpath)
 
