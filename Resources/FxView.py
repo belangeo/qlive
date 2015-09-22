@@ -6,11 +6,14 @@ from pyolib._wxwidgets import BACKGROUND_COLOUR, Grapher
 from Widgets import *
 import QLiveLib
 
+# TODO: should save midi assignations.
+# And disable saving / loading cues when there is a midi bindings.
 class SliderWidget(wx.Panel):
     def __init__(self, parent, parameters, fxbox):
         wx.Panel.__init__(self, parent)
         self.SetBackgroundColour(BACKGROUND_COLOUR)
         self.fromUser = False
+        self.midiscanning = False
         self.parameters = parameters
         self.fxbox = fxbox
         self.name = parameters[0]
@@ -31,9 +34,46 @@ class SliderWidget(wx.Panel):
                                 backColour=CONTROLSLIDER_BACK_COLOUR_INTERP)
         self.sizer.Add(self.interpKnob, 0, wx.ALL, 5)
 
+        self.slider.Bind(wx.EVT_RIGHT_DOWN, self.MouseRightDown)
+
         self.interpKnob.Hide()
         self.SetSizer(self.sizer)
-        
+
+    def MouseRightDown(self, evt):
+        if evt.ShiftDown():
+            QLiveLib.getVar("MidiServer").unbind("ctls", self.slider.midictl, self.midi)
+            self.slider.setMidiCtl(None)
+            return
+        if not self.midiscanning:
+            self.midiscanning = True
+            QLiveLib.getVar("MidiServer").ctlscan(self.getMidiScan)
+            self.slider.setMidiLearn(True)
+        else:
+            self.midiscanning = False
+            QLiveLib.getVar("MidiServer").ctlscan(None)
+            self.slider.setMidiLearn(False)
+            
+    def getMidiScan(self, ctlnum, midichnl):
+        self.assignMidiCtl(ctlnum)
+        self.slider.setMidiLearn(False)
+
+    def assignMidiCtl(self, ctlnum):
+        self.slider.setMidiCtl(ctlnum)
+        QLiveLib.getVar("MidiServer").bind("ctls", ctlnum, self.midi)
+        self.setInterpValue(0.01, True)
+
+    def midi(self, value):
+        self.slider.SetValue(rescale(value, 0, 127, self.parameters[2], 
+                                     self.parameters[3], ylog=self.parameters[5]), 
+                            True)
+
+    def getMidiBinding(self):
+        return self.slider.midictl
+
+    def setMidiBinding(self, ctlnum):
+        if ctlnum is not None:
+            self.assignMidiCtl(ctlnum)
+
     def onEditFunction(self, state):
         self.GetParent().GetParent().onEditButton(self, state)
 

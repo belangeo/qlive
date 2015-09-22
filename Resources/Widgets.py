@@ -46,7 +46,7 @@ class QLiveControlKnob(wx.Panel):
         self.outFunction = outFunction
         self.playFunction = playFunction
         self.editFunction = editFunction
-        if self.playFunction is None and self.editFunction is None:
+        if 0: #self.playFunction is None and self.editFunction is None:
             self.drawBottomPart = False
             self.SetSize((50, 70))
         else:
@@ -64,7 +64,7 @@ class QLiveControlKnob(wx.Panel):
         self.floatPrecision = '%.3f'
         self.mode = 0
         self.midiLearn = False
-        self.midictlLabel = ""
+        self.midictl = None
         self.autoPlay = False
         self.autoEdit = False
         self.colours = {0: "#000000", 1: "#FF0000", 2: "#00FF00"}
@@ -189,6 +189,14 @@ class QLiveControlKnob(wx.Panel):
                 QLiveLib.setVar("CanProcessCueKeys", True)
         wx.CallAfter(self.Refresh)
 
+    def setMidiCtl(self, ctl):
+        self.midictl = ctl
+        wx.CallAfter(self.Refresh)
+
+    def setMidiLearn(self, state):
+        self.midiLearn = state
+        wx.CallAfter(self.Refresh)
+
     def MouseDown(self, evt):
         if self._enable:
             rec = wx.Rect(5, 13, 45, 45)
@@ -298,15 +306,6 @@ class QLiveControlKnob(wx.Panel):
         gc.DrawEllipse(25-R, 35-R, R*2, R*2)
         gc.StrokeLine(25, 35, X+25, Y+35)
 
-        if not self.midiLearn:
-            dc.SetFont(wx.Font(CONTROLSLIDER_FONT-1, wx.FONTFAMILY_DEFAULT,
-                               wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL,
-                               face=FONT_FACE))
-            dc.DrawLabel(self.midictlLabel, wx.Rect(2, 12, 40, 40),
-                         wx.ALIGN_CENTER)
-        else:
-            dc.DrawLabel("?...", wx.Rect(2, 12, 40, 40), wx.ALIGN_CENTER)
-
         dc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT,
                            wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL,
                            face=FONT_FACE))
@@ -326,25 +325,39 @@ class QLiveControlKnob(wx.Panel):
         dc.DrawLabel(val, recval, wx.ALIGN_CENTER)
 
         if self.drawBottomPart:
-            if self.autoPlay:
-                gc.SetBrush(wx.Brush("#55DD55"))
-            else:
-                gc.SetBrush(wx.Brush("#333333", wx.TRANSPARENT))
-            gc.SetPen(wx.Pen("#333333", 1.5))
-            tri = [(8,70), (8,80), (16,75), (8, 70)]
-            gc.DrawLines(tri)
 
-            gc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT,
+            dc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT,
                                wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL,
                                face=FONT_FACE))
-            if self.autoEdit:
-                gc.SetPen(wx.Pen("#333333", 1.5))
-                gc.SetBrush(wx.Brush("#DD5555"))
+            if self.midiLearn:
+                gc.SetPen(wx.Pen(MIDILEARN_COLOUR, 1))
+                gc.SetBrush(wx.Brush(MIDILEARN_COLOUR))
+                gc.DrawRoundedRectangle(3, 70, 43, 11, 2)
+            if self.midictl is not None:
+                dc.DrawLabel("M : %d" % self.midictl, wx.Rect(5, 72, 41, 11),
+                             wx.ALIGN_CENTER_VERTICAL)
             else:
-                gc.SetPen(wx.Pen("#333333", 1.5))
-                gc.SetBrush(wx.Brush("#333333", wx.TRANSPARENT))
-            gc.DrawRoundedRectangle(32, 70, 10, 10, 2)
-            gc.DrawText("e", 35, 69)
+                dc.DrawLabel("M : ?", wx.Rect(5, 72, 41, 11), wx.ALIGN_CENTER_VERTICAL)
+
+#            if self.autoPlay:
+#                gc.SetBrush(wx.Brush("#55DD55"))
+#            else:
+#                gc.SetBrush(wx.Brush("#333333", wx.TRANSPARENT))
+#            gc.SetPen(wx.Pen("#333333", 1.5))
+#            tri = [(8,70), (8,80), (16,75), (8, 70)]
+#            gc.DrawLines(tri)
+
+#            gc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT,
+#                               wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL,
+#                               face=FONT_FACE))
+#            if self.autoEdit:
+#                gc.SetPen(wx.Pen("#333333", 1.5))
+#                gc.SetBrush(wx.Brush("#DD5555"))
+#            else:
+#                gc.SetPen(wx.Pen("#333333", 1.5))
+#                gc.SetBrush(wx.Brush("#333333", wx.TRANSPARENT))
+#            gc.DrawRoundedRectangle(32, 70, 10, 10, 2)
+#            gc.DrawText("e", 35, 69)
 
         evt.Skip()
 

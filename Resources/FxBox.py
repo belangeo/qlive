@@ -159,8 +159,9 @@ class BaseFxBox(object):
             values = params["values"]
             inters = params["interps"]
             for i, widget in enumerate(widgets):
-                widget.setInterpValue(inters[i], propagate=True)
-                widget.setValue(values[i], propagate=True)
+                if widget.getMidiBinding() is None:
+                    widget.setInterpValue(inters[i], propagate=True)
+                    widget.setValue(values[i], propagate=True)
             self.setEnable(params["enable"])
 
     def getCurrentValues(self):
@@ -237,6 +238,8 @@ class BaseFxBox(object):
         dict = {'name': self.name,
                 'id': self.id,
                 'cues': self.cues}
+        midi = [widget.getMidiBinding() for widget in self.view.getWidgets()]
+        dict["midiBindings"] = midi
         if hasattr(self, "inChannels"):
             dict["inChannels"] = self.inChannels
             dict["isMultiChannels"] = self.isMultiChannels
@@ -253,6 +256,9 @@ class BaseFxBox(object):
         self.cues = saveDict["cues"]
         self.createView()
         if self.view is not None:
+            midi = saveDict.get("midiBindings", None)
+            if midi is not None:
+                [widget.setMidiBinding(midi[i]) for i, widget in enumerate(self.view.getWidgets())]
             if hasattr(self, "inChannels"):
                 self.inChannels = saveDict["inChannels"]
                 self.view.setInChannelChecks(self.inChannels)
