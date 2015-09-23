@@ -501,6 +501,7 @@ class CueButton(wx.Panel):
         self.SetBackgroundColour(CUEBUTTON_UNSELECTED_COLOUR)
         self.learning = False
         self.midinote = None
+        self.number = number
         self.labtext = stattext.GenStaticText(self, -1, label="",
                                               style=wx.ALIGN_CENTER)
         self.labtext.SetBackgroundColour(CUEBUTTON_UNSELECTED_COLOUR)
@@ -568,8 +569,12 @@ class CueButton(wx.Panel):
 
     def select(self, state):
         if state:
-            wx.CallAfter(self.SetBackgroundColour, CUEBUTTON_SELECTED_COLOUR)
-            wx.CallAfter(self.labtext.SetBackgroundColour, CUEBUTTON_SELECTED_COLOUR)
+            if self.number == 0:
+                wx.CallAfter(self.SetBackgroundColour, CUEBUTTON_0_SELECTED_COLOUR)
+                wx.CallAfter(self.labtext.SetBackgroundColour, CUEBUTTON_0_SELECTED_COLOUR)
+            else:
+                wx.CallAfter(self.SetBackgroundColour, CUEBUTTON_SELECTED_COLOUR)
+                wx.CallAfter(self.labtext.SetBackgroundColour, CUEBUTTON_SELECTED_COLOUR)
         else:
             wx.CallAfter(self.SetBackgroundColour, CUEBUTTON_UNSELECTED_COLOUR)
             wx.CallAfter(self.labtext.SetBackgroundColour, CUEBUTTON_UNSELECTED_COLOUR)

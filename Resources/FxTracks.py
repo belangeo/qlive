@@ -68,8 +68,8 @@ class FxTracks(wx.ScrolledWindow):
         else:
             gc.SetBrush(wx.Brush(FXBOX_DISABLE_BACKGROUND_COLOUR, wx.SOLID))
         rect = wx.Rect(0, 0, w, h)
-        rectI = wx.Rect(0, 4, w/12., h-8)
-        rectO = wx.Rect(w*11/12., 4, w/12., h-8)
+        rectI = wx.Rect(0, 8, w/12., h-16)
+        rectO = wx.Rect(w*11/12., 8, w/12., h-16)
         gc.DrawRoundedRectangle(rect[0], rect[1], rect[2], rect[3], 5)
         gc.DrawRoundedRectangle(rectI[0], rectI[1], rectI[2], rectI[3], 2)
         gc.DrawRoundedRectangle(rectO[0], rectO[1], rectO[2], rectO[3], 2)

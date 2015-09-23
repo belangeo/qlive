@@ -3,8 +3,6 @@ from constants import *
 import QLiveLib
 from Widgets import *
 
-# TODO: Should be opened with current cue values, if any...
-
 class AutomationWindow(wx.Frame):
     def __init__(self, parent, title, object=None, closeCallback=None):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT
@@ -71,6 +69,7 @@ class AutomationPanel(wx.Panel):
 
         # global attributes
         self.mixingMethod = 0
+        self.active = 0
         
         # envelope follower attributes
         self.envActive = 0

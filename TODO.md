@@ -2,6 +2,7 @@ TODO
 ----
 
 - Follower applied on transpo and gain parameters of the soundfile player
+- Do we offer synthesis algorithms as input boxes?
 - Software preferences (record options, audio driver setup)
     - partially done, missing nchnls and inchnls
 - BPF - playback mode, window size
@@ -12,24 +13,23 @@ TODO
 - Spatialisation (partially done with the Pan object)
 - Licensing
 - Improving effect modules (with categories)
-- Warning audio out (?)
 - Documentation/archive prototype
 - Designing project architecture (save file)
-- Do we offer synthesis algorithms as input boxes?
 
 Meeting on 18/09/2015
 ---------------------
     - **urgent** set input/output devices from preferences panel **done**
-    - autoremove config/project file if not valid
-        - Need a sanity function to check loaded prefs...
     - fix: replacing a new project with same name doesn't work **done**
     - no more clicks pop-up for loading sounds -> single dialog **done**
     - MIDI learn for each effect **done**
+    - push 'play' to the first column in soundfiles panel **done**
+    - replace play/record with a toggle **done**
+
+    - autoremove config/project file if not valid
+        - Need a sanity function to check loaded prefs...
     - default interpolation time option for future cues
     - overwrite option for interpolation time
     - add symbols to make it more intuitive
-    - push 'play' to the first column in soundfiles panel **done**
-    - replace play/record with a toggle **done**
     - all available effects should be there for Master input/output
     - classer les effets par categorie (filtres, delay, reverb...)
         - regarder dans fxbox_def, doit être modifié pour ça
