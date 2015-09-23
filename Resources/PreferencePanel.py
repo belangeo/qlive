@@ -55,6 +55,22 @@ class AudioPrefsTab(wx.Panel):
                          wx.DefaultSize, availableAudioOuts, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
         self.outputDeviceCB.Bind(wx.EVT_COMBOBOX, self.setOutputDevice, self.outputDeviceCB)
 
+        # First physical input device
+        self.firstPhysicalInputLabel = wx.StaticText(self, -1, "First Physical Input:")
+
+        initPysicalInput = QLiveLib.ensureNFD(str(QLiveLib.getVar("defaultFirstInput")))
+        self.firstPhysicalInputCB = wx.ComboBox(self, -1, initPysicalInput, wx.DefaultPosition,
+                         wx.DefaultSize, [str(x) for x in range(36)], wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+        self.firstPhysicalInputCB.Bind(wx.EVT_COMBOBOX, self.setFirstPhysicalInput, self.firstPhysicalInputCB)
+
+        # First physical output device
+        self.firstPhysicalOutputLabel = wx.StaticText(self, -1, "First Physical Output:")
+
+        initPysicalOutput = QLiveLib.ensureNFD(str(QLiveLib.getVar("defaultFirstOutput")))
+        self.firstPhysicalOutputCB = wx.ComboBox(self, -1, initPysicalOutput, wx.DefaultPosition,
+                         wx.DefaultSize, [str(x) for x in range(36)], wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+        self.firstPhysicalOutputCB.Bind(wx.EVT_COMBOBOX, self.setFirstPhysicalOutput, self.firstPhysicalOutputCB)
+
         # Setting buffer size
         bufferSizeDefault = QLiveLib.getVar("bufferSize")
         bufferSizeLabel = wx.StaticText(self, -1, "Buffer size:")
@@ -84,6 +100,8 @@ class AudioPrefsTab(wx.Panel):
         hsizerAudioDriver = wx.BoxSizer(wx.HORIZONTAL)
         hsizerInputDevice = wx.BoxSizer(wx.HORIZONTAL)
         hsizerOutputDevice = wx.BoxSizer(wx.HORIZONTAL)
+        hsizerFirstPhysicalInput = wx.BoxSizer(wx.HORIZONTAL)
+        hsizerFirstPhysicalOutput = wx.BoxSizer(wx.HORIZONTAL)
         hsizerBufferSize  = wx.BoxSizer(wx.HORIZONTAL)
         hsizerSamplingRate  = wx.BoxSizer(wx.HORIZONTAL)
         hsizerDuplex  = wx.BoxSizer(wx.HORIZONTAL)
@@ -96,6 +114,12 @@ class AudioPrefsTab(wx.Panel):
 
         hsizerOutputDevice.Add(self.outputDeviceLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
         hsizerOutputDevice.Add(self.outputDeviceCB, -1, wx.ALL, 3)
+
+        hsizerFirstPhysicalInput.Add(self.firstPhysicalInputLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerFirstPhysicalInput.Add(self.firstPhysicalInputCB, -1, wx.ALL, 3)
+
+        hsizerFirstPhysicalOutput.Add(self.firstPhysicalOutputLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerFirstPhysicalOutput.Add(self.firstPhysicalOutputCB, -1, wx.ALL, 3)
 
         hsizerBufferSize.Add(bufferSizeLabel, -1, wx.ALL|wx.ALIGN_CENTER , 3)
         hsizerBufferSize.Add(self.bufferSizeCB, -1, wx.ALL, 3)
@@ -110,6 +134,8 @@ class AudioPrefsTab(wx.Panel):
         vsizer.Add(hsizerAudioDriver, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerInputDevice, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerOutputDevice, 0, wx.ALL|wx.EXPAND, 0)
+        vsizer.Add(hsizerFirstPhysicalInput, 0, wx.ALL|wx.EXPAND, 0)
+        vsizer.Add(hsizerFirstPhysicalOutput, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerBufferSize, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerSamplingRate, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerDuplex, 0, wx.ALL|wx.EXPAND, 0)
@@ -143,6 +169,12 @@ class AudioPrefsTab(wx.Panel):
         #outputIndexes = QLiveLib.getVar("availableAudioOutputIndexes")
         #QLiveLib.setVar("audioOutput", outputIndexes[QLiveLib.getVar("availableAudioOutputs").index(evt.GetString())])
         QLiveLib.setVar("audioOutput", evt.GetString())
+
+    def setFirstPhysicalInput(self, evt):
+        QLiveLib.setVar("defaultFirstInput", int(evt.GetString()))
+
+    def setFirstPhysicalOutput(self, evt):
+        QLiveLib.setVar("defaultFirstOutput", int(evt.GetString()))
 
     def setBufferSize(self, evt):
         QLiveLib.setVar("bufferSize", evt.GetString())
