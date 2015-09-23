@@ -85,12 +85,10 @@ class AutomationPanel(wx.Panel):
         title.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, 
                               wx.FONTWEIGHT_BOLD))
 
-        methodChoices = ["Addition to the main value", 
+        methodChoices = ["Added to the main value", 
                          "Multiplying the main value", 
-                         "Average with the main value",
                          "Added and replace main value",
-                         "Times and replace main value",
-                         "Average and replace main value"]
+                         "Times and replace main value"]
         headSizer = wx.BoxSizer(wx.HORIZONTAL)
         headSizer.AddStretchSpacer(1)
         methodLabel = wx.StaticText(self, -1, label="Multiple Automations Mixing Method:")

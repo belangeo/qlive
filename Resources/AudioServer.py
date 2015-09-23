@@ -9,6 +9,7 @@ class Automator:
         # Globals
         self.server = QLiveLib.getVar("AudioServer")
         self.mixer = QLiveLib.getVar("AudioMixer")
+        self.mixmethod = 0
         # Main value
         self.param = SigTo(init, 0.01, init)
         # Envelope follower signal chain
@@ -23,15 +24,17 @@ class Automator:
         self.env = Scale(self.envFol, 0, 1, self.envMin, self.envMax)
         self.envStop()
         
-        # Main output (TODO: handling mixing method)
-        self.output = Interp(self.param, self.env, 0)
+        self.auto = Sig(0)
+        self.output = Interp(self.param, self.auto, 0)
 
     def sig(self):
         return self.output
 
-    def setParam(self, value, time):
-        self.param.time = time
-        self.param.value = value
+    def setParam(self, value=None, time=None):
+        if time is not None:
+            self.param.time = time
+        if value is not None:
+            self.param.value = value
 
     def envPlay(self):
         self.envThreshold.play()
@@ -76,11 +79,24 @@ class Automator:
 
     def setAttributes(self, dict):
         if dict is not None:
+            mixmethod = dict.get("mixmethod", 0)
+            if mixmethod != self.mixmethod:
+                self.mixmethod = mixmethod
+                self.handleMixMethod()
             envDict = dict.get("env", None)
             if envDict is not None:
                 self.setEnvAttributes(envDict)
                 
-        
+    def handleMixMethod(self):
+        if self.mixmethod == 0:
+            self.auto.value = self.param + self.env
+        elif self.mixmethod == 1:
+            self.auto.value = self.param * self.env
+        elif self.mixmethod == 2:
+            self.auto.value = self.env
+        elif self.mixmethod == 3:
+            self.auto.value = self.env
+
 class SoundFilePlayer:
     def __init__(self, id, filename):
         self.id = id
@@ -112,9 +128,9 @@ class SoundFilePlayer:
         if dict[ID_COL_PLAYING] == 1:
             self.looper.reset()
             self.looper.play()
-            self.handleRouting(dict[ID_COL_DIRECTOUT])
         elif dict[ID_COL_PLAYING] == 0:
             self.looper.stop()
+        self.handleRouting(dict[ID_COL_DIRECTOUT])
         if dict[ID_TRANSPO_AUTO] is not None:
             self.transpo.setAttributes(dict[ID_TRANSPO_AUTO])
         if dict[ID_GAIN_AUTO] is not None:
@@ -125,13 +141,13 @@ class SoundFilePlayer:
         if id == ID_COL_LOOPMODE:
             self.looper.mode = value
         elif id == ID_COL_TRANSPO:
-            self.transpo.value = value
+            self.transpo.setParam(value=value)
         elif id == ID_COL_TRANSPOX:
-            self.transpo.time = value
+            self.transpo.setParam(time=value)
         elif id == ID_COL_GAIN:
-            self.gain.value = pow(10, value * 0.05)
+            self.gain.setParam(value=pow(10, value * 0.05))
         elif id == ID_COL_GAINX:
-            self.gain.time = value
+            self.gain.setParam(time=value)
         elif id == ID_COL_STARTPOINT:
             self.looper.start = value
         elif id == ID_COL_ENDPOINT:
