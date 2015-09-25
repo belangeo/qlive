@@ -4,7 +4,7 @@ import QLiveLib
 from Widgets import *
 
 class AutomationWindow(wx.Frame):
-    def __init__(self, parent, title, object=None, closeCallback=None):
+    def __init__(self, parent, title, object=None, closeCallback=None, paramCallback=None):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT
         wx.Frame.__init__(self, parent, -1, title=title, size=(450,600), style=style)
 
@@ -44,7 +44,7 @@ class AutomationWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnClose, id=closeId)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.closeCallback = closeCallback
-        self.panel = AutomationPanel(self, object)
+        self.panel = AutomationPanel(self, object, paramCallback)
         self.Show()
     
     def getAttributes(self):
@@ -59,13 +59,14 @@ class AutomationWindow(wx.Frame):
         self.Destroy()
 
 class AutomationPanel(wx.Panel):
-    def __init__(self, parent, object=None):
+    def __init__(self, parent, object=None, paramCallback=None):
         wx.Panel.__init__(self, parent, -1)
         cpstyle = wx.CP_DEFAULT_STYLE|wx.CP_NO_TLW_RESIZE
         self.SetBackgroundColour(BACKGROUND_COLOUR)
 
         # parameter object reference
         self.object = object
+        self.paramCallback = paramCallback
 
         # global attributes
         self.mixingMethod = 0
@@ -125,9 +126,15 @@ class AutomationPanel(wx.Panel):
 
     def changeMixingMethod(self, evt):
         self.mixingMethod = evt.GetInt()
+        self.callback()
 
     def OnPaneChanged(self, evt):
         self.Layout()
+
+    def callback(self):
+        if self.paramCallback is not None:
+            dict = self.getAttributes()
+            self.paramCallback(dict)
         
     def MakeEnvPaneContent(self, panel):
         mainbox = wx.StaticBox(panel, -1, "")
@@ -190,28 +197,35 @@ class AutomationPanel(wx.Panel):
 
     def envOnActivate(self, evt):
         self.envActive = evt.GetInt()
+        self.callback()
 
     def envOnCheckInputs(self, evt):
         state = evt.GetInt()
         obj = evt.GetEventObject()
         which = int(obj.GetLabel()) - 1
         self.envInputs[which] = state
+        self.callback()
 
     def envOnInputsInterp(self, value, interp):
         self.envInputsInterp = value
         QLiveLib.setVar("CanProcessCueKeys", True)
+        self.callback()
 
     def envOnThresh(self, value, interp):
         self.envThreshold, self.envThresholdInterp = value, interp
+        self.callback()
 
     def envOnCutoff(self, value, interp):
         self.envCutoff, self.envCutoffInterp = value, interp
+        self.callback()
 
     def envOnMin(self, value, interp):
         self.envMin, self.envMinInterp = value, interp
+        self.callback()
 
     def envOnMax(self, value, interp):
         self.envMax, self.envMaxInterp = value, interp
+        self.callback()
 
     def envChangeParamMode(self, evt):
         for widget in self.envWidgets:

@@ -109,7 +109,8 @@ class SoundFilePlayer:
         self.gain = Automator(init=0)
         self.looper = Looper(self.table, pitch=self.transpo.sig(), mul=self.gain.sig()).stop()
         self.directout = False
-        self.mixerInputId = -1
+        self.mixerInputId = []
+        self.chnl = 0
 
     def getId(self):
         return self.id
@@ -162,19 +163,37 @@ class SoundFilePlayer:
         elif id == ID_COL_DIRECTOUT:
             self.handleRouting(value)
         elif id == ID_COL_CHANNEL:
-            self.chnl = value
-            # TODO: automatic channel routing update
-
+            self.changeRouting(value)
+        elif id == ID_TRANSPO_AUTO:
+            self.transpo.setAttributes(value)
+        elif id == ID_GAIN_AUTO:
+            self.gain.setAttributes(value)
+            
+    def changeRouting(self, chnl):
+        if chnl != self.chnl and self.directout:
+            self.chnl = chnl
+            audioMixer = QLiveLib.getVar("AudioMixer")
+            for id in self.mixerInputId:
+                audioMixer.delFromMixer(id)
+            self.mixerInputId = []
+            for i in range(len(self.looper)):
+                chnl = (i + self.chnl) % NUM_OUTPUTS
+                id = audioMixer.addToMixer(chnl, self.looper[i])
+                self.mixerInputId.append(id)
+            
     def handleRouting(self, state):
         audioMixer = QLiveLib.getVar("AudioMixer")
         if state and not self.directout:
             self.directout = True
             for i in range(len(self.looper)):
                 chnl = (i + self.chnl) % NUM_OUTPUTS
-                self.mixerInputId = audioMixer.addToMixer(chnl, self.looper[i])
+                id = audioMixer.addToMixer(chnl, self.looper[i])
+                self.mixerInputId.append(id)
         elif not state and self.directout:
             self.directout = False
-            audioMixer.delFromMixer(self.mixerInputId)
+            for id in self.mixerInputId:
+                audioMixer.delFromMixer(id)
+            self.mixerInputId = []
 
 class BaseAudioObject:
     def __init__(self, chnls, ctrls, values, interps):

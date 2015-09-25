@@ -57,7 +57,7 @@ class SoundFileObject:
     def openTranspoAutomationWindow(self):
         parent = QLiveLib.getVar("MainWindow")
         title = "Transpo Automations on Soundfile %d" % (self.id+1)
-        self.transpoAutoWindow = AutomationWindow(parent, title, self, self.closeTranspoWindow)
+        self.transpoAutoWindow = AutomationWindow(parent, title, self, self.closeTranspoWindow, self.setAutoTranspo)
         if self.transpoDict is not None:
             self.transpoAutoWindow.setAttributes(self.transpoDict)
 
@@ -67,7 +67,7 @@ class SoundFileObject:
     def openGainAutomationWindow(self):
         parent = QLiveLib.getVar("MainWindow")
         title = "Gain Automations on Soundfile %d" % (self.id+1)
-        self.gainAutoWindow = AutomationWindow(parent, title, self, self.closeGainWindow)
+        self.gainAutoWindow = AutomationWindow(parent, title, self, self.closeGainWindow, self.setGainTranspo)
         if self.gainDict is not None:
             self.gainAutoWindow.setAttributes(self.gainDict)
 
@@ -287,6 +287,12 @@ class SoundFileObject:
 
     def getChannel(self):
         return self.channel
+
+    def setAutoTranspo(self, dict):
+        self.setPlayerAttribute(ID_TRANSPO_AUTO, dict)
+
+    def setGainTranspo(self, dict):
+        self.setPlayerAttribute(ID_GAIN_AUTO, dict)
 
 class GridFileDropTarget(wx.FileDropTarget):
     def __init__(self, grid):
