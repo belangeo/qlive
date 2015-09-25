@@ -27,6 +27,8 @@ class AudioPrefsTab(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
 
+        self.reinit_server = False
+
         # Setting audio driver
         audioDriverDefault = QLiveLib.getVar("audio")
         audioDriverLabel = wx.StaticText(self, -1, "Audio driver:")
@@ -131,6 +133,8 @@ class AudioPrefsTab(wx.Panel):
         hsizerDuplex.Add(self.duplexCB, -1, wx.ALL, 3)
 
         vsizer.AddSpacer(5)
+        vsizer.Add(wx.StaticText(self, -1, "The changes will be effective when the preferences will be closed."), 0, wx.ALIGN_CENTER_HORIZONTAL)
+        vsizer.AddSpacer(5)
         vsizer.Add(hsizerAudioDriver, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerInputDevice, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerOutputDevice, 0, wx.ALL|wx.EXPAND, 0)
@@ -157,29 +161,39 @@ class AudioPrefsTab(wx.Panel):
         self.outputDeviceLabel.Enable(enablePortaudioOpts)
 
     def setAudioDriver(self, evt):
+        if QLiveLib.getVar("audio") != evt.GetString():
+            self.reinit_server = True
         QLiveLib.setVar("audio", evt.GetString())
         self.EnableDisablePortaudioOpts()
 
     def setInputDevice(self, evt):
-        #inputIndexes = QLiveLib.getVar("availableAudioInputIndexes")
-        #QLiveLib.setVar("audioInput", inputIndexes[QLiveLib.getVar("availableAudioInputs").index(evt.GetString())])
+        if QLiveLib.getVar("audioInput") != evt.GetString():
+            self.reinit_server = True
         QLiveLib.setVar("audioInput", evt.GetString())
 
     def setOutputDevice(self, evt):
-        #outputIndexes = QLiveLib.getVar("availableAudioOutputIndexes")
-        #QLiveLib.setVar("audioOutput", outputIndexes[QLiveLib.getVar("availableAudioOutputs").index(evt.GetString())])
+        if QLiveLib.getVar("audioOutput") != evt.GetString():
+            self.reinit_server = True
         QLiveLib.setVar("audioOutput", evt.GetString())
 
     def setFirstPhysicalInput(self, evt):
+        if QLiveLib.getVar("defaultFirstInput") != int(evt.GetString()):
+            self.reinit_server = True
         QLiveLib.setVar("defaultFirstInput", int(evt.GetString()))
 
     def setFirstPhysicalOutput(self, evt):
+        if QLiveLib.getVar("defaultFirstOutput") != int(evt.GetString()):
+            self.reinit_server = True
         QLiveLib.setVar("defaultFirstOutput", int(evt.GetString()))
 
     def setBufferSize(self, evt):
+        if QLiveLib.getVar("bufferSize") != evt.GetString():
+            self.reinit_server = True
         QLiveLib.setVar("bufferSize", evt.GetString())
 
     def setSamplingRate(self, evt):
+        if QLiveLib.getVar("sr") != evt.GetString():
+            self.reinit_server = True
         QLiveLib.setVar("sr", evt.GetString())
 
     def setDuplex(self, state):
@@ -187,6 +201,7 @@ class AudioPrefsTab(wx.Panel):
             QLiveLib.setVar("duplex", "1")
         else:
             QLiveLib.setVar("duplex", "0")
+        self.reinit_server = True
 
 #TODO: needs better var names
 class PreferenceFrame(wx.Dialog):
@@ -203,11 +218,11 @@ class PreferenceFrame(wx.Dialog):
         self.Bind(wx.EVT_CLOSE, self.onClose)
 
         # Create the tab windows
-        tab1 = AudioPrefsTab(nb)
+        self.tab1 = AudioPrefsTab(nb)
         tab2 = GeneralPrefsTab(nb)
 
         # Add the windows to tabs and name them.
-        nb.AddPage(tab1, "Audio")
+        nb.AddPage(self.tab1, "Audio")
         nb.AddPage(tab2, "General")
 
         # Set noteboook in a sizer to create the layout
@@ -219,5 +234,7 @@ class PreferenceFrame(wx.Dialog):
         self.SetSize((500, Y+35))
 
     def onClose(self, evt):
+        if self.tab1.reinit_server:
+            QLiveLib.getVar("AudioServer").reinitServer()
         self.Destroy()
 

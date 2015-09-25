@@ -21,7 +21,10 @@ class QLiveControlSlider(MeterControlSlider):
         self.linkedObject = None
         self.externalOutFunction = outFunction
         self.Bind(wx.EVT_RIGHT_DOWN, self.MouseRightDown)
- 
+
+    def setOutFunction(self, func):
+        self.externalOutFunction = func
+
     def localOutFunction(self, value):
         if self.linkedObject:
             self.linkedObject.SetValue(value)
@@ -83,13 +86,9 @@ class MixerPanel(wx.Panel):
         inputBox.Add(wx.StaticLine(self, size=(1, -1)), 0, 
                      wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT, 2)
         for i in range(NUM_INPUTS):
-            channel = self.audioMixer.getInputChannel(i)
             slide = QLiveControlSlider(self, -90, 18, 0, size=(28,100), 
-                                       orient=wx.VERTICAL, 
-                                       outFunction=channel.setVolume)
-            slide.setChannelObject(channel)
+                                       orient=wx.VERTICAL)
             self.inputSliders.append(slide)
-            channel.setAmpCallback(slide.setRms)
             inputSliderBox.Add(slide, 0, wx.ALL, 2)
         inputBox.Add(inputSliderBox, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 3)
         
@@ -105,21 +104,31 @@ class MixerPanel(wx.Panel):
         outputBox.Add(wx.StaticLine(self, size=(1, -1)), 0, 
                       wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT, 2)
         for i in range(NUM_OUTPUTS):
-            channel = self.audioMixer.getOutputChannel(i)            
             slide = QLiveControlSlider(self, -90, 18, 0, size=(28,100), 
-                                       orient=wx.VERTICAL, 
-                                       outFunction=channel.setVolume)
-            slide.setChannelObject(channel)
+                                       orient=wx.VERTICAL)
             self.outputSliders.append(slide)
-            channel.setAmpCallback(slide.setRms)
             outputSliderBox.Add(slide, 0, wx.ALL, 2)
         outputBox.Add(outputSliderBox, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 3)
+
+        self.connectSliders()
 
         mainSizer = wx.BoxSizer(wx.HORIZONTAL)
         mainSizer.Add(inputBox, 1, wx.EXPAND)
         mainSizer.Add(separator, 0, wx.EXPAND|wx.LEFT, 5)
         mainSizer.Add(outputBox, 1, wx.EXPAND)
         self.SetSizer(mainSizer)
+
+    def connectSliders(self):
+        for i in range(NUM_INPUTS):
+            channel = self.audioMixer.getInputChannel(i)
+            self.inputSliders[i].setChannelObject(channel)
+            self.inputSliders[i].setOutFunction(channel.setVolume)
+            channel.setAmpCallback(self.inputSliders[i].setRms)
+        for i in range(NUM_OUTPUTS):
+            channel = self.audioMixer.getOutputChannel(i)            
+            self.outputSliders[i].setChannelObject(channel)
+            self.outputSliders[i].setOutFunction(channel.setVolume)
+            channel.setAmpCallback(self.outputSliders[i].setRms)
 
     def linkInputs(self, set=None):
         if set is not None:

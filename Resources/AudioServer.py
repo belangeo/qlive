@@ -155,9 +155,9 @@ class SoundFilePlayer:
         elif id == ID_COL_CROSSFADE:
             self.looper.xfade = value
         elif id == ID_COL_PLAYING:
-            if value == "Play":
+            if value == 1:
                 self.looper.play()
-            elif value == "Stop":
+            elif value == 0:
                 self.looper.stop()
         elif id == ID_COL_DIRECTOUT:
             self.handleRouting(value)
@@ -334,6 +334,41 @@ class AudioServer:
         if QLiveLib.getVar("duplex"):
             self.server.setInputDevice(indev)
         self.server.boot()
+
+    def reinitServer(self):
+        mixer = QLiveLib.getVar("AudioMixer")
+        mixerPanel = QLiveLib.getVar("MixerPanel")
+        restart = False
+        reboot = False
+        if self.isStarted():
+            restart = True
+            self.start(False)
+            time.sleep(.1)
+        mixer.deleteMixer()
+        if self.isBooted():
+            reboot = True
+            self.shutdown()
+            time.sleep(.1)
+        sr, bufferSize, audio, jackname, nchnls, inchnls, duplex, outdev, indev, firstin, firstout = self.getPrefs()
+        self.server.reinit(audio=audio, jackname=jackname)
+        self.server.setSamplingRate(sr)
+        self.server.setBufferSize(bufferSize)
+        self.server.setNchnls(nchnls)
+        self.server.setDuplex(duplex)
+        if inchnls != None:
+            self.server.setIchnls(inchnls)
+        self.server.deactivateMidi()
+        self.server.setOutputDevice(outdev)
+        self.server.setInputOffset(firstin)
+        self.server.setOutputOffset(firstout)
+        if duplex:
+            self.server.setInputDevice(indev)
+        if reboot:
+            self.server.boot()
+        mixer.createMixer()
+        mixerPanel.connectSliders()
+        if restart:
+            self.start(True)
 
     def getPrefs(self):
         audioOutputs = QLiveLib.getVar("availableAudioOutputs")

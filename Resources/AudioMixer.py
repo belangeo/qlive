@@ -36,10 +36,22 @@ class AudioMixer:
     def __init__(self):
         self.muted = True
         self.mixerInputCount = 0
+        self.createMixer()
+        
+    def createMixer(self):
         self.inChannels = [AudioChannel(Input(i)) for i in range(NUM_INPUTS)] 
         self.mixer = Mixer(outs=NUM_OUTPUTS, chnls=1)       
         self.outChannels = [AudioChannel(
                             self.mixer[i]).out(i) for i in range(NUM_OUTPUTS)]
+        for inChannel in self.inChannels:
+            inChannel.mute(self.muted)
+        for outChannel in self.outChannels:
+            outChannel.mute(self.muted)
+
+    def deleteMixer(self):
+        del self.inChannels
+        del self.mixer
+        del self.outChannels
 
     def getInputChannels(self):
         return self.inChannels
