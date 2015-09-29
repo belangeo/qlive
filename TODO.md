@@ -1,7 +1,7 @@
 TODO
 ----
 
-- Follower applied on transpo and gain parameters of the soundfile player
+- Follower applied on transpo and gain parameters of the soundfile player **done**
 - Do we offer synthesis algorithms as input boxes?
 - Software preferences (record options, audio driver setup)
     - partially done, missing nchnls and inchnls
@@ -24,11 +24,11 @@ Meeting on 18/09/2015
     - MIDI learn for each effect **done**
     - push 'play' to the first column in soundfiles panel **done**
     - replace play/record with a toggle **done**
+    - default interpolation time option for future cues **done**
+    - overwrite option for interpolation time **done**
 
     - autoremove config/project file if not valid
         - Need a sanity function to check loaded prefs...
-    - default interpolation time option for future cues
-    - overwrite option for interpolation time
     - add symbols to make it more intuitive
     - all available effects should be there for Master input/output
     - classer les effets par categorie (filtres, delay, reverb...)

@@ -376,12 +376,12 @@ class MainWindow(wx.Frame):
         self.globalInterpTimeWindow = InterpTimeFrame(self, 
                                                       self.setGlobalInterpTime)
 
-    def setGlobalInterpTime(self, cue, track, snd, value):
-        #print cue, track, snd, value
+    def setGlobalInterpTime(self, cue, track, snd, value, meth):
+        #print cue, track, snd, value, meth
         if track < 2:
-            self.tracks.setTracksGlobalInterpTime(value, cue, track)
+            self.tracks.setTracksGlobalInterpTime(value, cue, track, meth)
         if snd < 2:
-            self.soundfiles.setGlobalInterpTime(value, cue, snd)
+            self.soundfiles.setGlobalInterpTime(value, cue, snd, meth)
 
     def onLinkSliders(self, evt):
         QLiveLib.getVar("MixerPanel").linkInputs(evt.GetInt())

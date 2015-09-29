@@ -11,6 +11,7 @@ class SoundFileObject:
     def __init__(self, id, filename, loopmode=0, transpo=1, gain=0,
                  playing=0, directout=True, startpoint=0,
                  endpoint=-1, crossfade=5, channel=0):
+        interpTime = QLiveLib.getVar("globalInterpTime")
         self.id = id
         self.filename = filename
         sndfolder = os.path.join(QLiveLib.getVar("projectFolder"), "sounds")        
@@ -32,8 +33,8 @@ class SoundFileObject:
         self.endpoint = self.duration
         self.crossfade = crossfade
         self.channel = channel
-        self.transpox = 0.01
-        self.gainx = 0.01
+        self.transpox = interpTime
+        self.gainx = interpTime
         self.transpoDict = None
         self.gainDict = None
 
@@ -113,6 +114,7 @@ class SoundFileObject:
                 })
 
     def setAttributes(self, dict):
+        interpTime = QLiveLib.getVar("globalInterpTime")
         dict = copy.deepcopy(dict)
         self.filename = dict[ID_COL_FILENAME]
         self.loopmode = dict[ID_COL_LOOPMODE]
@@ -124,8 +126,8 @@ class SoundFileObject:
         self.endpoint = dict[ID_COL_ENDPOINT]
         self.crossfade = dict[ID_COL_CROSSFADE]
         self.channel = dict[ID_COL_CHANNEL]
-        self.transpox = dict.get(ID_COL_TRANSPOX, 0.01)
-        self.gainx = dict.get(ID_COL_GAINX, 0.01)
+        self.transpox = dict.get(ID_COL_TRANSPOX, interpTime)
+        self.gainx = dict.get(ID_COL_GAINX, interpTime)
         self.transpoDict = dict.get(ID_TRANSPO_AUTO, None)
         self.gainDict = dict.get(ID_GAIN_AUTO, None)
         if self.transpoDict is not None:
@@ -181,15 +183,65 @@ class SoundFileObject:
     def setCues(self, cues):
         self.cues = cues
 
-    def setGlobalInterpTime(self, value, allcues):
+    def setGlobalInterpTime(self, value, allcues, meth):
         if allcues:
-            for key in self.cues.keys():
-                self.cues[key][ID_COL_TRANSPOX] = value
-                self.cues[key][ID_COL_GAINX] = value
+            if meth == 0:
+                for key in self.cues.keys():
+                    self.cues[key][ID_COL_TRANSPOX] = value
+                    self.cues[key][ID_COL_GAINX] = value
+            elif meth == 1:
+                for key in self.cues.keys():
+                    tr = self.cues[key][ID_COL_TRANSPOX]
+                    gain = self.cues[key][ID_COL_GAINX]
+                    tr += value
+                    if tr > INTERPTIME_MAX:
+                        tr = INTERPTIME_MAX
+                    gain += value
+                    if gain > INTERPTIME_MAX:
+                        gain = INTERPTIME_MAX
+                    self.cues[key][ID_COL_TRANSPOX] = tr
+                    self.cues[key][ID_COL_GAINX] = gain
+            elif meth == 2:
+                for key in self.cues.keys():
+                    tr = self.cues[key][ID_COL_TRANSPOX]
+                    gain = self.cues[key][ID_COL_GAINX]
+                    tr -= value
+                    if tr < INTERPTIME_MIN:
+                        tr = INTERPTIME_MIN
+                    gain -= value
+                    if gain < INTERPTIME_MIN:
+                        gain = INTERPTIME_MIN
+                    self.cues[key][ID_COL_TRANSPOX] = tr
+                    self.cues[key][ID_COL_GAINX] = gain
         else:
-            self.cues[self.currentCue][ID_COL_TRANSPOX] = value
-            self.cues[self.currentCue][ID_COL_GAINX] = value
-        self.transpox = self.gainx = value
+            if meth == 0:
+                self.cues[self.currentCue][ID_COL_TRANSPOX] = value
+                self.cues[self.currentCue][ID_COL_GAINX] = value
+            elif meth == 1:
+                tr = self.cues[self.currentCue][ID_COL_TRANSPOX]
+                gain = self.cues[self.currentCue][ID_COL_GAINX]
+                tr += value
+                if tr > INTERPTIME_MAX:
+                    tr = INTERPTIME_MAX
+                gain += value
+                if gain > INTERPTIME_MAX:
+                    gain = INTERPTIME_MAX
+                self.cues[self.currentCue][ID_COL_TRANSPOX] = tr
+                self.cues[self.currentCue][ID_COL_GAINX] = gain
+            elif meth == 2:
+                tr = self.cues[self.currentCue][ID_COL_TRANSPOX]
+                gain = self.cues[self.currentCue][ID_COL_GAINX]
+                tr -= value
+                if tr < INTERPTIME_MIN:
+                    tr = INTERPTIME_MIN
+                gain -= value
+                if gain < INTERPTIME_MIN:
+                    gain = INTERPTIME_MIN
+                self.cues[self.currentCue][ID_COL_TRANSPOX] = tr
+                self.cues[self.currentCue][ID_COL_GAINX] = gain
+                
+        self.transpox = self.cues[self.currentCue][ID_COL_TRANSPOX]
+        self.gainx = self.cues[self.currentCue][ID_COL_GAINX]
 
     def isValid(self):
         return self.valid
@@ -815,12 +867,12 @@ class SoundFilePanel(wx.Panel):
     def getSoundFileObjects(self):
         return self.grid.getSoundFileObjects()
 
-    def setGlobalInterpTime(self, value, allcues, allsnds):
+    def setGlobalInterpTime(self, value, allcues, allsnds, meth):
         if allsnds:
             for object in self.grid.getSoundFileObjects():
-                object.setGlobalInterpTime(value, allcues)
+                object.setGlobalInterpTime(value, allcues, meth)
         else:
             selected = self.grid.getSelectedSoundFile()
             if selected is not None:
-                selected.setGlobalInterpTime(value, allcues)
+                selected.setGlobalInterpTime(value, allcues, meth)
         self.grid.refresh()

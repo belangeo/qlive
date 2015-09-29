@@ -64,6 +64,8 @@ class AutomationPanel(wx.Panel):
         cpstyle = wx.CP_DEFAULT_STYLE|wx.CP_NO_TLW_RESIZE
         self.SetBackgroundColour(BACKGROUND_COLOUR)
 
+        interpTime = QLiveLib.getVar("globalInterpTime")
+
         # parameter object reference
         self.object = object
         self.paramCallback = paramCallback
@@ -75,11 +77,11 @@ class AutomationPanel(wx.Panel):
         # envelope follower attributes
         self.envActive = 0
         self.envInputs = [0] * NUM_INPUTS
-        self.envInputsInterp = 0.01
-        self.envThreshold, self.envThresholdInterp = -90, 0.01
-        self.envCutoff, self.envCutoffInterp = 20, 0.01
-        self.envMin, self.envMinInterp = 0.0, 0.01
-        self.envMax, self.envMaxInterp = 1.0, 0.01
+        self.envInputsInterp = interpTime
+        self.envThreshold, self.envThresholdInterp = -90, interpTime
+        self.envCutoff, self.envCutoffInterp = 20, interpTime
+        self.envMin, self.envMinInterp = 0.0, interpTime
+        self.envMax, self.envMaxInterp = 1.0, interpTime
         
 
         title = wx.StaticText(self, label="Automation Controls")
@@ -137,6 +139,7 @@ class AutomationPanel(wx.Panel):
             self.paramCallback(dict)
         
     def MakeEnvPaneContent(self, panel):
+        interpTime = QLiveLib.getVar("globalInterpTime")
         mainbox = wx.StaticBox(panel, -1, "")
         sizer = wx.StaticBoxSizer(mainbox, wx.VERTICAL)
         sizer.AddSpacer(5)
@@ -160,7 +163,7 @@ class AutomationPanel(wx.Panel):
             selectorSizer.Add(check, 1, wx.EXPAND|wx.ALL, 5)
 
         interpLabel = wx.StaticText(panel, -1, label="Input Interpolation Time in Seconds: ")
-        self.envInInterpCtrl = NumericCtrl(panel, value=0.01, interp=0, size=(80, -1), callback=self.envOnInputsInterp)
+        self.envInInterpCtrl = NumericCtrl(panel, value=interpTime, interp=0, size=(80, -1), callback=self.envOnInputsInterp)
         interpSizer = wx.BoxSizer(wx.HORIZONTAL)
         interpSizer.Add(interpLabel, -1, wx.LEFT|wx.RIGHT|wx.ALIGN_CENTER_VERTICAL, 5)
         interpSizer.Add(self.envInInterpCtrl)
@@ -172,10 +175,10 @@ class AutomationPanel(wx.Panel):
                                    wx.RA_SPECIFY_COLS | wx.NO_BORDER)
         interpButton.Bind(wx.EVT_RADIOBOX, self.envChangeParamMode)
 
-        params = [["Threshold (dB)", -90, 0.01, self.envOnThresh],
-                  ["Cutoff (Hz)", 20, 0.01, self.envOnCutoff], 
-                  ["Range Min", 0, 0.01, self.envOnMin],
-                  ["Range Max", 1, 0.01, self.envOnMax]]
+        params = [["Threshold (dB)", -90, interpTime, self.envOnThresh],
+                  ["Cutoff (Hz)", 20, interpTime, self.envOnCutoff], 
+                  ["Range Min", 0, interpTime, self.envOnMin],
+                  ["Range Max", 1, interpTime, self.envOnMax]]
         self.envWidgets = []
         knobSizer = wx.BoxSizer(wx.HORIZONTAL)
         for param in params:

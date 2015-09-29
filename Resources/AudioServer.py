@@ -9,16 +9,17 @@ class Automator:
         # Globals
         self.server = QLiveLib.getVar("AudioServer")
         self.mixer = QLiveLib.getVar("AudioMixer")
+        interpTime = QLiveLib.getVar("globalInterpTime")
         self.mixmethod = 0
         # Main value
-        self.param = SigTo(init, 0.01, init)
+        self.param = SigTo(init, interpTime, init)
         # Envelope follower signal chain
         self.envInputs = [0] * NUM_INPUTS
         self.envActive = 0
-        self.envThreshold = SigTo(-90, time=0.01, init=-90)
-        self.envCutoff = SigTo(20, time=0.01, init=20)
-        self.envMin = SigTo(0, time=0.01, init=0)
-        self.envMax = SigTo(1, time=0.01, init=1)
+        self.envThreshold = SigTo(-90, time=interpTime, init=-90)
+        self.envCutoff = SigTo(20, time=interpTime, init=20)
+        self.envMin = SigTo(0, time=interpTime, init=0)
+        self.envMax = SigTo(1, time=interpTime, init=1)
         self.envInput = Gate(Sig(0), thresh=self.envThreshold)
         self.envFol = Follower(self.envInput, freq=self.envCutoff)
         self.env = Scale(self.envFol, 0, 1, self.envMin, self.envMax)
@@ -119,9 +120,10 @@ class SoundFilePlayer:
         return self.chnls
 
     def setAttributes(self, dict):
+        interpTime = QLiveLib.getVar("globalInterpTime")
         self.looper.mode = dict[ID_COL_LOOPMODE]
-        self.transpo.setParam(dict[ID_COL_TRANSPO], dict.get(ID_COL_TRANSPOX, 0.01))
-        self.gain.setParam(pow(10, dict[ID_COL_GAIN] * 0.05), dict.get(ID_COL_GAINX, 0.01))
+        self.transpo.setParam(dict[ID_COL_TRANSPO], dict.get(ID_COL_TRANSPOX, interpTime))
+        self.gain.setParam(pow(10, dict[ID_COL_GAIN] * 0.05), dict.get(ID_COL_GAINX, interpTime))
         self.looper.start = dict[ID_COL_STARTPOINT]
         self.looper.dur = dict[ID_COL_ENDPOINT] - dict[ID_COL_STARTPOINT]
         self.looper.xfade = dict[ID_COL_CROSSFADE]
@@ -197,6 +199,7 @@ class SoundFilePlayer:
 
 class BaseAudioObject:
     def __init__(self, chnls, ctrls, values, interps):
+        interpTime = QLiveLib.getVar("globalInterpTime")
         self.chnls = chnls
         for i, ctrl in enumerate(ctrls):
             name = ctrl[0]
@@ -205,7 +208,7 @@ class BaseAudioObject:
             else:
                 val = values[i]
             if interps is None:
-                inter = 0.01
+                inter = interpTime
             else:
                 inter = interps[i]
             if name == "gain":

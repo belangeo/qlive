@@ -12,6 +12,7 @@ class SliderWidget(wx.Panel):
     def __init__(self, parent, parameters, fxbox):
         wx.Panel.__init__(self, parent)
         self.SetBackgroundColour(BACKGROUND_COLOUR)
+        interpTime = QLiveLib.getVar("globalInterpTime")
         self.fromUser = False
         self.midiscanning = False
         self.parameters = parameters
@@ -27,7 +28,7 @@ class SliderWidget(wx.Panel):
         
         self.interpKnob = QLiveControlKnob(self, 
                                 INTERPTIME_MIN, 
-                                INTERPTIME_MAX, 0.01, 
+                                INTERPTIME_MAX, interpTime, 
                                 label=parameters[0], log=True,
                                 outFunction=self.outputInterpValue, 
                                 outOnShiftFunction=self.onChangeAllInterp,
@@ -58,9 +59,10 @@ class SliderWidget(wx.Panel):
         self.slider.setMidiLearn(False)
 
     def assignMidiCtl(self, ctlnum):
+        interpTime = QLiveLib.getVar("globalInterpTime")
         self.slider.setMidiCtl(ctlnum)
         QLiveLib.getVar("MidiServer").bind("ctls", ctlnum, self.midi)
-        self.setInterpValue(0.01, True)
+        self.setInterpValue(interpTime, True)
 
     def midi(self, value):
         self.slider.SetValue(rescale(value, 0, 127, self.parameters[2], 

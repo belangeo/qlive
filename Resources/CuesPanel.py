@@ -41,9 +41,15 @@ class InterpTimeFrame(wx.Frame):
 
         sizer.Add(upSizer, 0)
 
-        self.knob = QLiveControlKnob(panel, INTERPTIME_MIN, INTERPTIME_MAX, label="Time")
+        knobSizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.method = wx.Choice(panel, -1, choices=["Overwrite", "Add to Current Values", "Substract to Current Values"])
+        self.method.SetSelection(0)
+        self.knob = QLiveControlKnob(panel, INTERPTIME_MIN, INTERPTIME_MAX, 
+                                     init=QLiveLib.getVar("globalInterpTime"), label="Time")
         self.knob.SetFocus()
-        sizer.Add(self.knob, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.BOTTOM, 10)
+        knobSizer.Add(self.method, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.RIGHT, 5)
+        knobSizer.Add(self.knob, 1, wx.LEFT | wx.RIGHT, 30)
+        sizer.Add(knobSizer, 0, wx.TOP | wx.BOTTOM, 10)
         
         sizer.Add(wx.StaticLine(panel, size=(360,1)), 0, wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, 4)
 
@@ -66,8 +72,11 @@ class InterpTimeFrame(wx.Frame):
         track = self.trackButton.GetSelection() # 0 = current, 1 = all, 2 = none
         snd = self.sndButton.GetSelection() # 0 = current, 1 = all = 2 = none
         value = self.knob.GetValue() # interpolation time in secs
+        meth = self.method.GetSelection() # 0 = overwrite, 1 = add, 2 = sub
+        if meth == 0:
+            QLiveLib.setVar("globalInterpTime", value)
         if self.callback is not None:
-            self.callback(cue, track, snd, value)
+            self.callback(cue, track, snd, value, meth)
 
     def onClose(self, evt):
         self.Destroy()
@@ -359,10 +368,3 @@ class CuesPanel(scrolled.ScrolledPanel):
         dict["numberOfCues"] = len(self.cueButtons)
         dict["buttons"] = [but.getSaveDict() for but in self.cueButtons]
         return dict
-
-if __name__ == "__main__":
-    def pp(cue, track, value):
-        print cue, track, snd, value
-    app = wx.App()
-    f = InterpTimeFrame(None, callback=pp)
-    app.MainLoop()

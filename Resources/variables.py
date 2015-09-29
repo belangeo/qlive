@@ -39,7 +39,8 @@ PREFS_TO_SAVE = {"useTooltips": False,
                  "audioOutput": "",
                  "audioInput": "",
                  "defaultFirstInput": 0,
-                 "defaultFirstOutput": 0
+                 "defaultFirstOutput": 0,
+                 "globalInterpTime": 0.01
                 }
 
 def readQLivePrefsFromFile():

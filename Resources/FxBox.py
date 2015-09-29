@@ -38,12 +38,13 @@ class BaseFxBox(object):
         return None
 
     def setParamValue(self, name, value, fromUser):
+        interpTime = QLiveLib.getVar("globalInterpTime")
         if self.audioRef is not None:
             audio = self.audioRef()
             if name == "gain":
                 value = pow(10, value * 0.05)
             if fromUser:
-                getattr(audio, name).time = 0.01
+                getattr(audio, name).time = interpTime
             getattr(audio, name).value = value
 
     def setInterpValue(self, name, value):
@@ -178,17 +179,45 @@ class BaseFxBox(object):
 		    return self.cues[self.currentCue]["interps"]
         return None
 
-    def setGlobalInterpTime(self, value, allcues):
+    def setGlobalInterpTime(self, value, allcues, meth):
         if self.view is None:
             return
         widgets = self.view.getWidgets()
         num = len(widgets)
         if allcues:
             for cue in self.cues.keys():
-                self.cues[cue]["interps"] = [value] * num
+                if meth == 0:
+                    self.cues[cue]["interps"] = [value] * num
+                elif meth == 1:
+                    for i in range(num):
+                        x = self.cues[cue]["interps"][i]
+                        x += value
+                        if x > INTERPTIME_MAX:
+                            x = INTERPTIME_MAX
+                        self.cues[cue]["interps"][i] = x
+                elif meth == 2:
+                    for i in range(num):
+                        x = self.cues[cue]["interps"][i]
+                        x -= value
+                        if x < INTERPTIME_MIN:
+                            x = INTERPTIME_MIN
+                        self.cues[cue]["interps"][i] = x
         # sets the current cue
         for i, widget in enumerate(widgets):
-            widget.setInterpValue(value, propagate=True)
+            if meth == 0:
+                widget.setInterpValue(value, propagate=True)
+            elif meth == 1:
+                x = widget.getInterpValue()
+                x += value
+                if x > INTERPTIME_MAX:
+                    x = INTERPTIME_MAX
+                widget.setInterpValue(x, propagate=True)
+            elif meth == 2:
+                x = widget.getInterpValue()
+                x -= value
+                if x < INTERPTIME_MIN:
+                    x = INTERPTIME_MIN
+                widget.setInterpValue(x, propagate=True)
             
     def saveCue(self):
         self.cues[self.currentCue] = self.getParams()

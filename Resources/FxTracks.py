@@ -197,12 +197,12 @@ class FxTracks(wx.ScrolledWindow):
         for track in self.tracks:
             track.checkForDeletedSoundfile(id)
 
-    def setTracksGlobalInterpTime(self, value, allcues, alltracks):
+    def setTracksGlobalInterpTime(self, value, allcues, alltracks, meth):
         if alltracks:
             for track in self.tracks:
-                track.setTrackGlobalInterpTime(value, allcues)
+                track.setTrackGlobalInterpTime(value, allcues, meth)
         else:
-            self.tracks[self.selectedTrack].setTrackGlobalInterpTime(value, allcues)
+            self.tracks[self.selectedTrack].setTrackGlobalInterpTime(value, allcues, meth)
 
     def getSaveDict(self):
         return [track.getSaveDict() for track in self.tracks]
