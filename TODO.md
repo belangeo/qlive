@@ -36,11 +36,27 @@ Meeting on 18/09/2015
         - référence: les categories dans logic pro
         - phase vocoder: dans une categorie "spectrale"
 
+Meeting on 05/10/2015
+---------------------
+
+    - MIDI-learn: use a global MIDI-learn state instead of the current
+      individual process
+    - Use 'del' key for unassigning MIDI
+    - Add Cut/copy/paste options for Cues
+    - Use shift+crtl+c for Cue windows instead of ctrl+c
+    - *urgent* fix crash when closing the audio server
+    - fix: harmonizer mutes the output when activated
+    - add 'recent projects' in the intro dialog
+    - fix 'new project' option in the menu
+    - parameters values for soundfiles should update in 'realtime'
+    - macro task: conceive a monitor modulo, which will provide realtime
+      visualization of automations and other parameters (probably using OSC).
+
 Play mode
 ---------
 - No "saveCue()" before loading a new cue
 - Can't add or delete a soundfile
-- Can't add or delete a cue
+- Can't add or delete a cue 
 - Can't add, delete or replace an fxbox or a track
 
 Recently done
