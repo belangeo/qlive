@@ -324,8 +324,7 @@ class FxHarmonizer(BaseAudioObject):
 class FxPanning(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.panning = Pan(self.input, self.chnls, self.pan, self.spread, mul=self.gain)
-        self.process = Interp(self.input, self.panning)
+        self.process = Pan(self.input, self.chnls, self.pan, self.spread, mul=self.gain)
         self.output = Sig(self.process)
 
 class FxAudioOut(BaseAudioObject):

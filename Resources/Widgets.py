@@ -36,7 +36,7 @@ def powOfTwoToInt(x):
 class QLiveControlKnob(wx.Panel):
     def __init__(self, parent, minvalue, maxvalue, init=None, pos=(0,0),
                  size=(50,85), log=False, outFunction=None, integer=False,
-                 backColour=None, label='', playFunction=None,
+                 backColour=None, label='', showAutomation=True,
                  editFunction=None, outOnShiftFunction=None):
         wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY, pos=pos,
                           size=size, style=wx.NO_BORDER|wx.WANTS_CHARS)
@@ -44,13 +44,13 @@ class QLiveControlKnob(wx.Panel):
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
         self.SetBackgroundColour(BACKGROUND_COLOUR)
         self.outFunction = outFunction
-        self.playFunction = playFunction
         self.editFunction = editFunction
-        if 0: #self.playFunction is None and self.editFunction is None:
-            self.drawBottomPart = False
-            self.SetSize((50, 70))
-        else:
+        self.showAutomation = showAutomation
+        if self.showAutomation:
             self.drawBottomPart = True
+        else:
+            self.SetSize((50, 70))
+            self.drawBottomPart = False
         self.SetMinSize(self.GetSize())
         self.outOnShiftFunction = outOnShiftFunction
         self.integer = integer
@@ -66,7 +66,7 @@ class QLiveControlKnob(wx.Panel):
         self.midiLearn = False
         self.midictl = None
         self.autoPlay = False
-        self.autoEdit = False
+        self.showEdit = False
         self.colours = {0: "#000000", 1: "#FF0000", 2: "#00FF00"}
         if backColour: self.backColour = backColour
         else: self.backColour = CONTROLSLIDER_BACK_COLOUR
@@ -139,8 +139,8 @@ class QLiveControlKnob(wx.Panel):
         self.autoPlay = state
         wx.CallAfter(self.Refresh)
 
-    def setAutoEdit(self, state):
-        self.autoEdit = state
+    def setShowEdit(self, state):
+        self.showEdit = not self.showEdit
         wx.CallAfter(self.Refresh)
 
     def GetValue(self):
@@ -198,6 +198,7 @@ class QLiveControlKnob(wx.Panel):
         wx.CallAfter(self.Refresh)
 
     def MouseDown(self, evt):
+        w, h = self.GetSize()
         if self._enable:
             rec = wx.Rect(5, 13, 45, 45)
             pos = evt.GetPosition()
@@ -206,14 +207,10 @@ class QLiveControlKnob(wx.Panel):
                 self.oldValue = self.value
                 self.CaptureMouse()
                 self.selected = False
-            rec = wx.Rect(7, 69, 12, 12)
+            rec = wx.Rect(w-15, 69, 15, 15)
             if rec.Contains(pos):
-                self.autoPlay = not self.autoPlay
-            rec = wx.Rect(31, 69, 12, 12)
-            if rec.Contains(pos):
-                self.autoEdit = not self.autoEdit
-                if self.editFunction is not None:
-                    self.editFunction(self.autoEdit)
+                self.showEdit = not self.showEdit
+                self.editFunction(self.showEdit)
             QLiveLib.setVar("CanProcessCueKeys", True)
             wx.CallAfter(self.Refresh)
         evt.Skip()
@@ -339,25 +336,16 @@ class QLiveControlKnob(wx.Panel):
             else:
                 dc.DrawLabel("M : ?", wx.Rect(5, 72, 41, 11), wx.ALIGN_CENTER_VERTICAL)
 
-#            if self.autoPlay:
-#                gc.SetBrush(wx.Brush("#55DD55"))
-#            else:
-#                gc.SetBrush(wx.Brush("#333333", wx.TRANSPARENT))
-#            gc.SetPen(wx.Pen("#333333", 1.5))
-#            tri = [(8,70), (8,80), (16,75), (8, 70)]
-#            gc.DrawLines(tri)
-
-#            gc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT,
-#                               wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL,
-#                               face=FONT_FACE))
-#            if self.autoEdit:
-#                gc.SetPen(wx.Pen("#333333", 1.5))
-#                gc.SetBrush(wx.Brush("#DD5555"))
-#            else:
-#                gc.SetPen(wx.Pen("#333333", 1.5))
-#                gc.SetBrush(wx.Brush("#333333", wx.TRANSPARENT))
-#            gc.DrawRoundedRectangle(32, 70, 10, 10, 2)
-#            gc.DrawText("e", 35, 69)
+            if self.autoPlay:
+                gc.SetBrush(wx.Brush("#55DD55"))
+            else:
+                gc.SetBrush(wx.Brush("#333333", wx.TRANSPARENT))
+            if self.showEdit:
+                tri = [(w-14,72), (w-6,72), (w-10,80), (w-14,72)]
+            else:
+                tri = [(w-14,72), (w-14,80), (w-6,76), (w-14, 72)]
+            gc.SetPen(wx.Pen("#333333", 1.5))
+            gc.DrawLines(tri)
 
         evt.Skip()
 

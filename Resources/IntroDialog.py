@@ -36,11 +36,11 @@ class IntroDialog(wx.Dialog):
         recentFiles = QLiveLib.getRecentFiles()
         self.recentFilesLabel = wx.StaticText(self, -1, "Recent projects: ")
         self.recentFilesLabel.Disable()
-        self.recentFilesChoice = wx.Choice(self, -1, choices = recentFiles)
+        self.recentFilesChoice = wx.Choice(self, -1, choices=recentFiles, size=(250,-1))
         self.recentFilesChoice.Disable()
         self.recentFilesChoice.Bind(wx.EVT_CHOICE, self.openRecent)
-        hsizerRecentFiles.Add(self.recentFilesLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
-        hsizerRecentFiles.Add(self.recentFilesChoice, -1, wx.ALL, 3)
+        hsizerRecentFiles.Add(self.recentFilesLabel, 0, wx.LEFT|wx.ALIGN_CENTER, 10)
+        hsizerRecentFiles.Add(self.recentFilesChoice, 1, wx.TOP|wx.BOTTOM|wx.RIGHT, 10)
 
         sizer.Add(hsizerRecentFiles, 0, wx.ALL|wx.EXPAND, 0)
 
@@ -68,11 +68,10 @@ class IntroDialog(wx.Dialog):
             self.filepath = recentFiles[0]
             self.createDir = False
             self.showPath(self.filepath)
-            if PLATFORM == "darwin":
-                self.okbtn.SetDefault()
-            else:
-                self.okbtn.SetFocus()
-                self.recentFilesChoice.SetSelection(0)
+            focusbutton = self.okbtn
+            self.recentFilesChoice.SetSelection(0)
+        else:
+            focusbutton = openbut
 
         btnsizer.Realize()
 
@@ -80,9 +79,9 @@ class IntroDialog(wx.Dialog):
                   wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL|wx.TOP|wx.BOTTOM, 5)
 
         if PLATFORM == "darwin":
-            openbut.SetDefault()
+            focusbutton.SetDefault()
         else:
-            openbut.SetFocus()
+            focusbutton.SetFocus()
 
         self.SetSizer(sizer)
         sizer.Fit(self)

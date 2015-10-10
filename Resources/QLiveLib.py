@@ -1,5 +1,5 @@
 from constants import *
-import codecs
+import codecs, os
 import variables as vars
 from pyo import pa_get_input_devices, pa_get_default_input, pa_get_output_devices, pa_get_default_output, pm_get_input_devices, pm_get_default_input
 
@@ -9,7 +9,9 @@ def getRecentFiles():
     if os.path.isfile(filename):
         f = codecs.open(filename, "r", encoding="utf-8")
         for line in f.readlines():
-            recentFiles.append(line.replace("\n", ""))
+            fname = line.replace("\n", "")
+            if os.path.isfile(fname):
+                recentFiles.append(fname)
         f.close()
     return recentFiles
 

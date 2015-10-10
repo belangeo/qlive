@@ -45,7 +45,8 @@ class InterpTimeFrame(wx.Frame):
         self.method = wx.Choice(panel, -1, choices=["Overwrite", "Add to Current Values", "Substract to Current Values"])
         self.method.SetSelection(0)
         self.knob = QLiveControlKnob(panel, INTERPTIME_MIN, INTERPTIME_MAX, 
-                                     init=QLiveLib.getVar("globalInterpTime"), label="Time")
+                                     init=QLiveLib.getVar("globalInterpTime"), 
+                                     showAutomation=False, label="Time")
         self.knob.SetFocus()
         knobSizer.Add(self.method, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.RIGHT, 5)
         knobSizer.Add(self.knob, 1, wx.LEFT | wx.RIGHT, 30)

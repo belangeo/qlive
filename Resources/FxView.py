@@ -6,8 +6,6 @@ from pyolib._wxwidgets import BACKGROUND_COLOUR, Grapher
 from Widgets import *
 import QLiveLib
 
-# TODO: should save midi assignations.
-# And disable saving / loading cues when there is a midi bindings.
 class SliderWidget(wx.Panel):
     def __init__(self, parent, parameters, fxbox):
         wx.Panel.__init__(self, parent)
@@ -83,9 +81,9 @@ class SliderWidget(wx.Panel):
         self.slider.setAutoPlay(state)
         self.interpKnob.setAutoPlay(state)
 
-    def setAutoEdit(self, state):
-        self.slider.setAutoEdit(state)
-        self.interpKnob.setAutoEdit(state)
+    def setShowEdit(self, state):
+        self.slider.setShowEdit(state)
+        self.interpKnob.setShowEdit(state)
         
     def outputValue(self, value):
         self.fxbox.setParamValue(self.name, value, self.fromUser)
@@ -301,7 +299,7 @@ class FxSlidersView(wx.Frame):
         sz = self.GetSize()
         if self.graph_object is not None:
             if self.graph_object is not obj:
-                self.graph_object.setAutoEdit(False) 
+                self.graph_object.setShowEdit(False) 
         if state:
             self.graph_object = obj
             if not self.graph.IsShown():
