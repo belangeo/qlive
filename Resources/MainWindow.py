@@ -50,13 +50,7 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.onLoad, id=wx.ID_OPEN)
         self.submenu1 = wx.Menu()
         ID_OPEN_RECENT = 2000
-        recentFiles = []
-        filename = QLiveLib.ensureNFD(OPEN_RECENT_PATH)
-        if os.path.isfile(filename):
-            f = codecs.open(filename, "r", encoding="utf-8")
-            for line in f.readlines():
-                recentFiles.append(line.replace("\n", ""))
-            f.close()
+        recentFiles = QLiveLib.getRecentFiles()
         if recentFiles:
             for file in recentFiles:
                 self.submenu1.Append(ID_OPEN_RECENT, file)

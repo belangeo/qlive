@@ -1,5 +1,6 @@
 import wx, textwrap, sys
 from constants import *
+import QLiveLib
 
 class IntroDialog(wx.Dialog):
     def __init__(self, parent):
@@ -30,11 +31,25 @@ class IntroDialog(wx.Dialog):
 
         sizer.Add(box, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
 
+        hsizerRecentFiles = wx.BoxSizer(wx.HORIZONTAL)
+
+        recentFiles = QLiveLib.getRecentFiles()
+        self.recentFilesLabel = wx.StaticText(self, -1, "Recent projects: ")
+        self.recentFilesLabel.Disable()
+        self.recentFilesChoice = wx.Choice(self, -1, choices = recentFiles)
+        self.recentFilesChoice.Disable()
+        self.recentFilesChoice.Bind(wx.EVT_CHOICE, self.openRecent)
+        hsizerRecentFiles.Add(self.recentFilesLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerRecentFiles.Add(self.recentFilesChoice, -1, wx.ALL, 3)
+
+        sizer.Add(hsizerRecentFiles, 0, wx.ALL|wx.EXPAND, 0)
+
         box = wx.BoxSizer(wx.HORIZONTAL)
         self.pathtext = wx.StaticText(self, -1, "")
         box.Add(self.pathtext, 1, wx.EXPAND|wx.ALIGN_LEFT|wx.BOTTOM, 25)
 
         sizer.Add(box, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 10)
+
 
         line = wx.StaticLine(self, -1, size=(20,-1), style=wx.LI_HORIZONTAL)
         sizer.Add(line,0,wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP,25)
@@ -44,6 +59,20 @@ class IntroDialog(wx.Dialog):
         self.okbtn = wx.Button(self, wx.ID_OK)
         self.okbtn.Disable()
         btnsizer.AddButton(self.okbtn)
+
+        # set the most recent project as default for one click action
+        if recentFiles:
+            self.recentFilesLabel.Enable()
+            self.recentFilesChoice.Enable()
+            self.okbtn.Enable()
+            self.filepath = recentFiles[0]
+            self.createDir = False
+            self.showPath(self.filepath)
+            if PLATFORM == "darwin":
+                self.okbtn.SetDefault()
+            else:
+                self.okbtn.SetFocus()
+                self.recentFilesChoice.SetSelection(0)
 
         btnsizer.Realize()
 
@@ -74,6 +103,17 @@ class IntroDialog(wx.Dialog):
         path = textwrap.fill(path, n) 
         self.pathtext.SetLabel(head+path)
 
+    def openRecent(self, evt):
+        self.filepath = evt.GetString()
+        self.createDir = False
+        self.showPath(self.filepath)
+        if self.filepath != "":
+            self.okbtn.Enable()
+        if PLATFORM == "darwin":
+            self.okbtn.SetDefault()
+        else:
+            self.okbtn.SetFocus()
+
     def open(self, evt):
         dlg = wx.FileDialog(self, 
                             "Open Qlive Projet", 
@@ -82,6 +122,8 @@ class IntroDialog(wx.Dialog):
                             "QLive Project files (*.qlp)|*.qlp", 
                             style=wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
+            self.recentFilesLabel.Disable()
+            self.recentFilesChoice.Disable()
             self.filepath = dlg.GetPath()
             self.createDir = False
             self.showPath(self.filepath)
@@ -100,6 +142,8 @@ class IntroDialog(wx.Dialog):
                             "newproject", 
                             style=wx.SAVE|wx.FD_OVERWRITE_PROMPT)
         if dlg.ShowModal() == wx.ID_OK:
+            self.recentFilesLabel.Disable()
+            self.recentFilesChoice.Disable()
             self.filepath = dlg.GetPath()
             self.createDir = True
             self.showPath(self.filepath)

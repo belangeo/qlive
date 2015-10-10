@@ -44,9 +44,9 @@ Meeting on 05/10/2015
     - Use 'del' key for unassigning MIDI
     - Add Cut/copy/paste options for Cues
     - Use shift+crtl+c for Cue windows instead of ctrl+c
-    - *urgent* fix crash when closing the audio server
+    - **urgent** fix crash when closing the audio server
     - fix: harmonizer mutes the output when activated
-    - add 'recent projects' in the intro dialog
+    - add 'recent projects' in the intro dialog **done**
     - fix 'new project' option in the menu
     - parameters values for soundfiles should update in 'realtime'
     - macro task: conceive a monitor modulo, which will provide realtime

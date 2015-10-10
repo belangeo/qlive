@@ -1,6 +1,17 @@
 from constants import *
+import codecs
 import variables as vars
 from pyo import pa_get_input_devices, pa_get_default_input, pa_get_output_devices, pa_get_default_output, pm_get_input_devices, pm_get_default_input
+
+def getRecentFiles():
+    recentFiles = []
+    filename = ensureNFD(OPEN_RECENT_PATH)
+    if os.path.isfile(filename):
+        f = codecs.open(filename, "r", encoding="utf-8")
+        for line in f.readlines():
+            recentFiles.append(line.replace("\n", ""))
+        f.close()
+    return recentFiles
 
 def getAvailableAudioMidiDrivers():
     inputDriverList, inputDriverIndexes = pa_get_input_devices()
