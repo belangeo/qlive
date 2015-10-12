@@ -459,8 +459,9 @@ class AudioServer:
                     self.audioObjects.append(obj)
             for but in track.getButtonFxs():
                 name = but.name
+                category = but.category
                 if not name: name = "None"
-                ctrls = FX_DICT[name]["ctrls"]
+                ctrls = FX_DICT[category][name]["ctrls"]
                 values = but.getCurrentValues()
                 if values is not None:
                     obj = AUDIO_OBJECTS[name](chnls, ctrls, values,

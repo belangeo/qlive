@@ -10,19 +10,21 @@ class BaseFxBox(object):
     def __init__(self, parent):
         self.parent = parent
         self.name = ""
+        self.category = ""
         self.audioRef = None
         self.id = [0,0]
         self.enable = 1
         self.view = None
         self.cues = {}
         self.currentCue = 0
+        self.i = 50 # increment factor for 'id' of the effects categories menu
 
     def setAudioRef(self, obj):
         if obj is None:
             self.audioRef = None
         else:
             self.audioRef = weakref.ref(obj)
-        
+
     def getEnable(self):
         return self.enable
 
@@ -30,7 +32,7 @@ class BaseFxBox(object):
         if self.audioRef is not None:
             audio = self.audioRef()
             audio.setInput(input)
-        
+
     def getOutput(self):
         if self.audioRef is not None:
             audio = self.audioRef()
@@ -59,7 +61,7 @@ class BaseFxBox(object):
             audio.setEnable(x)
         if not fromUser and self.view is not None:
             self.view.setEnableState(x)
-        
+
     def checkInChannel(self, which, state):
         self.inChannels[which] = state
 
@@ -89,12 +91,15 @@ class BaseFxBox(object):
 
     def setId(self, id):
         self.id = id
-        
+
     def getId(self):
         return self.id
-        
+
     def setName(self, name):
         self.name = name
+
+    def setCategory(self, category):
+        self.category = category
 
     def openView(self):
         if self.view is not None:
@@ -104,18 +109,39 @@ class BaseFxBox(object):
         fxTracks = QLiveLib.getVar("FxTracks")
         menu = wx.Menu()
         id = BOX_MENU_ITEM_FIRST_ID
-        for name in self.choices:
-            menu.Append(id, name)
-            id += 1
+        if self.isInput == False:
+            for fxList in self.choices:
+                id_orig = id
+                subMenu = wx.Menu()
+                for fx in fxList[1:]:
+                    id += 1
+                    subMenu.Append(id, fx)
+                menu.AppendMenu(id_orig, fxList[0], subMenu)
+                id = id_orig + self.i
+        if self.isInput == True:
+            for name in self.choices:
+                menu.Append(id, name)
+                id += 1
         fxTracks.Bind(wx.EVT_MENU, self.select, id=BOX_MENU_ITEM_FIRST_ID, id2=id)
         fxTracks.PopupMenu(menu, event.GetPosition())
         menu.Destroy()
 
     def select(self, evt):
-        sel = self.choices[evt.GetId() - BOX_MENU_ITEM_FIRST_ID]
-        self.loadModule(sel)
-        
-    def loadModule(self, name):
+        if self.isInput == False:
+            # category is the [0] of each sublist inside FX_LIST
+            categoryIndex = evt.GetId() % BOX_MENU_ITEM_FIRST_ID / self.i
+            fxIndex = evt.GetId() % BOX_MENU_ITEM_FIRST_ID % self.i
+            categorySelected = self.choices[categoryIndex][0]
+            fxSelect = self.choices[categoryIndex][fxIndex]
+            self.loadModule(categorySelected, fxSelect)
+
+        if self.isInput == True:
+            inputSelect = self.choices[evt.GetId() - BOX_MENU_ITEM_FIRST_ID]
+            self.loadModule("", inputSelect)
+
+
+    def loadModule(self, cat, name):
+        self.category = cat
         self.name = name
         self.initModule()
         self.createView()
@@ -132,10 +158,13 @@ class BaseFxBox(object):
             self.outChannels = [1] + [0] * (NUM_OUTPUTS - 1)
         if self.name == "Soundfile":
             self.soundfile = "None"
-        
+
     def createView(self):
         if self.name:
-            parameters = self.module_dict[self.name]
+            if self.isInput == False:
+                parameters = self.module_dict[self.category][self.name]
+            if self.isInput == True:
+                parameters = self.module_dict[self.name]
             self.view = FxSlidersView(QLiveLib.getVar("MainWindow"), self, parameters)
 
     def delete(self):
@@ -147,9 +176,9 @@ class BaseFxBox(object):
             widgets = self.view.getWidgets()
             params = [widget.getValue() for widget in widgets]
             inters = [widget.getInterpValue() for widget in widgets]
-            paraDict = {"values": params, 
-                        "interps": inters, 
-                        "enable": self.enable} 
+            paraDict = {"values": params,
+                        "interps": inters,
+                        "enable": self.enable}
             return paraDict
         else:
             return None
@@ -218,7 +247,7 @@ class BaseFxBox(object):
                 if x < INTERPTIME_MIN:
                     x = INTERPTIME_MIN
                 widget.setInterpValue(x, propagate=True)
-            
+
     def saveCue(self):
         self.cues[self.currentCue] = self.getParams()
 
@@ -265,6 +294,7 @@ class BaseFxBox(object):
     def getSaveDict(self):
         self.saveCue()
         dict = {'name': self.name,
+                'category': self.category,
                 'id': self.id,
                 'cues': self.cues}
         if self.view is not None:
@@ -278,9 +308,10 @@ class BaseFxBox(object):
         if hasattr(self, "soundfile"):
             dict["soundfile"] = self.soundfile
         return dict
-            
+
     def setSaveDict(self, saveDict):
         self.name = saveDict["name"]
+        self.category = saveDict["category"]
         self.initModule()
         self.id = saveDict["id"]
         self.cues = saveDict["cues"]
@@ -307,6 +338,7 @@ class FxBox(BaseFxBox):
         BaseFxBox.__init__(self, parent)
         self.module_dict = FX_DICT
         self.choices = FX_LIST
+        self.isInput = False
 
     def getRect(self):
         x = TRACK_COL_SIZE * self.id[0] + 135
@@ -318,6 +350,7 @@ class InputBox(BaseFxBox):
         BaseFxBox.__init__(self, parent)
         self.module_dict = INPUT_DICT
         self.choices = INPUT_LIST
+        self.isInput = True
 
     def getRect(self):
         x = 35
