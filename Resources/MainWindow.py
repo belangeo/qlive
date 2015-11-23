@@ -85,7 +85,7 @@ class MainWindow(wx.Frame):
         menu3.Append(INTERP_TIME_ID, "Set Global Interpolation Time\tCtrl+G")
         self.Bind(wx.EVT_MENU, self.onNewInterpTime, id=INTERP_TIME_ID)        
         menu3.AppendSeparator()
-        menu3.AppendCheckItem(VIEW_CUE_WINDOW_ID, "Show Current Cue Window\tCtrl+C")
+        menu3.AppendCheckItem(VIEW_CUE_WINDOW_ID, "Show Current Cue Window\tShift+Ctrl+C")
         self.Bind(wx.EVT_MENU, self.onViewCurrentCue, id=VIEW_CUE_WINDOW_ID)
         menu3.AppendSeparator()
         menu3.AppendCheckItem(LINK_STEREO_ID, "Link Mixer Sliders\tCtrl+L")
