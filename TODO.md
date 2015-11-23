@@ -22,10 +22,7 @@ TODO / Meeting on 18/09/2015
         - Need a sanity function to check loaded prefs...
     - add symbols to make it more intuitive
     - all available effects should be there for Master input/output
-    - classer les effets par categorie (filtres, delay, reverb...)
-        - regarder dans fxbox_def, doit être modifié pour ça
-        - référence: les categories dans logic pro
-        - phase vocoder: dans une categorie "spectrale"
+    - Add phase vocoder dans une categorie "spectrale"
 
 TODO / Meeting on 05/10/2015
 ---------------------
@@ -71,3 +68,4 @@ interpolation window). **done** (just give nothing to playFunction and editFunct
     - There is no "key learn" yet.
  - fix: harmonizer mutes the output when activated **done**
  - Use shift+crtl+c for Cue windows instead of ctrl+c **done**
+ - classer les effets par categorie (filtres, delay, reverb...) **done**
