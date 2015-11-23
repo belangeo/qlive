@@ -36,7 +36,6 @@ TODO / Meeting on 05/10/2015
     - Add Cut/copy/paste options for Cues
     - Use shift+crtl+c for Cue windows instead of ctrl+c
     - **urgent** fix crash when closing the audio server
-    - fix: harmonizer mutes the output when activated
     - fix 'new project' option in the menu
     - parameters values for soundfiles should update in 'realtime'
     - macro task: conceive a monitor modulo, which will provide realtime
@@ -71,3 +70,4 @@ interpolation window). **done** (just give nothing to playFunction and editFunct
 - Add Soundfile transpo and gain attributes to cue and interpolation design. **done**
 - MIDI/Key learn pour cues (mode forward-backward and/or key-per-cue) **done**
     - There is no "key learn" yet.
+    - fix: harmonizer mutes the output when activated **done**
