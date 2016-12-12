@@ -71,7 +71,7 @@ class MainWindow(wx.Frame):
         if PLATFORM != "darwin":
             menu1.AppendSeparator()
         quitItem = menu1.Append(wx.ID_EXIT, "Quit\tCtrl+Q")
-        self.Bind(wx.EVT_MENU, self.OnClose, quitItem)
+        self.Bind(wx.EVT_MENU, self.OnQuit, quitItem)
         menubar.Append(menu1, 'File')
 
         menu2 = wx.Menu()
@@ -260,8 +260,7 @@ class MainWindow(wx.Frame):
             QLiveLib.setVar("projectFolder", os.path.dirname(path))
             self.newRecent(path)
         self.saveState = copy.deepcopy(dictSave)
-        if "soundfiles" in self.saveState:
-            self.soundfiles.setSaveState(self.saveState["soundfiles"])
+        self.soundfiles.setSaveState(self.saveState.get("soundfiles", []))
         self.tracks.setSaveState(self.saveState["tracks"])
         self.cues.setSaveDict(self.saveState["cues"])
         self.mixer.setSaveDict(self.saveState["mixer"])
@@ -289,7 +288,8 @@ class MainWindow(wx.Frame):
         
     def onNew(self, evt):
         if self.askForSaving():
-            self.loadFile(NEW_FILE_PATH)
+            self.Hide()
+            self.showIntro()
 
     def onLoad(self, evt):
         if not self.askForSaving():
@@ -392,7 +392,7 @@ class MainWindow(wx.Frame):
         self.prefs.Show()
         self.prefs.Center()
 
-    def OnClose(self, evt):
+    def OnQuit(self, evt):
         self.timer.Stop()
         if not self.askForSaving():
             return

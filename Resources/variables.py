@@ -1,3 +1,4 @@
+import copy
 from constants import *
 
 QLiveVariables = dict()
@@ -47,7 +48,7 @@ def readQLivePrefsFromFile():
     if not os.path.isfile(PREFERENCES_PATH):
         with open(PREFERENCES_PATH, "w") as f:
             f.write(str(PREFS_TO_SAVE))
-            prefs = PREFS_TO_SAVE
+        prefs = copy.deepcopy(PREFS_TO_SAVE)
     else:
         with open(PREFERENCES_PATH, "r") as f:
             prefs = eval(f.read())

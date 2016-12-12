@@ -14,7 +14,7 @@ class SoundFileObject:
         interpTime = QLiveLib.getVar("globalInterpTime")
         self.id = id
         self.filename = filename
-        sndfolder = os.path.join(QLiveLib.getVar("projectFolder"), "sounds")        
+        sndfolder = os.path.join(QLiveLib.getVar("projectFolder"), "sounds")
         info = sndinfo(os.path.join(sndfolder, self.filename))
         if info is None:
             self.valid = False
@@ -376,7 +376,6 @@ class SoundFileGrid(gridlib.Grid):
 
         self.selRow = self.selCol = -1
         self.objects = []
-        
         self.setInitialValuesToNone()
 
         self.textColour = self.GetDefaultCellTextColour()
@@ -411,8 +410,6 @@ class SoundFileGrid(gridlib.Grid):
         self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMotion)
         self.GetGridWindow().Bind(wx.EVT_SIZE, self.OnSize)
 
-        self.addRow()
-
     def setSelRow(self, row):
         self.selRow = row
 
@@ -432,13 +429,22 @@ class SoundFileGrid(gridlib.Grid):
         self.initialStart = self.initialEnd = self.initialFade = None
         self.initialChannel = None
 
+    def clear(self):
+        if self.objects != []:
+            self.selRow = self.selCol = -1
+            self.setInitialValuesToNone()
+            self.DeleteRows(0, len(self.objects))
+            self.objects = []
+        self.addRow()
+
     def addRow(self, index=None):
         if index == None:
             self.AppendRows(1, True)
-            row = self.GetNumberRows() - 1
+            row = len(self.objects)
         else:
             self.InsertRows(index, 1, True)
             row = index
+
         # Filename
         attr = gridlib.GridCellAttr()
         attr.SetReadOnly(True)
@@ -848,6 +854,7 @@ class SoundFilePanel(wx.Panel):
             self.saveCue()
 
     def setSaveState(self, lst):
+        self.grid.clear()
         for dict in lst:
             id = dict["id"]
             filename = dict["filename"]

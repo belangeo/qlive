@@ -32,7 +32,7 @@ TODO / Meeting on 05/10/2015
     - Use 'del' key for unassigning MIDI
     - Add Cut/copy/paste options for Cues
     - **urgent** fix crash when closing the audio server
-    - fix 'new project' option in the menu
+    - fix 'new project' option in the menu **done**
     - parameters values for soundfiles should update in 'realtime'
     - macro task: conceive a monitor modulo, which will provide realtime
       visualization of automations and other parameters (probably using OSC).
