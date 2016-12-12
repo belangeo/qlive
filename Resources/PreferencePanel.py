@@ -235,6 +235,9 @@ class PreferenceFrame(wx.Dialog):
 
     def onClose(self, evt):
         if self.tab1.reinit_server:
-            QLiveLib.getVar("AudioServer").reinitServer()
+            try:
+                QLiveLib.getVar("AudioServer").reinitServer()
+            except:
+                pass
         self.Destroy()
 

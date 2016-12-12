@@ -36,23 +36,26 @@ class IntroDialog(wx.Dialog):
         recentFiles = QLiveLib.getRecentFiles()
         self.recentFilesLabel = wx.StaticText(self, -1, "Recent projects: ")
         self.recentFilesLabel.Disable()
-        self.recentFilesChoice = wx.Choice(self, -1, choices=recentFiles, size=(250,-1))
+        self.recentFilesChoice = wx.Choice(self, -1, choices=recentFiles, 
+                                           size=(350,-1))
         self.recentFilesChoice.Disable()
         self.recentFilesChoice.Bind(wx.EVT_CHOICE, self.openRecent)
-        hsizerRecentFiles.Add(self.recentFilesLabel, 0, wx.LEFT|wx.ALIGN_CENTER, 10)
-        hsizerRecentFiles.Add(self.recentFilesChoice, 1, wx.TOP|wx.BOTTOM|wx.RIGHT, 10)
+        hsizerRecentFiles.Add(self.recentFilesLabel, 0, 
+                              wx.LEFT|wx.ALIGN_CENTER, 10)
+        hsizerRecentFiles.Add(self.recentFilesChoice, 1, 
+                              wx.TOP|wx.BOTTOM|wx.RIGHT, 10)
 
         sizer.Add(hsizerRecentFiles, 0, wx.ALL|wx.EXPAND, 0)
 
         box = wx.BoxSizer(wx.HORIZONTAL)
         self.pathtext = wx.StaticText(self, -1, "")
-        box.Add(self.pathtext, 1, wx.EXPAND|wx.ALIGN_LEFT|wx.BOTTOM, 25)
+        box.Add(self.pathtext, 1, wx.EXPAND|wx.ALIGN_LEFT|wx.TOP|wx.BOTTOM, 15)
 
         sizer.Add(box, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 10)
 
 
         line = wx.StaticLine(self, -1, size=(20,-1), style=wx.LI_HORIZONTAL)
-        sizer.Add(line,0,wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP,25)
+        sizer.Add(line, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.TOP,25)
 
         btnsizer = wx.StdDialogButtonSizer()
 
@@ -153,15 +156,3 @@ class IntroDialog(wx.Dialog):
             self.okbtn.SetDefault()
         else:
             self.okbtn.SetFocus()
-
-if __name__ == "__main__":
-    class TestWindow(wx.Frame):
-        def __init__(self):
-            wx.Frame.__init__(self, None, pos=(350,500), size=(1000,250))
-            dlg = IntroDialog(self)
-            dlg.ShowModal()
-            dlg.Destroy()
-    app = wx.App()
-    frame = TestWindow()
-    frame.Show()
-    app.MainLoop()

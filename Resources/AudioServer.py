@@ -370,7 +370,20 @@ class AudioServer:
             reboot = True
             self.shutdown()
             time.sleep(.1)
-        sr, bufferSize, audio, jackname, nchnls, inchnls, duplex, outdev, indev, firstin, firstout = self.getPrefs()
+
+        prefs = self.getPrefs()
+        sr = prefs[0]
+        bufferSize = prefs[1]
+        audio = prefs[2]
+        jackname = prefs[3]
+        nchnls = prefs[4]
+        inchnls = prefs[5]
+        duplex = prefs[6]
+        outdev = prefs[7]
+        indev = prefs[8]
+        firstin = prefs[9]
+        firstout = prefs[10]
+
         self.server.reinit(audio=audio, jackname=jackname)
         self.server.setSamplingRate(sr)
         self.server.setBufferSize(bufferSize)
