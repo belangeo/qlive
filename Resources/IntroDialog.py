@@ -92,7 +92,7 @@ class IntroDialog(wx.Dialog):
 
     def showPath(self, path):
         w, _ = self.GetSize()
-        if PLATFORM == "darwin":
+        if PLATFORM == "darwin" or PLATFORM.startswith("linux"):
             tw, _ = self.GetTextExtent("a")
             n = w / tw
         else:

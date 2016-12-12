@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # encoding: utf-8
-import wx, os
-from constants import *
+import os
+import wx
 from pyolib._wxwidgets import BACKGROUND_COLOUR, Grapher
+from constants import *
 from Widgets import *
 import QLiveLib
 
@@ -188,7 +189,7 @@ class FxSlidersView(wx.Frame):
         self.sizer.Add(wx.StaticLine(self.panel, -1), 0, wx.ALL|wx.EXPAND, 5)
         
         # Selection boxes
-        if self.parameters.has_key("inselect"):
+        if "inselect" in self.parameters:
             self.inChannelChecks = []
             statbox = wx.StaticBox(self.panel, -1, "Input Selections")
             selectorSizer = wx.StaticBoxSizer(statbox, wx.HORIZONTAL)
@@ -213,7 +214,7 @@ class FxSlidersView(wx.Frame):
 
             self.sizer.Add(wx.StaticLine(self.panel), 0, wx.ALL|wx.EXPAND, 5)
 
-        if self.parameters.has_key("outselect"):
+        if "outselect" in self.parameters:
             self.outChannelChecks = []
             statbox = wx.StaticBox(self.panel, -1, "Output Selections")
             selectorSizer = wx.StaticBoxSizer(statbox, wx.HORIZONTAL)
@@ -227,7 +228,7 @@ class FxSlidersView(wx.Frame):
                 selectorSizer.Add(check, 1, wx.EXPAND|wx.ALL, 5)
             self.sizer.Add(selectorSizer, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
 
-        if self.parameters.has_key("select"):
+        if "select" in self.parameters:
             self.selectedSoundfile = "None"
             soundfiles = QLiveLib.getVar("Soundfiles").getSoundFileObjects()
             choices = ["None"] + [str(snd.getId()+1) for snd in soundfiles]
@@ -241,7 +242,7 @@ class FxSlidersView(wx.Frame):
             self.sizer.Add(popupSizer, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
             
         # Controller box
-        if self.parameters.has_key("ctrls"):
+        if "ctrls" in self.parameters:
             knobSizer = wx.BoxSizer(wx.HORIZONTAL)
             sampleList = ["Slider Values", "Interpolation Times"]
             self.interpButton = wx.RadioBox(self.panel, -1, "", 
@@ -276,7 +277,7 @@ class FxSlidersView(wx.Frame):
         self.SetSize((500, -1))
 
     def getFocus(self, evt):
-        if self.parameters.has_key("select"):
+        if "select" in self.parameters:
             soundfiles = QLiveLib.getVar("Soundfiles").getSoundFileObjects()
             choices = ["None"] + [str(snd.getId()+1) for snd in soundfiles]
             self.soundfilesPopup.SetItems(choices)

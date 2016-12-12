@@ -1,10 +1,11 @@
 #!/usr/bin/python
 # encoding: utf-8
-import wx, weakref
-from constants import *
-from fxbox_def import *
-import QLiveLib
-from FxView import FxSlidersView
+import wx
+import weakref
+from .constants import *
+from .fxbox_def import *
+from . import QLiveLib
+from .FxView import FxSlidersView
 
 class BaseFxBox(object):
     def __init__(self, parent):
@@ -197,15 +198,15 @@ class BaseFxBox(object):
     def getCurrentValues(self):
         if self.cues:
             if self.currentCue in self.cues:
-		if self.cues[self.currentCue] is not None:
-		    return self.cues[self.currentCue]["values"]
+                if self.cues[self.currentCue] is not None:
+                    return self.cues[self.currentCue]["values"]
         return None
 
     def getCurrentInterps(self):
         if self.cues:
             if self.currentCue in self.cues:
-		if self.cues[self.currentCue] is not None:
-		    return self.cues[self.currentCue]["interps"]
+                if self.cues[self.currentCue] is not None:
+                    return self.cues[self.currentCue]["interps"]
         return None
 
     def setGlobalInterpTime(self, value, allcues, meth):

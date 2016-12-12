@@ -404,11 +404,20 @@ class AudioServer:
         nchnls = QLiveLib.getVar("nchnls")
         inchnls = QLiveLib.getVar("inchnls")
         duplex = QLiveLib.getVar("duplex")
-        outdev = outputIndexes[audioOutputs.index(QLiveLib.getVar("audioOutput"))]
-        indev = inputIndexes[audioInputs.index(QLiveLib.getVar("audioInput"))]
+        audioOut = QLiveLib.getVar("audioOutput")
+        if audioOut == "":
+            outdev = -1
+        else:
+            outdev = outputIndexes[audioOutputs.index(audioOut)]
+        audioIn = QLiveLib.getVar("audioInput")
+        if audioIn == "":
+            indev = -1
+        else:
+            indev = inputIndexes[audioInputs.index(audioIn)]
         firstin = QLiveLib.getVar("defaultFirstInput")
         firstout = QLiveLib.getVar("defaultFirstOutput")
-        return sr, bufferSize, audio, jackname, nchnls, inchnls, duplex, outdev, indev, firstin, firstout
+        return (sr, bufferSize, audio, jackname, nchnls, inchnls, 
+                duplex, outdev, indev, firstin, firstout)
 
     def getSaveState(self):
         return {}
@@ -435,7 +444,8 @@ class AudioServer:
             chnls = 1
             for but in track.getButtonInputs():
                 name = but.name
-                if not name: name = "None"
+                if not name: 
+                    name = "None"
                 if name == "AudioIn":
                     inchnls = but.getInChannels()
                     numchnls = inchnls.count(1)
@@ -460,14 +470,16 @@ class AudioServer:
             for but in track.getButtonFxs():
                 name = but.name
                 category = but.category
-                if not name: name = "None"
-                ctrls = FX_DICT[category][name]["ctrls"]
-                values = but.getCurrentValues()
-                if values is not None:
-                    obj = AUDIO_OBJECTS[name](chnls, ctrls, values,
-                                              but.getCurrentInterps())
-                    but.setAudioRef(obj)
-                    self.audioObjects.append(obj)
+                if not name: 
+                    name = "None"
+                if name != "None":
+                    ctrls = FX_DICT[category][name]["ctrls"]
+                    values = but.getCurrentValues()
+                    if values is not None:
+                        obj = AUDIO_OBJECTS[name](chnls, ctrls, values,
+                                                  but.getCurrentInterps())
+                        but.setAudioRef(obj)
+                        self.audioObjects.append(obj)
 
     def resetPlayerRefs(self):
         objs = QLiveLib.getVar("Soundfiles").getSoundFileObjects()
@@ -551,7 +563,7 @@ class MidiServer:
         self.listen.start()
 
     def _midirecv(self, status, data1, data2):
-        #print status, data1, data2
+        PRINT("midirecv: ", status, data1, data2)
         if status & 0xF0 == 0x90 and data2 != 0: # noteon
             midichnl = status - 0x90 + 1
             if self.noteonscan_callback is not None:

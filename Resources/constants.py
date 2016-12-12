@@ -1,5 +1,4 @@
 import os, sys, unicodedata, copy
-from types import UnicodeType
 from pyolib._wxwidgets import BACKGROUND_COLOUR
 
 reload(sys)

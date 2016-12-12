@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
-import wx, sys
-from types import ListType
+import sys
+import wx
 import Resources.QLiveLib as QLiveLib
 from Resources.MainWindow import MainWindow
 
@@ -20,7 +20,7 @@ class QLiveApp(wx.App):
             self.frame.loadFile(QLiveLib.ensureNFD(self.filenames[0]))
             
     def MacOpenFiles(self, filenames):
-        if type(filenames) != ListType:
+        if type(filenames) != list:
             filenames = [filenames]
         self.filenames = filenames
 

@@ -1,7 +1,10 @@
+import os
+import codecs
+from pyo import pa_get_input_devices, pa_get_default_input
+from pyo import pa_get_output_devices, pa_get_default_output
+from pyo import pm_get_input_devices, pm_get_default_input
 from constants import *
-import codecs, os
 import variables as vars
-from pyo import pa_get_input_devices, pa_get_default_input, pa_get_output_devices, pa_get_default_output, pm_get_input_devices, pm_get_default_input
 
 def getRecentFiles():
     recentFiles = []
@@ -16,17 +19,27 @@ def getRecentFiles():
     return recentFiles
 
 def getAvailableAudioMidiDrivers():
-    inputDriverList, inputDriverIndexes = pa_get_input_devices()
-    defaultInputDriver = inputDriverList[inputDriverIndexes.index(pa_get_default_input())]
-    outputDriverList, outputDriverIndexes = pa_get_output_devices()
-    defaultOutputDriver = outputDriverList[outputDriverIndexes.index(pa_get_default_output())]
-    midiDriverList, midiDriverIndexes = pm_get_input_devices()
-    if midiDriverList == []:
-        defaultMidiDriver = ""
+    inDefault = pa_get_default_input()
+    inDriverList, inDriverIndexes = pa_get_input_devices()
+    if inDefault in inDriverIndexes:
+        defaultInputDriver = inDriverList[inDriverIndexes.index(inDefault)]
     else:
-        defaultMidiDriver = midiDriverList[midiDriverIndexes.index(pm_get_default_input())]
-    return inputDriverList, inputDriverIndexes, defaultInputDriver, outputDriverList, outputDriverIndexes, \
-            defaultOutputDriver, midiDriverList, midiDriverIndexes, defaultMidiDriver
+        defaultInputDriver = ""
+    outDriverList, outDriverIndexes = pa_get_output_devices()
+    outDefault = pa_get_default_output()
+    if outDefault in outDriverIndexes:
+        defaultOutputDriver = outDriverList[outDriverIndexes.index(outDefault)]
+    else:
+        defaultOutputDriver = ""
+    midiDefault = pm_get_default_input()
+    midiDriverList, midiDriverIndexes = pm_get_input_devices()
+    if midiDefault in midiDriverIndexes:
+        defaultMidiDriver = midiDriverList[midiDriverIndexes.index(midiDefault)]
+    else:
+        defaultMidiDriver = ""
+    return (inDriverList, inDriverIndexes, defaultInputDriver, 
+            outDriverList, outDriverIndexes, defaultOutputDriver, 
+            midiDriverList, midiDriverIndexes, defaultMidiDriver)
 
 # getter/setter for global variables defined at runtime (see variables.py)
 def getVar(var, default=None):
@@ -42,7 +55,17 @@ def loadVars():
     vars.readQLivePrefsFromFile()
 
 def queryAudioMidiDrivers():
-    inputs, inputIndexes, defaultInput, outputs, outputIndexes, defaultOutput, midiInputs, midiInputIndexes, defaultMidiInput = getAvailableAudioMidiDrivers()
+    driverInfos = getAvailableAudioMidiDrivers()
+    inputs = driverInfos[0]
+    inputIndexes = driverInfos[1]
+    defaultInput = driverInfos[2]
+    outputs = driverInfos[3]
+    outputIndexes = driverInfos[4]
+    defaultOutput = driverInfos[5]
+    midiInputs = driverInfos[6]
+    midiInputIndexes = driverInfos[7]
+    defaultMidiInput = driverInfos[8]
+
     setVar("availableAudioOutputs",  outputs)
     setVar("availableAudioOutputIndexes",  outputIndexes)
     if getVar("audioOutput") not in outputs:
@@ -62,7 +85,7 @@ def queryAudioMidiDrivers():
     if getVar("midiDeviceIn") not in midiInputs:
         setVar("midiDeviceIn", defaultMidiInput)
 
-# PRINT should be used instead of print function to enable/disable printing.
+# PRINT() should be used instead of print statement to enable/disable printing.
 def PRINT(*args):
     if DEBUG:
         for arg in args:
@@ -71,9 +94,9 @@ def PRINT(*args):
 
 def ensureNFD(unistr):
     "Converts a string to unicode."
-    if unistr == None:
+    if unistr is None:
         return None
-    if PLATFORM in ['linux2', 'win32']:
+    if PLATFORM == 'win32' or PLATFORM.startswith("linux"):
         encodings = [DEFAULT_ENCODING, SYSTEM_ENCODING,
                      'cp1252', 'iso-8859-1', 'utf-16']
         format = 'NFC'
@@ -82,7 +105,7 @@ def ensureNFD(unistr):
                      'macroman', 'iso-8859-1', 'utf-16']
         format = 'NFC'
     decstr = unistr
-    if type(decstr) != UnicodeType:
+    if type(decstr) != unicode:
         for encoding in encodings:
             try:
                 decstr = decstr.decode(encoding)
@@ -91,7 +114,7 @@ def ensureNFD(unistr):
                 continue
             except:
                 decstr = "UnableToDecodeString"
-                print "Unicode encoding not in a recognized format..."
+                print("Unicode encoding not in a recognized format...")
                 break
     if decstr == "UnableToDecodeString":
         return unistr
