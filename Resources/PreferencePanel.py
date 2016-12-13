@@ -7,7 +7,8 @@ from constants import *
 class GeneralPrefsTab(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
-        self.tooltipsCheckBox = wx.CheckBox(self, -1, "Use tooltips", style=wx.ALIGN_RIGHT)
+        self.tooltipsCheckBox = wx.CheckBox(self, -1, "Use tooltips", 
+                                            style=wx.ALIGN_RIGHT)
         self.tooltipsCheckBox.SetValue(QLiveLib.getVar("useTooltips"))
         self.Bind(wx.EVT_CHECKBOX, self.enableTooltips, self.tooltipsCheckBox)
 
@@ -32,60 +33,89 @@ class AudioPrefsTab(wx.Panel):
         # Setting audio driver
         audioDriverDefault = QLiveLib.getVar("audio")
         audioDriverLabel = wx.StaticText(self, -1, "Audio driver:")
-        self.audioDriverCB = wx.ComboBox(self, -1, audioDriverDefault, wx.DefaultPosition,
-                         wx.DefaultSize, AUDIO_DRIVERS, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
-        self.audioDriverCB.Bind(wx.EVT_COMBOBOX, self.setAudioDriver, self.audioDriverCB)
+        self.audioDriverCB = wx.ComboBox(self, -1, audioDriverDefault, 
+                                         wx.DefaultPosition, wx.DefaultSize, 
+                                         AUDIO_DRIVERS, 
+                                         wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+        self.audioDriverCB.Bind(wx.EVT_COMBOBOX, self.setAudioDriver, 
+                                self.audioDriverCB)
 
         # Portaudio: Audio Input devices
-        self.inputDeviceLabel = wx.StaticText(self, -1, "Audio Input (portaudio):")
+        self.inputDeviceLabel = wx.StaticText(self, -1, 
+                                              "Audio Input (portaudio):")
 
         availableAudioIns = []
         for d in QLiveLib.getVar("availableAudioInputs"):
             availableAudioIns.append(QLiveLib.ensureNFD(d))
         initInput = QLiveLib.ensureNFD(QLiveLib.getVar("audioInput"))
-        self.inputDeviceCB = wx.ComboBox(self, -1, initInput, wx.DefaultPosition,
-                         wx.DefaultSize, availableAudioIns, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
-        self.inputDeviceCB.Bind(wx.EVT_COMBOBOX, self.setInputDevice, self.inputDeviceCB)
+        self.inputDeviceCB = wx.ComboBox(self, -1, initInput, 
+                                         wx.DefaultPosition, wx.DefaultSize, 
+                                         availableAudioIns, 
+                                         wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+        self.inputDeviceCB.Bind(wx.EVT_COMBOBOX, self.setInputDevice, 
+                                self.inputDeviceCB)
 
         # Portaudio: Audio Output devices
-        self.outputDeviceLabel = wx.StaticText(self, -1, "Audio Output (portaudio):")
+        self.outputDeviceLabel = wx.StaticText(self, -1, 
+                                               "Audio Output (portaudio):")
         availableAudioOuts = []
         for d in QLiveLib.getVar("availableAudioOutputs"):
             availableAudioOuts.append(QLiveLib.ensureNFD(d))
         initOutput = QLiveLib.ensureNFD(QLiveLib.getVar("audioOutput"))
-        self.outputDeviceCB = wx.ComboBox(self, -1, initOutput, wx.DefaultPosition,
-                         wx.DefaultSize, availableAudioOuts, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
-        self.outputDeviceCB.Bind(wx.EVT_COMBOBOX, self.setOutputDevice, self.outputDeviceCB)
+        self.outputDeviceCB = wx.ComboBox(self, -1, initOutput, 
+                                          wx.DefaultPosition, wx.DefaultSize, 
+                                          availableAudioOuts, 
+                                          wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+        self.outputDeviceCB.Bind(wx.EVT_COMBOBOX, self.setOutputDevice, 
+                                 self.outputDeviceCB)
 
         # First physical input device
-        self.firstPhysicalInputLabel = wx.StaticText(self, -1, "First Physical Input:")
+        self.firstPhysicalInputLabel = wx.StaticText(self, -1, 
+                                                     "First Physical Input:")
 
-        initPysicalInput = QLiveLib.ensureNFD(str(QLiveLib.getVar("defaultFirstInput")))
-        self.firstPhysicalInputCB = wx.ComboBox(self, -1, initPysicalInput, wx.DefaultPosition,
-                         wx.DefaultSize, [str(x) for x in range(36)], wx.CB_READONLY|wx.TE_PROCESS_ENTER)
-        self.firstPhysicalInputCB.Bind(wx.EVT_COMBOBOX, self.setFirstPhysicalInput, self.firstPhysicalInputCB)
+        initPysicalInput = str(QLiveLib.getVar("defaultFirstInput"))
+        self.firstPhysicalInputCB = wx.ComboBox(self, -1, initPysicalInput, 
+                                            wx.DefaultPosition, 
+                                            wx.DefaultSize, 
+                                            [str(x) for x in range(36)], 
+                                            wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+        self.firstPhysicalInputCB.Bind(wx.EVT_COMBOBOX, 
+                                       self.setFirstPhysicalInput, 
+                                       self.firstPhysicalInputCB)
 
         # First physical output device
-        self.firstPhysicalOutputLabel = wx.StaticText(self, -1, "First Physical Output:")
+        self.firstPhysicalOutputLabel = wx.StaticText(self, -1, 
+                                                      "First Physical Output:")
 
-        initPysicalOutput = QLiveLib.ensureNFD(str(QLiveLib.getVar("defaultFirstOutput")))
-        self.firstPhysicalOutputCB = wx.ComboBox(self, -1, initPysicalOutput, wx.DefaultPosition,
-                         wx.DefaultSize, [str(x) for x in range(36)], wx.CB_READONLY|wx.TE_PROCESS_ENTER)
-        self.firstPhysicalOutputCB.Bind(wx.EVT_COMBOBOX, self.setFirstPhysicalOutput, self.firstPhysicalOutputCB)
+        initPysicalOutput = str(QLiveLib.getVar("defaultFirstOutput"))
+        self.firstPhysicalOutputCB = wx.ComboBox(self, -1, initPysicalOutput, 
+                                             wx.DefaultPosition,
+                                             wx.DefaultSize, 
+                                             [str(x) for x in range(36)], 
+                                             wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+        self.firstPhysicalOutputCB.Bind(wx.EVT_COMBOBOX, 
+                                        self.setFirstPhysicalOutput, 
+                                        self.firstPhysicalOutputCB)
 
         # Setting buffer size
         bufferSizeDefault = QLiveLib.getVar("bufferSize")
         bufferSizeLabel = wx.StaticText(self, -1, "Buffer size:")
-        self.bufferSizeCB = wx.ComboBox(self, -1, bufferSizeDefault, wx.DefaultPosition,
-                         wx.DefaultSize, BUFFER_SIZES, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
-        self.bufferSizeCB.Bind(wx.EVT_COMBOBOX, self.setBufferSize, self.bufferSizeCB)
+        self.bufferSizeCB = wx.ComboBox(self, -1, bufferSizeDefault, 
+                                        wx.DefaultPosition, wx.DefaultSize, 
+                                        BUFFER_SIZES, 
+                                        wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+        self.bufferSizeCB.Bind(wx.EVT_COMBOBOX, self.setBufferSize, 
+                               self.bufferSizeCB)
 
         # Setting sampling rate
         samplingRateDefault = QLiveLib.getVar("sr")
         samplingRateLabel = wx.StaticText(self, -1, "Sampling rate:")
-        self.samplingRateCB = wx.ComboBox(self, -1, samplingRateDefault, wx.DefaultPosition,
-                         wx.DefaultSize, SAMPLE_RATES, wx.CB_READONLY|wx.TE_PROCESS_ENTER)
-        self.samplingRateCB.Bind(wx.EVT_COMBOBOX, self.setSamplingRate, self.samplingRateCB)
+        self.samplingRateCB = wx.ComboBox(self, -1, samplingRateDefault, 
+                                          wx.DefaultPosition, wx.DefaultSize, 
+                                          SAMPLE_RATES, 
+                                          wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+        self.samplingRateCB.Bind(wx.EVT_COMBOBOX, self.setSamplingRate, 
+                                 self.samplingRateCB)
 
         # Setting duplex True/False
         duplexDefault = QLiveLib.getVar("duplex")
@@ -111,29 +141,37 @@ class AudioPrefsTab(wx.Panel):
         hsizerAudioDriver.Add(audioDriverLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
         hsizerAudioDriver.Add(self.audioDriverCB, -1, wx.ALL, 3)
 
-        hsizerInputDevice.Add(self.inputDeviceLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerInputDevice.Add(self.inputDeviceLabel, -1, 
+                              wx.ALL|wx.ALIGN_CENTER, 3)
         hsizerInputDevice.Add(self.inputDeviceCB, -1, wx.ALL, 3)
 
-        hsizerOutputDevice.Add(self.outputDeviceLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerOutputDevice.Add(self.outputDeviceLabel, -1, 
+                               wx.ALL|wx.ALIGN_CENTER, 3)
         hsizerOutputDevice.Add(self.outputDeviceCB, -1, wx.ALL, 3)
 
-        hsizerFirstPhysicalInput.Add(self.firstPhysicalInputLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerFirstPhysicalInput.Add(self.firstPhysicalInputLabel, -1, 
+                                     wx.ALL|wx.ALIGN_CENTER, 3)
         hsizerFirstPhysicalInput.Add(self.firstPhysicalInputCB, -1, wx.ALL, 3)
 
-        hsizerFirstPhysicalOutput.Add(self.firstPhysicalOutputLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerFirstPhysicalOutput.Add(self.firstPhysicalOutputLabel, -1, 
+                                      wx.ALL|wx.ALIGN_CENTER, 3)
         hsizerFirstPhysicalOutput.Add(self.firstPhysicalOutputCB, -1, wx.ALL, 3)
 
         hsizerBufferSize.Add(bufferSizeLabel, -1, wx.ALL|wx.ALIGN_CENTER , 3)
         hsizerBufferSize.Add(self.bufferSizeCB, -1, wx.ALL, 3)
 
-        hsizerSamplingRate.Add(samplingRateLabel, -1, wx.ALL|wx.ALIGN_CENTER , 3)
+        hsizerSamplingRate.Add(samplingRateLabel, -1, 
+                               wx.ALL|wx.ALIGN_CENTER , 3)
         hsizerSamplingRate.Add(self.samplingRateCB, -1, wx.ALL, 3)
 
         hsizerDuplex.Add(duplexLabel, -1, wx.ALL|wx.ALIGN_CENTER , 3)
         hsizerDuplex.Add(self.duplexCB, -1, wx.ALL, 3)
 
         vsizer.AddSpacer(5)
-        vsizer.Add(wx.StaticText(self, -1, "The changes will be effective when the preferences will be closed."), 0, wx.ALIGN_CENTER_HORIZONTAL)
+
+        m = "The changes will be effective when the preferences will be closed."
+        vsizer.Add(wx.StaticText(self, -1, m), 0, wx.ALIGN_CENTER_HORIZONTAL)
+
         vsizer.AddSpacer(5)
         vsizer.Add(hsizerAudioDriver, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerInputDevice, 0, wx.ALL|wx.EXPAND, 0)
@@ -207,7 +245,8 @@ class AudioPrefsTab(wx.Panel):
 class PreferenceFrame(wx.Dialog):
     def __init__(self, parent):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT
-        wx.Dialog.__init__(self, parent, title="QLive Preferences", style=style, size=(500, 350))
+        wx.Dialog.__init__(self, parent, title="QLive Preferences", 
+                           style=style, size=(500, 350))
         self.parent = parent
 
         # Create a panel and notebook (tabs holder)

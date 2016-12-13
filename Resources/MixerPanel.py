@@ -203,22 +203,3 @@ class MixerPanel(wx.Panel):
         outlink = dict.get("outputLinked", False)
         self.linkInputs(set=inlink)
         self.linkOutputs(set=outlink)
-
-if __name__ == "__main__":
-    from pyo64 import *
-    class TestWindow(wx.Frame):
-        def __init__(self):
-            wx.Frame.__init__(self, None)
-            self.Bind(wx.EVT_CLOSE, self.onClose)
-            self.server = Server().boot().start()
-            self.server.amp = 0.1
-            self.mixer = AudioMixer()
-            self.panel = MixerPanel(self, self.mixer)
-            self.SetSize(self.panel.GetBestSize())
-        def onClose(self, evt):
-            self.server.stop()
-            self.Destroy()
-    app = wx.App()
-    frame = TestWindow()
-    frame.Show()
-    app.MainLoop()

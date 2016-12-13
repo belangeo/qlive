@@ -132,13 +132,13 @@ EXPORT_FORMATS = ['WAV', 'AIFF', 'AU', 'RAW', 'SD2', 'FLAC', 'CAF', 'OGG']
 EXPORT_TYPES = ['16 int', '24 int', '32 int', '32 float', '64 float']
 RECORD_EXTENSIONS = [".wav",".aif",".au","",".sd2",".flac",".caf",".ogg"]
 AUDIO_FILE_WILDCARD =  "All files|*.*|" \
-                       "Wave file|*.wave;*.WAV;*.WAVE;*.Wav;*.Wave;*.wav|" \
-                       "AIFF file|*.aif;*.aiff;*.aifc;*.AIF;*.AIFF;*.Aif;*.Aiff|" \
-                       "Flac file|*.flac;*.FLAC;*.Flac;|" \
-                       "OGG file|*.ogg;*.OGG;*.Ogg;|" \
-                       "SD2 file|*.sd2;*.SD2;*.Sd2;|" \
-                       "AU file|*.au;*.AU;*.Au;|" \
-                       "CAF file|*.caf;*.CAF;*.Caf"
+                   "Wave file|*.wave;*.WAV;*.WAVE;*.Wav;*.Wave;*.wav|" \
+                   "AIFF file|*.aif;*.aiff;*.aifc;*.AIF;*.AIFF;*.Aif;*.Aiff|" \
+                   "Flac file|*.flac;*.FLAC;*.Flac;|" \
+                   "OGG file|*.ogg;*.OGG;*.Ogg;|" \
+                   "SD2 file|*.sd2;*.SD2;*.Sd2;|" \
+                   "AU file|*.au;*.AU;*.Au;|" \
+                   "CAF file|*.caf;*.CAF;*.Caf"
 
 # Fonts
 FONT_FACE = 'Trebuchet MS'

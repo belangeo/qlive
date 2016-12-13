@@ -58,7 +58,9 @@ class SoundFileObject:
     def openTranspoAutomationWindow(self):
         parent = QLiveLib.getVar("MainWindow")
         title = "Transpo Automations on Soundfile %d" % (self.id+1)
-        self.transpoAutoWindow = AutomationWindow(parent, title, self, self.closeTranspoWindow, self.setAutoTranspo)
+        self.transpoAutoWindow = AutomationWindow(parent, title, self, 
+                                                  self.closeTranspoWindow, 
+                                                  self.setAutoTranspo)
         if self.transpoDict is not None:
             self.transpoAutoWindow.setAttributes(self.transpoDict)
 
@@ -68,7 +70,9 @@ class SoundFileObject:
     def openGainAutomationWindow(self):
         parent = QLiveLib.getVar("MainWindow")
         title = "Gain Automations on Soundfile %d" % (self.id+1)
-        self.gainAutoWindow = AutomationWindow(parent, title, self, self.closeGainWindow, self.setGainTranspo)
+        self.gainAutoWindow = AutomationWindow(parent, title, self, 
+                                               self.closeGainWindow, 
+                                               self.setGainTranspo)
         if self.gainDict is not None:
             self.gainAutoWindow.setAttributes(self.gainDict)
 
@@ -534,14 +538,18 @@ class SoundFileGrid(gridlib.Grid):
                     self.SetCellValue(row, ID_COL_GAIN, str(attrs[key]))
             elif key == ID_TRANSPO_AUTO:
                 if self.isAutomationActive(attrs[key]):
-                    self.SetCellBackgroundColour(row, ID_COL_TRANSPO, SOUNDFILE_AUTO_CELL_BACKGROUND_COLOUR)
+                    self.SetCellBackgroundColour(row, ID_COL_TRANSPO, 
+                                        SOUNDFILE_AUTO_CELL_BACKGROUND_COLOUR)
                 else:
-                    self.SetCellBackgroundColour(row, ID_COL_TRANSPO, SOUNDFILE_CELL_BACKGROUND_COLOUR)
+                    self.SetCellBackgroundColour(row, ID_COL_TRANSPO, 
+                                        SOUNDFILE_CELL_BACKGROUND_COLOUR)
             elif key == ID_GAIN_AUTO:
                 if self.isAutomationActive(attrs[key]):
-                    self.SetCellBackgroundColour(row, ID_COL_GAIN, SOUNDFILE_AUTO_CELL_BACKGROUND_COLOUR)
+                    self.SetCellBackgroundColour(row, ID_COL_GAIN, 
+                                        SOUNDFILE_AUTO_CELL_BACKGROUND_COLOUR)
                 else:
-                    self.SetCellBackgroundColour(row, ID_COL_GAIN, SOUNDFILE_CELL_BACKGROUND_COLOUR)
+                    self.SetCellBackgroundColour(row, ID_COL_GAIN, 
+                                        SOUNDFILE_CELL_BACKGROUND_COLOUR)
             else:
                 self.SetCellValue(row, key, str(attrs[key]))
         self.SetCellTextColour(row, ID_COL_FILENAME, self.textColour)

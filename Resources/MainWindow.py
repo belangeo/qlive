@@ -88,7 +88,8 @@ class MainWindow(wx.Frame):
         menu3.Append(INTERP_TIME_ID, "Set Global Interpolation Time\tCtrl+G")
         self.Bind(wx.EVT_MENU, self.onNewInterpTime, id=INTERP_TIME_ID)        
         menu3.AppendSeparator()
-        menu3.AppendCheckItem(VIEW_CUE_WINDOW_ID, "Show Current Cue Window\tShift+Ctrl+C")
+        menu3.AppendCheckItem(VIEW_CUE_WINDOW_ID, 
+                              "Show Current Cue Window\tShift+Ctrl+C")
         self.Bind(wx.EVT_MENU, self.onViewCurrentCue, id=VIEW_CUE_WINDOW_ID)
         menu3.AppendSeparator()
         menu3.AppendCheckItem(LINK_STEREO_ID, "Link Mixer Sliders\tCtrl+L")
@@ -111,24 +112,26 @@ class MainWindow(wx.Frame):
         self.cue8Id = KEY_EVENT_FIRST_ID + 10
         self.cue9Id = KEY_EVENT_FIRST_ID + 11
         self.cue10Id = KEY_EVENT_FIRST_ID + 12
-        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_NORMAL,  wx.WXK_TAB, tabId),
-                                        (wx.ACCEL_NORMAL,  wx.WXK_LEFT, self.prevId),
-                                        (wx.ACCEL_NORMAL,  wx.WXK_RIGHT, self.nextId),
-                                        (wx.ACCEL_NORMAL,  wx.WXK_ESCAPE, self.cueZeroId),
-                                        (wx.ACCEL_NORMAL,  ord("1"), self.cue1Id),
-                                        (wx.ACCEL_NORMAL,  ord("2"), self.cue2Id),
-                                        (wx.ACCEL_NORMAL,  ord("3"), self.cue3Id),
-                                        (wx.ACCEL_NORMAL,  ord("4"), self.cue4Id),
-                                        (wx.ACCEL_NORMAL,  ord("5"), self.cue5Id),
-                                        (wx.ACCEL_NORMAL,  ord("6"), self.cue6Id),
-                                        (wx.ACCEL_NORMAL,  ord("7"), self.cue7Id),
-                                        (wx.ACCEL_NORMAL,  ord("8"), self.cue8Id),
-                                        (wx.ACCEL_NORMAL,  ord("9"), self.cue9Id),
-                                        (wx.ACCEL_NORMAL,  ord("0"), self.cue10Id)])
+        accel_tbl = wx.AcceleratorTable(
+                            [(wx.ACCEL_NORMAL,  wx.WXK_TAB, tabId),
+                            (wx.ACCEL_NORMAL,  wx.WXK_LEFT, self.prevId),
+                            (wx.ACCEL_NORMAL,  wx.WXK_RIGHT, self.nextId),
+                            (wx.ACCEL_NORMAL,  wx.WXK_ESCAPE, self.cueZeroId),
+                            (wx.ACCEL_NORMAL,  ord("1"), self.cue1Id),
+                            (wx.ACCEL_NORMAL,  ord("2"), self.cue2Id),
+                            (wx.ACCEL_NORMAL,  ord("3"), self.cue3Id),
+                            (wx.ACCEL_NORMAL,  ord("4"), self.cue4Id),
+                            (wx.ACCEL_NORMAL,  ord("5"), self.cue5Id),
+                            (wx.ACCEL_NORMAL,  ord("6"), self.cue6Id),
+                            (wx.ACCEL_NORMAL,  ord("7"), self.cue7Id),
+                            (wx.ACCEL_NORMAL,  ord("8"), self.cue8Id),
+                            (wx.ACCEL_NORMAL,  ord("9"), self.cue9Id),
+                            (wx.ACCEL_NORMAL,  ord("0"), self.cue10Id)])
         self.SetAcceleratorTable(accel_tbl)
         
         self.Bind(wx.EVT_MENU, self.onTabulate, id=tabId)
-        self.Bind(wx.EVT_MENU, self.onMoveCue, id=KEY_EVENT_FIRST_ID, id2=KEY_EVENT_FIRST_ID+100)
+        self.Bind(wx.EVT_MENU, self.onMoveCue, id=KEY_EVENT_FIRST_ID, 
+                  id2=KEY_EVENT_FIRST_ID+100)
 
         self.mainPanel = wx.Panel(self, style=wx.SUNKEN_BORDER)
         self.mainPanel.SetBackgroundColour(BACKGROUND_COLOUR)
@@ -276,11 +279,12 @@ class MainWindow(wx.Frame):
         state = True
         if self.saveState != self.getCurrentState():
             if not QLiveLib.getVar("currentProject"):
-                filename = "Untitled"
+                fname = "Untitled"
             else:
-                filename = QLiveLib.getVar("currentProject")
-            msg = 'file "%s" has been modified. Do you want to save?' % filename
-            dlg = wx.MessageDialog(None, msg, 'Warning!', wx.YES | wx.NO | wx.CANCEL)
+                fname = QLiveLib.getVar("currentProject")
+            msg = 'file "%s" has been modified. Do you want to save?' % fname
+            dlg = wx.MessageDialog(None, msg, 'Warning!', 
+                                   wx.YES|wx.NO|wx.CANCEL)
             but = dlg.ShowModal()
             if but == wx.ID_YES:
                 self.onSave(None)
@@ -352,7 +356,8 @@ class MainWindow(wx.Frame):
         if QLiveLib.getVar("currentProject"):
             filepath = os.path.split(QLiveLib.getVar("currentProject"))
         else:
-            filepath = os.path.join(os.path.expanduser("~"), "qlive_project.qlp")
+            filepath = os.path.join(os.path.expanduser("~"), 
+                                    "qlive_project.qlp")
             filepath = os.path.split(filepath)
         dlg = wx.FileDialog(self, "Save Qlive Projet", 
                             filepath[0], filepath[1],
