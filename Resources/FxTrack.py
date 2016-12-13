@@ -65,13 +65,17 @@ class FxTrack:
             self.buttonsFxs.append(but)
 
     def deleteButton(self, but):
-        # TODO: work only for fxs, not for inputs
-        but.delete()
-        self.buttonsFxs.remove(but)
-        for i, but in enumerate(self.buttonsFxs):
+        if but.isInput:
+            self.buttonsInputs.remove(but)
+            lst = self.buttonsInputs
+        else:
+            self.buttonsFxs.remove(but)
+            lst = self.buttonsFxs
+        for i, but in enumerate(lst):
             id = but.getId()
             id[0] = i
             but.setId(id)
+        but.delete()
         QLiveLib.getVar("FxTracks").drawAndRefresh()
 
     def close(self):
