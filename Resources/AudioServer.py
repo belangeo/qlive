@@ -66,8 +66,7 @@ class Automator:
         self.envActive = active
         if self.envInputs != dict[ID_ENV_INPUTS]:
             self.envInputs = dict[ID_ENV_INPUTS]
-            # TODO: Use Mix object instead of summation?
-            new = sum([self.mixer.getInputChannel(x).getOutput() \
+            new = Mix([self.mixer.getInputChannel(x).getOutput() \
                         for x in self.envInputs if x == 1])
             self.envInput.setInput(new, dict[ID_ENV_INPUTS_INTERP])
         self.envThreshold.time = dict[ID_ENV_THRESHOLD_INTERP]
@@ -551,7 +550,8 @@ class AudioServer:
             self.audioObjects = []
             QLiveLib.getVar("CuesPanel").onSaveCue()
 
-    # TODO: recording should be handled within the mixer panel.
+    # Global recording.
+    # AudioMixer should handle a per track recording.
     def record(self, state):
         if state:
             self.recording = True

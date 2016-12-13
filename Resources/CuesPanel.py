@@ -3,7 +3,7 @@ import wx
 import wx.lib.scrolledpanel as scrolled
 from constants import *
 import QLiveLib
-from Widgets import TransportButtons, CueButton, QLiveControlKnob, QLiveTooltip
+from Widgets import CueButton, QLiveControlKnob, QLiveTooltip
 
 class InterpTimeFrame(wx.Frame):
     def __init__(self, parent, callback=None):
