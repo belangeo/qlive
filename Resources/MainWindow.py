@@ -20,7 +20,7 @@ class MainWindow(wx.Frame):
 
         # Status bar, the third field is unused yet.
         self.status = self.CreateStatusBar(3)
-        self.status.SetStatusWidths([100, 100, -1])
+        self.status.SetStatusWidths([100, 150, -1])
         self.status.SetStatusText("CPU: 0.0 %", 0)
         self.status.SetStatusText("MEM: 0.00 Mb", 1)
 
@@ -82,6 +82,9 @@ class MainWindow(wx.Frame):
         menubar.Append(menu2, 'Tracks')
 
         menu3 = wx.Menu()
+        menu3.AppendCheckItem(MIDI_LEARN_ID, "Midi Learn Mode\tShift+Ctrl+M")
+        self.Bind(wx.EVT_MENU, self.onMidiLearn, id=MIDI_LEARN_ID)        
+        menu3.AppendSeparator()
         menu3.Append(INTERP_TIME_ID, "Set Global Interpolation Time\tCtrl+G")
         self.Bind(wx.EVT_MENU, self.onNewInterpTime, id=INTERP_TIME_ID)        
         menu3.AppendSeparator()
@@ -365,6 +368,15 @@ class MainWindow(wx.Frame):
 
     def onDeleteTrack(self, evt):
         self.tracks.removeTrack()
+
+    def onMidiLearn(self, evt):
+        QLiveLib.setVar("MidiLearnMode", evt.GetInt())
+        if evt.GetInt():
+            QLiveLib.getVar("MixerPanel").SetBackgroundColour(MIDILEARN_COLOUR)
+            QLiveLib.setVar("CanProcessCueKeys", False)
+        else:
+            QLiveLib.getVar("MixerPanel").SetBackgroundColour(BACKGROUND_COLOUR)
+            QLiveLib.setVar("CanProcessCueKeys", True)
 
     def onNewInterpTime(self, evt):
         self.globalInterpTimeWindow = InterpTimeFrame(self, 

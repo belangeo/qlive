@@ -739,6 +739,7 @@ class MeterControlSlider(wx.Panel):
         self.value = interpFloat(t, self.minvalue, self.maxvalue)
         self.clampPos()
         self.selected = False
+        QLiveLib.setVar("CanProcessCueKeys", True)
         self.valueChanged()
         wx.CallAfter(self.Refresh)
 
@@ -771,9 +772,16 @@ class MeterControlSlider(wx.Panel):
 
     def LooseFocus(self, event):
         self.selected = False
+        QLiveLib.setVar("CanProcessCueKeys", True)
         wx.CallAfter(self.Refresh)
 
     def keyDown(self, event):
+        if QLiveLib.getVar("MidiLearnMode"):
+            if event.GetKeyCode() in [wx.WXK_BACK, wx.WXK_DELETE, 
+                                        wx.WXK_NUMPAD_DELETE]:
+                self.revertMidiAssignation()
+            event.Skip()
+            return
         if self.selected:
             char = ''
             if event.GetKeyCode() in range(324, 334):
@@ -795,10 +803,15 @@ class MeterControlSlider(wx.Panel):
                 self.SetValue(eval(self.new))
                 self.new = ''
                 self.selected = False
+                QLiveLib.setVar("CanProcessCueKeys", True)
             wx.CallAfter(self.Refresh)
         event.Skip()
 
     def MouseDown(self, evt):
+        if QLiveLib.getVar("MidiLearnMode"):
+            self.handleMidiScan()
+            evt.Skip()
+            return
         h = self.GetSize()[1] - self.meterOffset
         posY = evt.GetPosition()[1]
         if evt.ShiftDown():
@@ -818,20 +831,26 @@ class MeterControlSlider(wx.Panel):
             self.ReleaseMouse()
 
     def DoubleClick(self, event):
+        if QLiveLib.getVar("MidiLearnMode"):
+            return
         w, h = self.GetSize()
         pos = event.GetPosition()
         if self.textrect.Contains(pos):
+            QLiveLib.setVar("CanProcessCueKeys", False)
             self.selected = True
         wx.CallAfter(self.Refresh)
         event.Skip()
 
     def MouseMotion(self, evt):
+        if QLiveLib.getVar("MidiLearnMode"):
+            return
         posY = evt.GetPosition()[1]
         h = self.GetSize()[1] - self.meterOffset
         if evt.LeftIsDown() and evt.Dragging():
             self.pos = clamp(posY, self.knobHalfSize, h-self.knobHalfSize)
             self.value = self.scale()
             self.selected = False
+            QLiveLib.setVar("CanProcessCueKeys", True)
             self.valueChanged()
             wx.CallAfter(self.Refresh)
 
@@ -870,7 +889,10 @@ class MeterControlSlider(wx.Panel):
         dc = wx.MemoryDC()
         dc.SelectObject(bitmap)
 
-        dc.SetBackground(wx.Brush(self.backgroundColour))
+        if self.midiBackgroundColour:
+            dc.SetBackground(wx.Brush(self.midiBackgroundColour))
+        else:
+            dc.SetBackground(wx.Brush(self.backgroundColour))
         dc.Clear()
 
         if self.selected:
@@ -883,13 +905,8 @@ class MeterControlSlider(wx.Panel):
         dc.DrawLabel(self.label, self.textrect,
                      wx.ALIGN_LEFT|wx.ALIGN_CENTER_VERTICAL)
 
-        if self.midiBackgroundColour:
-            dc.SetPen(wx.Pen(self.midiBackgroundColour))
-            dc.SetBrush(wx.Brush(self.midiBackgroundColour))
-            dc.DrawRectangleRect(self.midirect)
-
         if self.midictl is None:
-            midilabel = "M: ?"
+            midilabel = "M:..."
         else:
             midilabel = "M: %d" % self.midictl
         dc.DrawLabel(midilabel, self.midirect, wx.ALIGN_CENTER)

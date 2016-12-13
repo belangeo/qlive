@@ -20,7 +20,6 @@ class QLiveControlSlider(MeterControlSlider):
         self.midiscanning = False
         self.linkedObject = None
         self.externalOutFunction = outFunction
-        self.Bind(wx.EVT_RIGHT_DOWN, self.MouseRightDown)
 
     def setOutFunction(self, func):
         self.externalOutFunction = func
@@ -37,11 +36,14 @@ class QLiveControlSlider(MeterControlSlider):
     def setChannelObject(self, obj):
         self.channelobject = obj
 
-    def MouseRightDown(self, evt):
-        if evt.ShiftDown():
-            QLiveLib.getVar("MidiServer").unbind("ctls", self.midictl, self.midi)
-            self.setMidiCtl(None)
-            return
+    def revertMidiAssignation(self):
+        self.midiscanning = False
+        QLiveLib.getVar("MidiServer").ctlscan(None)
+        self.revertMidiBackgroundColour()
+        QLiveLib.getVar("MidiServer").unbind("ctls", self.midictl, self.midi)
+        self.setMidiCtl(None)
+
+    def handleMidiScan(self):
         if not self.midiscanning:
             self.midiscanning = True
             QLiveLib.getVar("MidiServer").ctlscan(self.getMidiScan)

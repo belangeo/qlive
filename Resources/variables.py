@@ -17,6 +17,7 @@ QLiveVariables["MixerPanel"] = None
 QLiveVariables["Soundfiles"] = None
 QLiveVariables["FxViews"] = []
 QLiveVariables["CanProcessCueKeys"] = True
+QLiveVariables["MidiLearnMode"] = False
 
 # Audio / Midi
 QLiveVariables['availableAudioOutputs'] = []

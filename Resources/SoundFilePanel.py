@@ -367,12 +367,12 @@ class SoundFileGrid(gridlib.Grid):
         super(SoundFileGrid, self).__init__(parent, style=wx.SUNKEN_BORDER)
 
         ### Reduce font point size by 1 ###
-#        font = self.GetDefaultCellFont()
-#        font.SetPointSize(font.GetPointSize() - 1)
-#        self.SetDefaultCellFont(font)
-#        font = self.GetLabelFont()
-#        font.SetPointSize(font.GetPointSize() - 1)
-#        self.SetLabelFont(font)
+        font = self.GetDefaultCellFont()
+        font.SetPointSize(font.GetPointSize() - 2)
+        self.SetDefaultCellFont(font)
+        font = self.GetLabelFont()
+        font.SetPointSize(font.GetPointSize() - 2)
+        self.SetLabelFont(font)
 
         self.selRow = self.selCol = -1
         self.objects = []

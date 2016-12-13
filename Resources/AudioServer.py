@@ -341,8 +341,20 @@ AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn, "Soundfile": SoundfileIn
 
 class AudioServer:
     def __init__(self):
-        sr, bufferSize, audio, jackname, nchnls, inchnls, duplex, outdev, indev, firstin, firstout = self.getPrefs()
-        self.server = Server(sr=sr, buffersize=bufferSize, audio=audio, jackname=jackname, nchnls=nchnls, duplex=duplex)
+        prefs = self.getPrefs()
+        sr = prefs[0]
+        bufferSize = prefs[1]
+        audio = prefs[2]
+        jackname = prefs[3]
+        nchnls = prefs[4]
+        inchnls = prefs[5]
+        duplex = prefs[6]
+        outdev = prefs[7]
+        indev = prefs[8]
+        firstin = prefs[9]
+        firstout = prefs[10]
+        self.server = Server(sr=sr, buffersize=bufferSize, audio=audio, 
+                             jackname=jackname, nchnls=nchnls, duplex=duplex)
         if inchnls != None:
             self.server.setIchnls(inchnls)
         self.server.deactivateMidi()
@@ -576,7 +588,7 @@ class MidiServer:
         self.listen.start()
 
     def _midirecv(self, status, data1, data2):
-        PRINT("midirecv: ", status, data1, data2)
+        QLiveLib.PRINT("midirecv: ", status, data1, data2)
         if status & 0xF0 == 0x90 and data2 != 0: # noteon
             midichnl = status - 0x90 + 1
             if self.noteonscan_callback is not None:
