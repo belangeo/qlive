@@ -23,7 +23,7 @@ class GeneralPrefsTab(wx.Panel):
     def enableTooltips(self, state):
         QLiveLib.setVar("useTooltips", state.GetEventObject().GetValue())
 
-#TODO: needs better GUI design
+#TODO: needs better GUI design (why?)
 class AudioPrefsTab(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
@@ -241,7 +241,6 @@ class AudioPrefsTab(wx.Panel):
             QLiveLib.setVar("duplex", "0")
         self.reinit_server = True
 
-#TODO: needs better var names
 class PreferenceFrame(wx.Dialog):
     def __init__(self, parent):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT
@@ -257,12 +256,12 @@ class PreferenceFrame(wx.Dialog):
         self.Bind(wx.EVT_CLOSE, self.onClose)
 
         # Create the tab windows
-        self.tab1 = AudioPrefsTab(nb)
-        tab2 = GeneralPrefsTab(nb)
+        self.tabAudio = AudioPrefsTab(nb)
+        self.tabGeneral = GeneralPrefsTab(nb)
 
         # Add the windows to tabs and name them.
-        nb.AddPage(self.tab1, "Audio")
-        nb.AddPage(tab2, "General")
+        nb.AddPage(self.tabAudio, "Audio")
+        nb.AddPage(self.tabGeneral, "General")
 
         # Set noteboook in a sizer to create the layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -273,7 +272,7 @@ class PreferenceFrame(wx.Dialog):
         self.SetSize((500, Y+35))
 
     def onClose(self, evt):
-        if self.tab1.reinit_server:
+        if self.tabAudio.reinit_server:
             try:
                 QLiveLib.getVar("AudioServer").reinitServer()
             except:
