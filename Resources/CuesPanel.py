@@ -145,7 +145,8 @@ class ControlPanel(wx.Panel):
         self.upmidbmp = wx.Bitmap(ICON_ARROW_UP_MIDI, wx.BITMAP_TYPE_PNG)
         self.upButton = wx.BitmapButton(self, wx.ID_ANY, self.upbmp)
         self.upButton.Bind(wx.EVT_BUTTON, self.onMoveCueUp)
-        self.upButton.Bind(wx.EVT_RIGHT_DOWN, self.midiLearn)
+        self.upButton.Bind(wx.EVT_KEY_DOWN, self.keyDown)
+        #self.upButton.Bind(wx.EVT_RIGHT_DOWN, self.midiLearn)
         self.upButton.SetToolTip(QLiveTooltip('Move cue up'))
         self.upDownSizer.Add(self.upButton, 1)
 
@@ -153,7 +154,8 @@ class ControlPanel(wx.Panel):
         self.downmidbmp = wx.Bitmap(ICON_ARROW_DOWN_MIDI, wx.BITMAP_TYPE_PNG)
         self.downButton = wx.BitmapButton(self, wx.ID_ANY, self.downbmp)
         self.downButton.Bind(wx.EVT_BUTTON, self.onMoveCueDown)
-        self.downButton.Bind(wx.EVT_RIGHT_DOWN, self.midiLearn)
+        self.downButton.Bind(wx.EVT_KEY_DOWN, self.keyDown)
+        #self.downButton.Bind(wx.EVT_RIGHT_DOWN, self.midiLearn)
         self.downButton.SetToolTip(QLiveTooltip('Move cue down'))
         self.upDownSizer.Add(self.downButton, 1)
 
@@ -174,9 +176,15 @@ class ControlPanel(wx.Panel):
         QLiveLib.getVar("CuesPanel").onNewCue()
 
     def onMoveCueUp(self, evt):
+        if QLiveLib.getVar("MidiLearnMode"):
+            self.midiLearn(evt)
+            return
         QLiveLib.getVar("CuesPanel").onMoveCueUp()
 
     def onMoveCueDown(self, evt):
+        if QLiveLib.getVar("MidiLearnMode"):
+            self.midiLearn(evt)
+            return
         QLiveLib.getVar("CuesPanel").onMoveCueDown()
 
     def midi(self, pitch, vel):
@@ -203,28 +211,35 @@ class ControlPanel(wx.Panel):
             self.downButton.SetToolTip(QLiveTooltip("Midi key: %d" % num))
         QLiveLib.getVar("MidiServer").bind("noteon", num, self.midi)
 
+    def keyDown(self, evt):
+        if QLiveLib.getVar("MidiLearnMode"):
+            if evt.GetKeyCode() in [wx.WXK_BACK, wx.WXK_DELETE,
+                                    wx.WXK_NUMPAD_DELETE]:
+                # remove current binding
+                obj = evt.GetEventObject()
+                midi = QLiveLib.getVar("MidiServer")
+                num = -1
+                if obj == self.upButton:
+                    search, bitmap = "up", self.upbmp
+                elif obj == self.downButton:
+                    search, bitmap = "down", self.downbmp
+                for key, val in self.midiBindings.items():
+                    if val == search:
+                        num = key
+                        break
+                obj.SetBitmapLabel(bitmap)
+                obj.SetToolTip(QLiveTooltip(""))
+                midi.noteonscan(None)
+                self.learnButton = None
+                if num != -1:
+                    midi.unbind("noteon", num, self.midi)
+        evt.Skip()
+
     def midiLearn(self, evt):
         obj = evt.GetEventObject()
         midi = QLiveLib.getVar("MidiServer")
-        # remove current binding
-        if evt.ShiftDown():
-            num = -1
-            if obj == self.upButton:
-                search, bitmap = "up", self.upbmp
-            elif obj == self.downButton:
-                search, bitmap = "down", self.downbmp
-            for key, val in self.midiBindings.items():
-                if val == search:
-                    num = key
-                    break
-            obj.SetBitmapLabel(bitmap)
-            obj.SetToolTip(QLiveTooltip(""))
-            midi.noteonscan(None)
-            self.learnButton = None
-            if num != -1:
-                midi.unbind("noteon", num, self.midi)
         # stop midi learn
-        elif self.learnButton == obj:
+        if self.learnButton == obj:
             if obj == self.upButton:
                 obj.SetBitmapLabel(self.upbmp)
             elif obj == self.downButton:
