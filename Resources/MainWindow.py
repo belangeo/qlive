@@ -74,6 +74,15 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnQuit, quitItem)
         menubar.Append(menu1, 'File')
 
+        menu4 = wx.Menu()
+        menu4.Append(CUE_CUT_ID, "Cut Cue\tCtrl+X")
+        self.Bind(wx.EVT_MENU, self.onCueCut, id=CUE_CUT_ID)
+        menu4.Append(CUE_COPY_ID, "Copy Cue\tCtrl+C")
+        self.Bind(wx.EVT_MENU, self.onCueCopy, id=CUE_COPY_ID)
+        menu4.Append(CUE_PASTE_ID, "Paste Cue\tCtrl+V")
+        self.Bind(wx.EVT_MENU, self.onCuePaste, id=CUE_PASTE_ID)
+        menubar.Append(menu4, 'Cues')
+
         menu2 = wx.Menu()
         menu2.Append(NEW_TRACK_ID, "Add Track\tCtrl+T")
         self.Bind(wx.EVT_MENU, self.onNewTrack, id=NEW_TRACK_ID)
@@ -397,6 +406,31 @@ class MainWindow(wx.Frame):
     def onLinkSliders(self, evt):
         QLiveLib.getVar("MixerPanel").linkInputs(evt.GetInt())
         QLiveLib.getVar("MixerPanel").linkOutputs(evt.GetInt())
+
+    def onCueCut(self, evt):
+        cues = QLiveLib.getVar("CuesPanel")
+        current = cues.getCurrentCue()
+        if current == 0:
+            QLiveLib.PRINT("Can't cut cue number 0.")
+            return
+        cues.onCopyCue()
+        cues.onDelCue()
+
+    def onCueCopy(self, evt):
+        cues = QLiveLib.getVar("CuesPanel")
+        current = cues.getCurrentCue()
+        if current == 0:
+            QLiveLib.PRINT("Can't copy cue number 0.")
+            return
+        cues.onCopyCue()
+
+    def onCuePaste(self, evt):
+        cues = QLiveLib.getVar("CuesPanel")
+        current = cues.getCurrentCue()
+        if current == 0:
+            QLiveLib.PRINT("Can't paste on cue number 0.")
+            return
+        cues.onPasteCue()
 
     def onViewCurrentCue(self, evt):
         if evt.GetInt() == 1:

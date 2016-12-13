@@ -45,6 +45,7 @@ class SoundFileObject:
         self.gainAutoWindow = None
 
         self.cues = {}
+        self.copied = {}
         currentCue = QLiveLib.getVar("CuesPanel").getCurrentCue()
         self.addCue(0)
         self.addCue(currentCue)
@@ -180,6 +181,16 @@ class SoundFileObject:
     def addCue(self, x):
         self.currentCue = x
         self.saveCue()
+
+    def copyCue(self):
+        self.copied = self.getAttributes()
+
+    def pasteCue(self):
+        self.cues[self.currentCue] = copy.deepcopy(self.copied)
+        self.setAttributes(self.cues[self.currentCue])
+        if self.playerRef is not None:
+            player = self.playerRef()
+            player.setAttributes(self.getAttributes())
 
     def getCues(self):
         return self.cues
@@ -850,6 +861,14 @@ class SoundFilePanel(wx.Panel):
             obj.delCue(x)
             self.loadCue(cur)
 
+    def copyCue(self):
+        for obj in self.getSoundFileObjects():
+            obj.copyCue()
+
+    def pasteCue(self):
+        for obj in self.getSoundFileObjects():
+            obj.pasteCue()
+
     def cueEvent(self, evt):
         tp = evt.getType()
         if tp == CUE_TYPE_DELETE:
@@ -860,6 +879,10 @@ class SoundFilePanel(wx.Panel):
             self.addCue(evt.getCurrent())
         elif tp == CUE_TYPE_SAVE:
             self.saveCue()
+        elif tp == CUE_TYPE_COPY:
+            self.copyCue()
+        elif tp == CUE_TYPE_PASTE:
+            self.pasteCue()
 
     def setSaveState(self, lst):
         self.grid.clear()

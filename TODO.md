@@ -32,14 +32,15 @@ TODO / Meeting on 05/10/2015
     - MIDI-learn: use a global MIDI-learn state instead of the current
       individual process **done**
     - Use 'del' key for unassigning MIDI **done**
-    - Add Cut/copy/paste options for Cues
+    - Add Cut/copy/paste options for Cues **done**
     - **urgent** fix crash when closing the audio server
     - fix 'new project' option in the menu **done**
     - parameters values for soundfiles should update in 'realtime' **done**
+
     - macro task: conceive a monitor module, which will provide realtime
       visualization of automations and other parameters (probably using OSC).
 
-TODO / Play mode
+TODO / Play mode (frozen session)
 ---------
 - No "saveCue()" before loading a new cue
 - Can't add or delete a soundfile
@@ -62,12 +63,12 @@ Recently done
 - Interpolations (global, track, fx, parameter) **done**
 - Handling SoundFilePlayer number of channels and routing to the tracks **done**
 - Need a mecanism to disable play/edit button on the knob (ex. for the global
-interpolation window). **done** (just give nothing to playFunction and editFunction arguments)
+  interpolation window). **done** (just give nothing to playFunction and 
+  editFunction arguments)
 - Add a current selected soundfile **done**
 - Floating window to show current cue number **done**
 - Add Soundfile transpo and gain attributes to cue and interpolation design. **done**
 - MIDI/Key learn pour cues (mode forward-backward and/or key-per-cue) **done**
-    - There is no "key learn" yet.
- - fix: harmonizer mutes the output when activated **done**
- - Use shift+crtl+c for Cue windows instead of ctrl+c **done**
- - classer les effets par categorie (filtres, delay, reverb...) **done**
+- fix: harmonizer mutes the output when activated **done**
+- Use shift+crtl+c for Cue windows instead of ctrl+c **done**
+- classer les effets par categorie (filtres, delay, reverb...) **done**

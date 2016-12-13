@@ -362,6 +362,16 @@ class CuesPanel(scrolled.ScrolledPanel):
                        old=old, total=len(self.cueButtons))
         self.sendCueEvent(evt)
 
+    def onCopyCue(self):
+        evt = CueEvent(type=CUE_TYPE_COPY, current=self.currentCue,
+                       old=None, total=len(self.cueButtons))
+        self.sendCueEvent(evt)
+
+    def onPasteCue(self):
+        evt = CueEvent(type=CUE_TYPE_PASTE, current=self.currentCue,
+                       old=None, total=len(self.cueButtons))
+        self.sendCueEvent(evt)
+
     def getNumberOfCues(self):
         return len(self.cueButtons)
 

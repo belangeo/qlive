@@ -16,6 +16,7 @@ class BaseFxBox(object):
         self.enable = 1
         self.view = None
         self.cues = {}
+        self.copied = {}
         self.currentCue = 0
         self.i = 50 # increment factor for 'id' of the effects categories menu
 
@@ -280,6 +281,13 @@ class BaseFxBox(object):
                 c -= 1
         self.currentCue = x
 
+    def copyCue(self):
+        self.copied = copy.deepcopy(self.getParams())
+
+    def pasteCue(self):
+        self.cues[self.currentCue] = copy.deepcopy(self.copied)
+        self.setParams(self.cues[self.currentCue])
+
     def cueEvent(self, evt):
         tp = evt.getType()
         if tp == CUE_TYPE_DELETE:
@@ -292,6 +300,10 @@ class BaseFxBox(object):
             self.addCue(evt.getCurrent())
         elif tp == CUE_TYPE_SAVE:
             self.saveCue()
+        elif tp == CUE_TYPE_COPY:
+            self.copyCue()
+        elif tp == CUE_TYPE_PASTE:
+            self.pasteCue()
 
     def getSaveDict(self):
         self.saveCue()
