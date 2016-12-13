@@ -248,7 +248,7 @@ class QLiveControlKnob(wx.Panel):
         if self._enable:
             w, h = self.GetSize()
             pos = event.GetPosition()
-            reclab = wx.Rect(3, 60, w-3, 10)
+            reclab = wx.Rect(3, 55, w-3, 15)
             recpt = wx.Rect(self.knobPointPos[0]-3,
                             self.knobPointPos[1]-3, 9, 9)
             if reclab.Contains(pos):
@@ -284,7 +284,6 @@ class QLiveControlKnob(wx.Panel):
         wx.CallAfter(self.Refresh)
 
     def OnPaint(self, evt):
-        # TODO: Drawing of the controlKnob must really be optimized
         w,h = self.GetSize()
         dc = self.dcref(self)
         gc = wx.GraphicsContext_Create(dc)
@@ -304,18 +303,11 @@ class QLiveControlKnob(wx.Panel):
         reclab = wx.Rect(0, 1, w, 9)
         dc.DrawLabel(self.label, reclab, wx.ALIGN_CENTER_HORIZONTAL)
 
-        recval = wx.Rect(0, 55, w, 14)
-
-        if self.selected:
-            gc.SetBrush(wx.Brush(CONTROLSLIDER_SELECTED_COLOUR, wx.SOLID))
-            gc.SetPen(wx.Pen(CONTROLSLIDER_SELECTED_COLOUR, self.borderWidth))
-            gc.DrawRoundedRectangle(2, 55, w-4, 12, 2)
-
-        r = math.sqrt(.1)
+        # Draw knob handle
         val = tFromValue(self.value, self.minvalue, self.maxvalue) * 0.8
-        ph = val * math.pi * 2 - (3 * math.pi / 2.2)
-        X = r * math.cos(ph)*45
-        Y = r * math.sin(ph)*45
+        ph = val * 6.2831853072 - 4.2839899822 # (3 * math.pi / 2.2)
+        X = math.cos(ph) * 14.23025 # math.sqrt(.1) * 45
+        Y = math.sin(ph) * 14.23025
         gc.SetBrush(wx.Brush(self.knobColour, wx.SOLID))
         gc.SetPen(wx.Pen(self.colours[self.mode], width=2, style=wx.SOLID))
         self.knobPointPos = (X+25, Y+35)
@@ -326,6 +318,13 @@ class QLiveControlKnob(wx.Panel):
         dc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT,
                            wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL,
                            face=FONT_FACE))
+
+        # Highlight text for keyboard input
+        if self.selected:
+            gc.SetBrush(wx.Brush(CONTROLSLIDER_SELECTED_COLOUR, wx.SOLID))
+            gc.SetPen(wx.Pen(CONTROLSLIDER_SELECTED_COLOUR, self.borderWidth))
+            gc.DrawRoundedRectangle(2, 55, w-4, 12, 2)
+
         # Draw text value
         if self.selected and self.new:
             val = self.new
@@ -334,15 +333,11 @@ class QLiveControlKnob(wx.Panel):
                 val = '%d' % self.GetValue()
             else:
                 val = self.floatPrecision % self.GetValue()
-        if PLATFORM == 'linux2':
-            width = len(val) * (dc.GetCharWidth() - 3)
-        else:
-            width = len(val) * dc.GetCharWidth()
         dc.SetTextForeground(CONTROLSLIDER_TEXT_COLOUR)
-        dc.DrawLabel(val, recval, wx.ALIGN_CENTER)
+        dc.DrawLabel(val, wx.Rect(0, 55, w, 14), wx.ALIGN_CENTER)
 
+        # Midi ctl and automation window handle
         if self.drawBottomPart:
-
             dc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT,
                                wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL,
                                face=FONT_FACE))

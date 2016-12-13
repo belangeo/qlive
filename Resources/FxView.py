@@ -41,7 +41,6 @@ class SliderWidget(wx.Panel):
         self.midiscanning = False
         QLiveLib.getVar("MidiServer").ctlscan(None)
         self.slider.setMidiLearn(False)
-        #self.revertMidiBackgroundColour()
         QLiveLib.getVar("MidiServer").unbind("ctls", self.slider.midictl,
                                              self.midi)
         self.slider.setMidiCtl(None)
