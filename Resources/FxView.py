@@ -18,18 +18,18 @@ class SliderWidget(wx.Panel):
         self.fxbox = fxbox
         self.name = parameters[0]
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.slider = QLiveControlKnob(self, parameters[2], parameters[3], 
+        self.slider = QLiveControlKnob(self, parameters[2], parameters[3],
                                        parameters[1], label=parameters[0],
                                        log=parameters[5],
                                        outFunction=self.outputValue,
                                        editFunction=self.onEditFunction)
         self.sizer.Add(self.slider, 0, wx.ALL, 5)
-        
-        self.interpKnob = QLiveControlKnob(self, 
-                                INTERPTIME_MIN, 
-                                INTERPTIME_MAX, interpTime, 
+
+        self.interpKnob = QLiveControlKnob(self,
+                                INTERPTIME_MIN,
+                                INTERPTIME_MAX, interpTime,
                                 label=parameters[0], log=True,
-                                outFunction=self.outputInterpValue, 
+                                outFunction=self.outputInterpValue,
                                 outOnShiftFunction=self.onChangeAllInterp,
                                 backColour=CONTROLSLIDER_BACK_COLOUR_INTERP)
         self.sizer.Add(self.interpKnob, 0, wx.ALL, 5)
@@ -41,7 +41,7 @@ class SliderWidget(wx.Panel):
 
     def MouseRightDown(self, evt):
         if evt.ShiftDown():
-            QLiveLib.getVar("MidiServer").unbind("ctls", self.slider.midictl, 
+            QLiveLib.getVar("MidiServer").unbind("ctls", self.slider.midictl,
                                                  self.midi)
             self.slider.setMidiCtl(None)
             return
@@ -53,7 +53,7 @@ class SliderWidget(wx.Panel):
             self.midiscanning = False
             QLiveLib.getVar("MidiServer").ctlscan(None)
             self.slider.setMidiLearn(False)
-            
+
     def getMidiScan(self, ctlnum, midichnl):
         self.assignMidiCtl(ctlnum)
         self.slider.setMidiLearn(False)
@@ -65,7 +65,7 @@ class SliderWidget(wx.Panel):
         self.setInterpValue(interpTime, True)
 
     def midi(self, value):
-        v = rescale(value, 0, 127, self.parameters[2], self.parameters[3], 
+        v = rescale(value, 0, 127, self.parameters[2], self.parameters[3],
                     ylog=self.parameters[5])
         self.slider.SetValue(v, True)
 
@@ -86,7 +86,7 @@ class SliderWidget(wx.Panel):
     def setShowEdit(self, state):
         self.slider.setShowEdit(state)
         self.interpKnob.setShowEdit(state)
-        
+
     def outputValue(self, value):
         self.fxbox.setParamValue(self.name, value, self.fromUser)
         self.fromUser = True
@@ -94,7 +94,7 @@ class SliderWidget(wx.Panel):
     def setValue(self, value, propagate=False):
         self.fromUser = False
         self.slider.SetValue(value, propagate)
-     
+
     def getValue(self):
         return self.slider.GetValue()
 
@@ -163,17 +163,17 @@ class FxSlidersView(wx.Frame):
                             (wx.ACCEL_NORMAL,  ord("9"), self.cue9Id),
                             (wx.ACCEL_NORMAL,  ord("0"), self.cue10Id)])
         self.SetAcceleratorTable(accel_tbl)
-        
+
         mainWin = QLiveLib.getVar("MainWindow")
         self.Bind(wx.EVT_MENU, mainWin.onTabulate, id=tabId)
-        self.Bind(wx.EVT_MENU, mainWin.onMoveCue, id=KEY_EVENT_FIRST_ID, 
+        self.Bind(wx.EVT_MENU, mainWin.onMoveCue, id=KEY_EVENT_FIRST_ID,
                   id2=KEY_EVENT_FIRST_ID+100)
 
         self.Bind(wx.EVT_MENU, self.onClose, id=closeId)
         self.Bind(wx.EVT_CLOSE, self.onClose)
 
         self.SetTitle("%s Parameter Controls" % self.fxbox.name)
-        
+
         self.panel = wx.Panel(self)
         self.panel.SetBackgroundColour(BACKGROUND_COLOUR)
 
@@ -182,15 +182,15 @@ class FxSlidersView(wx.Frame):
         # Head
         headSizer = wx.BoxSizer(wx.HORIZONTAL)
         headSizer.AddStretchSpacer(1)
-        self.enable = wx.CheckBox(self.panel, -1, "Enable FX:", 
+        self.enable = wx.CheckBox(self.panel, -1, "Enable FX:",
                                   style=wx.ALIGN_RIGHT)
         self.enable.SetValue(1)
         self.enable.Bind(wx.EVT_CHECKBOX, self.enableFx)
         headSizer.Add(self.enable, 0, wx.TOP|wx.RIGHT, 5)
         self.sizer.Add(headSizer, 0, wx.EXPAND)
-        
+
         self.sizer.Add(wx.StaticLine(self.panel, -1), 0, wx.ALL|wx.EXPAND, 5)
-        
+
         # Selection boxes
         if "inselect" in self.parameters:
             self.inChannelChecks = []
@@ -205,12 +205,12 @@ class FxSlidersView(wx.Frame):
                 self.inChannelChecks.append(check)
                 selectorSizer.Add(check, 1, wx.EXPAND|wx.ALL, 5)
             self.sizer.Add(selectorSizer, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
-            
-            
+
+
             sampleList = ["Mono Track", "Multi-Channel Track"]
-            self.chnlsButton = wx.RadioBox(self.panel, -1, "", 
+            self.chnlsButton = wx.RadioBox(self.panel, -1, "",
                                            wx.DefaultPosition,
-                                           wx.DefaultSize, sampleList, 2, 
+                                           wx.DefaultSize, sampleList, 2,
                                            wx.RA_SPECIFY_COLS | wx.NO_BORDER)
             self.chnlsButton.Bind(wx.EVT_RADIOBOX, self.onChnlsRadioBox)
             self.sizer.Add(self.chnlsButton, 0, wx.LEFT, 5)
@@ -243,14 +243,14 @@ class FxSlidersView(wx.Frame):
             self.soundfilesPopup.Bind(wx.EVT_CHOICE, self.chooseSoundfile)
             popupSizer.Add(self.soundfilesPopup, 0, wx.ALL, 5)
             self.sizer.Add(popupSizer, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
-            
+
         # Controller box
         if "ctrls" in self.parameters:
             knobSizer = wx.BoxSizer(wx.HORIZONTAL)
             sampleList = ["Slider Values", "Interpolation Times"]
-            self.interpButton = wx.RadioBox(self.panel, -1, "", 
+            self.interpButton = wx.RadioBox(self.panel, -1, "",
                                             wx.DefaultPosition,
-                                            wx.DefaultSize, sampleList, 2, 
+                                            wx.DefaultSize, sampleList, 2,
                                             wx.RA_SPECIFY_COLS | wx.NO_BORDER)
             self.interpButton.Bind(wx.EVT_RADIOBOX, self.showMorphEvent)
             self.sizer.Add(self.interpButton, 0, wx.LEFT, 5)
@@ -262,8 +262,8 @@ class FxSlidersView(wx.Frame):
                 knobSizer.Add(slider,0,wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM,5)
             self.sizer.Add(knobSizer, 0, wx.EXPAND)
 
-        self.graph = Grapher(self.panel, xlen=256, yrange=(0, 1), 
-                             init=[(0,0), (0.5,0.5), (1,0)], 
+        self.graph = Grapher(self.panel, xlen=256, yrange=(0, 1),
+                             init=[(0,0), (0.5,0.5), (1,0)],
                              mode=0, outFunction=None)
         self.graph.SetSize((500, 200))
         self.graph.Hide()
@@ -303,7 +303,7 @@ class FxSlidersView(wx.Frame):
         sz = self.GetSize()
         if self.graph_object is not None:
             if self.graph_object is not obj:
-                self.graph_object.setShowEdit(False) 
+                self.graph_object.setShowEdit(False)
         if state:
             self.graph_object = obj
             if not self.graph.IsShown():
@@ -357,6 +357,6 @@ class FxSlidersView(wx.Frame):
 
     def getWidgets(self):
         return self.widgets
-                
+
     def onClose(self, evt):
         self.Hide()

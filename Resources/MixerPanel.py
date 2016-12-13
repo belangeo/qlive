@@ -9,12 +9,12 @@ import QLiveLib
 from pyo import rescale
 
 class QLiveControlSlider(MeterControlSlider):
-    def __init__(self, parent, minvalue, maxvalue, init=None, pos=(0,0), 
-                 size=(200,16), log=False, outFunction=None, integer=False, 
-                 powoftwo=False, backColour=None, orient=wx.HORIZONTAL, 
+    def __init__(self, parent, minvalue, maxvalue, init=None, pos=(0,0),
+                 size=(200,16), log=False, outFunction=None, integer=False,
+                 powoftwo=False, backColour=None, orient=wx.HORIZONTAL,
                  linkedObject=None):
-        MeterControlSlider.__init__(self, parent, minvalue, maxvalue, 
-                                    init, pos, size, self.localOutFunction, 
+        MeterControlSlider.__init__(self, parent, minvalue, maxvalue,
+                                    init, pos, size, self.localOutFunction,
                                     False, backColour)
         self.channelobject = None
         self.midiscanning = False
@@ -52,7 +52,7 @@ class QLiveControlSlider(MeterControlSlider):
             self.midiscanning = False
             QLiveLib.getVar("MidiServer").ctlscan(None)
             self.revertMidiBackgroundColour()
-            
+
     def getMidiScan(self, ctlnum, midichnl):
         self.assignMidiCtl(ctlnum)
         self.revertMidiBackgroundColour()
@@ -74,26 +74,26 @@ class MixerPanel(wx.Panel):
         self.outputLinked = False
         self.inputSliders = []
         self.outputSliders = []
-        
+
         font = self.GetFont()
         font.SetWeight(wx.FONTWEIGHT_BOLD)
-        
+
         ### INPUT SECTION
-        inputBox = wx.BoxSizer(wx.VERTICAL)        
+        inputBox = wx.BoxSizer(wx.VERTICAL)
         inputSliderBox = wx.BoxSizer(wx.HORIZONTAL)
         inputBox.AddSpacer((-1,2))
         label = wx.StaticText(self, label="Input Channels")
         label.SetFont(font)
         inputBox.Add(label, 0, wx.LEFT|wx.EXPAND, 10)
-        inputBox.Add(wx.StaticLine(self, size=(1, -1)), 0, 
+        inputBox.Add(wx.StaticLine(self, size=(1, -1)), 0,
                      wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT, 2)
         for i in range(NUM_INPUTS):
-            slide = QLiveControlSlider(self, -90, 18, 0, size=(28,100), 
+            slide = QLiveControlSlider(self, -90, 18, 0, size=(28,100),
                                        orient=wx.VERTICAL)
             self.inputSliders.append(slide)
             inputSliderBox.Add(slide, 0, wx.ALL, 2)
         inputBox.Add(inputSliderBox, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 3)
-        
+
         separator = wx.StaticLine(self, size=(1, -1), style=wx.LI_VERTICAL)
 
         #### OUTPUT SECTION
@@ -103,10 +103,10 @@ class MixerPanel(wx.Panel):
         label = wx.StaticText(self, label = "Output Channels")
         label.SetFont(font)
         outputBox.Add(label, 0, wx.LEFT|wx.EXPAND, 10)
-        outputBox.Add(wx.StaticLine(self, size=(1, -1)), 0, 
+        outputBox.Add(wx.StaticLine(self, size=(1, -1)), 0,
                       wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT, 2)
         for i in range(NUM_OUTPUTS):
-            slide = QLiveControlSlider(self, -90, 18, 0, size=(28,100), 
+            slide = QLiveControlSlider(self, -90, 18, 0, size=(28,100),
                                        orient=wx.VERTICAL)
             self.outputSliders.append(slide)
             outputSliderBox.Add(slide, 0, wx.ALL, 2)
@@ -127,7 +127,7 @@ class MixerPanel(wx.Panel):
             self.inputSliders[i].setOutFunction(channel.setVolume)
             channel.setAmpCallback(self.inputSliders[i].setRms)
         for i in range(NUM_OUTPUTS):
-            channel = self.audioMixer.getOutputChannel(i)            
+            channel = self.audioMixer.getOutputChannel(i)
             self.outputSliders[i].setChannelObject(channel)
             self.outputSliders[i].setOutFunction(channel.setVolume)
             channel.setAmpCallback(self.outputSliders[i].setRms)
@@ -167,7 +167,7 @@ class MixerPanel(wx.Panel):
                     sl.setLinkedObject(None)
 
     def getSaveDict(self):
-        dict = {} 
+        dict = {}
         inputSliderValues = []
         inputSliderCtls = []
         for slide in self.inputSliders:
@@ -187,7 +187,7 @@ class MixerPanel(wx.Panel):
         dict["outputLinked"] = self.outputLinked
 
         return dict
-        
+
     def setSaveDict(self, dict):
         for i, slide in enumerate(self.inputSliders):
             val = dict["inputSliderValues"][i]

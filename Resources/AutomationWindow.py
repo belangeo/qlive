@@ -4,10 +4,10 @@ import QLiveLib
 from Widgets import *
 
 class AutomationWindow(wx.Frame):
-    def __init__(self, parent, title, object=None, closeCallback=None, 
+    def __init__(self, parent, title, object=None, closeCallback=None,
                  paramCallback=None):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT
-        wx.Frame.__init__(self, parent, -1, title=title, size=(450,600), 
+        wx.Frame.__init__(self, parent, -1, title=title, size=(450,600),
                           style=style)
 
         closeId = wx.NewId()
@@ -40,9 +40,9 @@ class AutomationWindow(wx.Frame):
                             (wx.ACCEL_NORMAL,  ord("9"), self.cue9Id),
                             (wx.ACCEL_NORMAL,  ord("0"), self.cue10Id)])
         self.SetAcceleratorTable(accel_tbl)
-        
+
         mainWin = QLiveLib.getVar("MainWindow")
-        self.Bind(wx.EVT_MENU, mainWin.onMoveCue, id=KEY_EVENT_FIRST_ID, 
+        self.Bind(wx.EVT_MENU, mainWin.onMoveCue, id=KEY_EVENT_FIRST_ID,
                   id2=KEY_EVENT_FIRST_ID+100)
 
         self.Bind(wx.EVT_MENU, self.OnClose, id=closeId)
@@ -50,7 +50,7 @@ class AutomationWindow(wx.Frame):
         self.closeCallback = closeCallback
         self.panel = AutomationPanel(self, object, paramCallback)
         self.Show()
-    
+
     def getAttributes(self):
         return self.panel.getAttributes()
 
@@ -77,7 +77,7 @@ class AutomationPanel(wx.Panel):
         # global attributes
         self.mixingMethod = 0
         self.active = 0
-        
+
         # envelope follower attributes
         self.envActive = 0
         self.envInputs = [0] * NUM_INPUTS
@@ -86,19 +86,19 @@ class AutomationPanel(wx.Panel):
         self.envCutoff, self.envCutoffInterp = 20, interpTime
         self.envMin, self.envMinInterp = 0.0, interpTime
         self.envMax, self.envMaxInterp = 1.0, interpTime
-        
+
 
         title = wx.StaticText(self, label="Automation Controls")
-        title.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, 
+        title.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
                               wx.FONTWEIGHT_BOLD))
 
-        methodChoices = ["Added to the main value", 
-                         "Multiplying the main value", 
+        methodChoices = ["Added to the main value",
+                         "Multiplying the main value",
                          "Added and replace main value",
                          "Times and replace main value"]
         headSizer = wx.BoxSizer(wx.HORIZONTAL)
         headSizer.AddStretchSpacer(1)
-        methodLabel = wx.StaticText(self, -1, 
+        methodLabel = wx.StaticText(self, -1,
                                     label="Multiple Automations Mixing Method:")
         self.method = wx.Choice(self, -1, choices=methodChoices)
         self.method.SetSelection(0)
@@ -110,19 +110,19 @@ class AutomationPanel(wx.Panel):
         id = AUTOMATION_PANEL_FIRST_ID
         self.bpfCp = wx.CollapsiblePane(self, id, label="BPF", style=cpstyle)
         self.lfoCp = wx.CollapsiblePane(self, id+1, label="LFO", style=cpstyle)
-        self.randCp = wx.CollapsiblePane(self, id+2, label="Random", 
+        self.randCp = wx.CollapsiblePane(self, id+2, label="Random",
                                          style=cpstyle)
-        self.envCp = wx.CollapsiblePane(self, id+3, label="Envelope Follower", 
+        self.envCp = wx.CollapsiblePane(self, id+3, label="Envelope Follower",
                                         style=cpstyle)
         self.MakeEnvPaneContent(self.envCp.GetPane())
-        self.pitCp = wx.CollapsiblePane(self, id+4, label="Pitch Follower", 
+        self.pitCp = wx.CollapsiblePane(self, id+4, label="Pitch Follower",
                                         style=cpstyle)
-        self.zeroCp = wx.CollapsiblePane(self, id+5, label="Zero-Crossing", 
+        self.zeroCp = wx.CollapsiblePane(self, id+5, label="Zero-Crossing",
                                          style=cpstyle)
-        self.centCp = wx.CollapsiblePane(self, id+6, label="Centroid", 
+        self.centCp = wx.CollapsiblePane(self, id+6, label="Centroid",
                                          style=cpstyle)
 
-        self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.OnPaneChanged, 
+        self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.OnPaneChanged,
                   id=id, id2=id+6)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -148,7 +148,7 @@ class AutomationPanel(wx.Panel):
         if self.paramCallback is not None:
             dict = self.getAttributes()
             self.paramCallback(dict)
-        
+
     def MakeEnvPaneContent(self, panel):
         interpTime = QLiveLib.getVar("globalInterpTime")
         mainbox = wx.StaticBox(panel, -1, "")
@@ -157,7 +157,7 @@ class AutomationPanel(wx.Panel):
 
         headSizer = wx.BoxSizer(wx.HORIZONTAL)
         headSizer.AddStretchSpacer(1)
-        self.envActiveCheck = wx.CheckBox(panel, -1, "Active:", 
+        self.envActiveCheck = wx.CheckBox(panel, -1, "Active:",
                                           style=wx.ALIGN_RIGHT)
         self.envActiveCheck.Bind(wx.EVT_CHECKBOX, self.envOnActivate)
         headSizer.Add(self.envActiveCheck, 0, wx.ALIGN_CENTER_HORIZONTAL)
@@ -174,25 +174,25 @@ class AutomationPanel(wx.Panel):
             self.envChannelChecks.append(check)
             selectorSizer.Add(check, 1, wx.EXPAND|wx.ALL, 5)
 
-        interpLabel = wx.StaticText(panel, -1, 
+        interpLabel = wx.StaticText(panel, -1,
                                 label="Input Interpolation Time in Seconds: ")
-        self.envInInterpCtrl = NumericCtrl(panel, value=interpTime, 
-                                           interp=0, size=(80, -1), 
+        self.envInInterpCtrl = NumericCtrl(panel, value=interpTime,
+                                           interp=0, size=(80, -1),
                                            callback=self.envOnInputsInterp)
         interpSizer = wx.BoxSizer(wx.HORIZONTAL)
-        interpSizer.Add(interpLabel, -1, 
+        interpSizer.Add(interpLabel, -1,
                         wx.LEFT|wx.RIGHT|wx.ALIGN_CENTER_VERTICAL, 5)
         interpSizer.Add(self.envInInterpCtrl)
 
         sampleList = ["Parameter Values", "Interpolation Times"]
-        interpButton = wx.RadioBox(panel, -1, "", 
+        interpButton = wx.RadioBox(panel, -1, "",
                                    wx.DefaultPosition,
-                                   wx.DefaultSize, sampleList, 2, 
+                                   wx.DefaultSize, sampleList, 2,
                                    wx.RA_SPECIFY_COLS | wx.NO_BORDER)
         interpButton.Bind(wx.EVT_RADIOBOX, self.envChangeParamMode)
 
         params = [["Threshold (dB)", -90, interpTime, self.envOnThresh],
-                  ["Cutoff (Hz)", 20, interpTime, self.envOnCutoff], 
+                  ["Cutoff (Hz)", 20, interpTime, self.envOnCutoff],
                   ["Range Min", 0, interpTime, self.envOnMin],
                   ["Range Max", 1, interpTime, self.envOnMax]]
         self.envWidgets = []
@@ -200,7 +200,7 @@ class AutomationPanel(wx.Panel):
         for param in params:
             numbox = wx.BoxSizer(wx.VERTICAL)
             label = wx.StaticText(panel, -1, label=param[0])
-            ctrl = NumericCtrl(panel, value=param[1], interp=param[2], 
+            ctrl = NumericCtrl(panel, value=param[1], interp=param[2],
                                size=(80, -1), callback=param[3])
             self.envWidgets.append(ctrl)
             numbox.Add(label, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 2)
@@ -264,7 +264,7 @@ class AutomationPanel(wx.Panel):
                 ID_ENV_MAX: self.envMax,
                 ID_ENV_MAX_INTERP: self.envMaxInterp
                 }
-        
+
     def setEnvAttributes(self, dict):
         self.envActive = dict[ID_ENV_ACTIVE]
         self.envInputs = dict[ID_ENV_INPUTS]
@@ -292,7 +292,7 @@ class AutomationPanel(wx.Panel):
         dict['mixmethod'] = self.mixingMethod
         dict['env'] = self.getEnvAttributes()
         return dict
-        
+
     def setAttributes(self, dict):
         self.mixingMethod = dict.get('mixmethod', 0)
         self.method.SetSelection(self.mixingMethod)

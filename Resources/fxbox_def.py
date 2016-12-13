@@ -12,7 +12,7 @@ Q_DEF = ["Q", 1, 0.5, 50, "", False]
 FEED_DEF = ["feed", 0, 0, 1, "", False]
 
 # Effects Defintiions
-FX_DICT = { 
+FX_DICT = {
     "Filter effects": {
         "Lowpass": {"ctrls": [FREQ_DEF,
                               Q_DEF,
@@ -86,8 +86,8 @@ FX_DICT = {
     }
 }
 
-# Categories/Effects ordered names. Index 0 of each list is the category. 
-# Not using dicts to make dynamic submenu generation easier. 
+# Categories/Effects ordered names. Index 0 of each list is the category.
+# Not using dicts to make dynamic submenu generation easier.
 # Use the names as in FX_DICT.
 FX_LIST = [ ["Delay effects", "Delay"],
             ["Reverb effects", "Freeverb", "StereoVerb"],

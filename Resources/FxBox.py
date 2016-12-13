@@ -122,7 +122,7 @@ class BaseFxBox(object):
             for name in self.choices:
                 menu.Append(id, name)
                 id += 1
-        fxTracks.Bind(wx.EVT_MENU, self.select, 
+        fxTracks.Bind(wx.EVT_MENU, self.select,
                       id=BOX_MENU_ITEM_FIRST_ID, id2=id)
         fxTracks.PopupMenu(menu, event.GetPosition())
         menu.Destroy()
@@ -166,7 +166,7 @@ class BaseFxBox(object):
                 parameters = self.module_dict[self.category][self.name]
             if self.isInput == True:
                 parameters = self.module_dict[self.name]
-            self.view = FxSlidersView(QLiveLib.getVar("MainWindow"), 
+            self.view = FxSlidersView(QLiveLib.getVar("MainWindow"),
                                       self, parameters)
 
     def delete(self):

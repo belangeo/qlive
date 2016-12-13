@@ -14,7 +14,7 @@ from CurrentCuePanel import CurrentCuePanel
 class MainWindow(wx.Frame):
     def __init__(self, pos, size):
         wx.Frame.__init__(self, None, pos=pos, size=size)
-        
+
         self.SetMinSize((600, 400))
         self.SetTitle("QLive Session")
 
@@ -45,7 +45,7 @@ class MainWindow(wx.Frame):
         menubar = wx.MenuBar()
         menu1 = wx.Menu()
         menu1.Append(wx.ID_NEW, "New\tCtrl+N")
-        self.Bind(wx.EVT_MENU, self.onNew, id=wx.ID_NEW)        
+        self.Bind(wx.EVT_MENU, self.onNew, id=wx.ID_NEW)
         menu1.Append(wx.ID_OPEN, "Open\tCtrl+O")
         self.Bind(wx.EVT_MENU, self.onLoad, id=wx.ID_OPEN)
         self.submenu1 = wx.Menu()
@@ -59,9 +59,9 @@ class MainWindow(wx.Frame):
         menu1.AppendMenu(1999, "Open Recent...", self.submenu1)
         menu1.AppendSeparator()
         menu1.Append(wx.ID_CLOSE, "Close\tCtrl+W")
-        self.Bind(wx.EVT_MENU, self.onClose, id=wx.ID_CLOSE)        
+        self.Bind(wx.EVT_MENU, self.onClose, id=wx.ID_CLOSE)
         menu1.Append(wx.ID_SAVE, "Save\tCtrl+S")
-        self.Bind(wx.EVT_MENU, self.onSave, id=wx.ID_SAVE)        
+        self.Bind(wx.EVT_MENU, self.onSave, id=wx.ID_SAVE)
         menu1.Append(wx.ID_SAVEAS, "Save As...\tShift+Ctrl+S")
         self.Bind(wx.EVT_MENU, self.onSaveAs, id=wx.ID_SAVEAS)
         if PLATFORM != "darwin":
@@ -76,24 +76,24 @@ class MainWindow(wx.Frame):
 
         menu2 = wx.Menu()
         menu2.Append(NEW_TRACK_ID, "Add Track\tCtrl+T")
-        self.Bind(wx.EVT_MENU, self.onNewTrack, id=NEW_TRACK_ID)        
+        self.Bind(wx.EVT_MENU, self.onNewTrack, id=NEW_TRACK_ID)
         menu2.Append(DELETE_TRACK_ID, "Delete Track\tShift+Ctrl+D")
-        self.Bind(wx.EVT_MENU, self.onDeleteTrack, id=DELETE_TRACK_ID)        
+        self.Bind(wx.EVT_MENU, self.onDeleteTrack, id=DELETE_TRACK_ID)
         menubar.Append(menu2, 'Tracks')
 
         menu3 = wx.Menu()
         menu3.AppendCheckItem(MIDI_LEARN_ID, "Midi Learn Mode\tShift+Ctrl+M")
-        self.Bind(wx.EVT_MENU, self.onMidiLearn, id=MIDI_LEARN_ID)        
+        self.Bind(wx.EVT_MENU, self.onMidiLearn, id=MIDI_LEARN_ID)
         menu3.AppendSeparator()
         menu3.Append(INTERP_TIME_ID, "Set Global Interpolation Time\tCtrl+G")
-        self.Bind(wx.EVT_MENU, self.onNewInterpTime, id=INTERP_TIME_ID)        
+        self.Bind(wx.EVT_MENU, self.onNewInterpTime, id=INTERP_TIME_ID)
         menu3.AppendSeparator()
-        menu3.AppendCheckItem(VIEW_CUE_WINDOW_ID, 
+        menu3.AppendCheckItem(VIEW_CUE_WINDOW_ID,
                               "Show Current Cue Window\tShift+Ctrl+C")
         self.Bind(wx.EVT_MENU, self.onViewCurrentCue, id=VIEW_CUE_WINDOW_ID)
         menu3.AppendSeparator()
         menu3.AppendCheckItem(LINK_STEREO_ID, "Link Mixer Sliders\tCtrl+L")
-        self.Bind(wx.EVT_MENU, self.onLinkSliders, id=LINK_STEREO_ID)        
+        self.Bind(wx.EVT_MENU, self.onLinkSliders, id=LINK_STEREO_ID)
         menubar.Append(menu3, 'Actions')
 
         self.SetMenuBar(menubar)
@@ -128,9 +128,9 @@ class MainWindow(wx.Frame):
                             (wx.ACCEL_NORMAL,  ord("9"), self.cue9Id),
                             (wx.ACCEL_NORMAL,  ord("0"), self.cue10Id)])
         self.SetAcceleratorTable(accel_tbl)
-        
+
         self.Bind(wx.EVT_MENU, self.onTabulate, id=tabId)
-        self.Bind(wx.EVT_MENU, self.onMoveCue, id=KEY_EVENT_FIRST_ID, 
+        self.Bind(wx.EVT_MENU, self.onMoveCue, id=KEY_EVENT_FIRST_ID,
                   id2=KEY_EVENT_FIRST_ID+100)
 
         self.mainPanel = wx.Panel(self, style=wx.SUNKEN_BORDER)
@@ -142,16 +142,16 @@ class MainWindow(wx.Frame):
         self.controlPanel = ControlPanel(self.mainPanel)
         QLiveLib.setVar("ControlPanel", self.controlPanel)
         csize = self.controlPanel.GetSize()
-        
+
         self.cues = CuesPanel(self.mainPanel, size=(csize[0], 1000))
         QLiveLib.setVar("CuesPanel", self.cues)
 
         self.currentCueWindow = CurrentCuePanel(self)
         QLiveLib.setVar("CurrentCueWindow", self.currentCueWindow)
 
-        splitter = wx.SplitterWindow(self.mainPanel, 
+        splitter = wx.SplitterWindow(self.mainPanel,
                                      style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
-        
+
         self.soundfiles = SoundFilePanel(splitter)
         QLiveLib.setVar("Soundfiles", self.soundfiles)
 
@@ -283,7 +283,7 @@ class MainWindow(wx.Frame):
             else:
                 fname = QLiveLib.getVar("currentProject")
             msg = 'file "%s" has been modified. Do you want to save?' % fname
-            dlg = wx.MessageDialog(None, msg, 'Warning!', 
+            dlg = wx.MessageDialog(None, msg, 'Warning!',
                                    wx.YES|wx.NO|wx.CANCEL)
             but = dlg.ShowModal()
             if but == wx.ID_YES:
@@ -292,7 +292,7 @@ class MainWindow(wx.Frame):
                 state = False
             dlg.Destroy()
         return state
-        
+
     def onNew(self, evt):
         if self.askForSaving():
             self.Hide()
@@ -356,10 +356,10 @@ class MainWindow(wx.Frame):
         if QLiveLib.getVar("currentProject"):
             filepath = os.path.split(QLiveLib.getVar("currentProject"))
         else:
-            filepath = os.path.join(os.path.expanduser("~"), 
+            filepath = os.path.join(os.path.expanduser("~"),
                                     "qlive_project.qlp")
             filepath = os.path.split(filepath)
-        dlg = wx.FileDialog(self, "Save Qlive Projet", 
+        dlg = wx.FileDialog(self, "Save Qlive Projet",
                             filepath[0], filepath[1],
                             "QLive Project files (*.qlp)|*.qlp",
                             style=wx.SAVE|wx.FD_OVERWRITE_PROMPT)
@@ -367,7 +367,7 @@ class MainWindow(wx.Frame):
             path = dlg.GetPath()
             self.saveFile(path)
         dlg.Destroy()
-        
+
     def onNewTrack(self, evt):
         self.tracks.addTrack()
 
@@ -384,7 +384,7 @@ class MainWindow(wx.Frame):
             QLiveLib.setVar("CanProcessCueKeys", True)
 
     def onNewInterpTime(self, evt):
-        self.globalInterpTimeWindow = InterpTimeFrame(self, 
+        self.globalInterpTimeWindow = InterpTimeFrame(self,
                                                       self.setGlobalInterpTime)
 
     def setGlobalInterpTime(self, cue, track, snd, value, meth):

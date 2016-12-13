@@ -15,20 +15,20 @@ class AudioChannel:
             self.gain.mul = 0
         else:
             self.gain.mul = 1
-            
+
     def setInput(self, input):
         self.input.setValue(input)
-        
+
     def out(self, chnl=0):
         self.output.out(chnl)
         return self
 
     def getOutput(self):
         return self.output
-        
+
     def setVolume(self, value):
         self.gain.setValue(value)
-        
+
     def setAmpCallback(self, call):
         self.ampOut.function = call
 
@@ -37,10 +37,10 @@ class AudioMixer:
         self.muted = True
         self.mixerInputCount = 0
         self.createMixer()
-        
+
     def createMixer(self):
-        self.inChannels = [AudioChannel(Input(i)) for i in range(NUM_INPUTS)] 
-        self.mixer = Mixer(outs=NUM_OUTPUTS, chnls=1)       
+        self.inChannels = [AudioChannel(Input(i)) for i in range(NUM_INPUTS)]
+        self.mixer = Mixer(outs=NUM_OUTPUTS, chnls=1)
         self.outChannels = [AudioChannel(
                             self.mixer[i]).out(i) for i in range(NUM_OUTPUTS)]
         for inChannel in self.inChannels:

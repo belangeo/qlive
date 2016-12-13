@@ -21,7 +21,7 @@ else:
     RESOURCES_PATH = os.path.join(os.getcwd(), 'Resources')
 
 if not os.path.isdir(RESOURCES_PATH) and PLATFORM == "win32":
-    RESOURCES_PATH = os.path.join(os.getenv("ProgramFiles"), "QLive", 
+    RESOURCES_PATH = os.path.join(os.getenv("ProgramFiles"), "QLive",
                                   "Resources")
 
 IMAGES_PATH = os.path.join(RESOURCES_PATH, "images")
@@ -81,7 +81,7 @@ ID_COL_GAINX = 11
 ID_TRANSPO_AUTO = 12
 ID_GAIN_AUTO = 13
 
-LABELS = ["Filename", "Playing", "Loop Mode", "Transpo", "Gain (dB)", 
+LABELS = ["Filename", "Playing", "Loop Mode", "Transpo", "Gain (dB)",
           "Output", "Start Sec", "End Sec", "Xfade (%)", "Out Chan"]
 COLSIZES = [150, 70, 100, 70, 70, 70, 80, 80, 80, 80]
 LOOPMODES = ["No Loop", "Forward", "Backward", "Back-and-Forth"]
@@ -101,7 +101,7 @@ ID_ENV_MIN = 8
 ID_ENV_MIN_INTERP = 9
 ID_ENV_MAX = 10
 ID_ENV_MAX_INTERP = 11
- 
+
 # GUI Constants
 BUTTON_WIDTH = 80
 BUTTON_HEIGHT = 25
@@ -182,5 +182,4 @@ FXBOX_FOREGROUND_COLOUR = "#000000"
 
 SOUNDFILE_CELL_BACKGROUND_COLOUR = "#FFFFFF"
 SOUNDFILE_AUTO_CELL_BACKGROUND_COLOUR = "#00FF00"
-
 

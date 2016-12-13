@@ -18,24 +18,24 @@ class InterpTimeFrame(wx.Frame):
         sizer.Add(title, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP, 5)
 
         sampleList = ["Current Cue", "All Cues"]
-        self.cueButton = wx.RadioBox(panel, -1, "", 
+        self.cueButton = wx.RadioBox(panel, -1, "",
                                        wx.DefaultPosition,
-                                       wx.DefaultSize, sampleList, 1, 
+                                       wx.DefaultSize, sampleList, 1,
                                        wx.RA_SPECIFY_COLS | wx.NO_BORDER)
         upSizer.Add(self.cueButton, 0, wx.BOTTOM|wx.LEFT|wx.RIGHT, 5)
 
         sampleList = ["Current Track", "All Tracks", "Not Applied to Tracks"]
-        self.trackButton = wx.RadioBox(panel, -1, "", 
+        self.trackButton = wx.RadioBox(panel, -1, "",
                                        wx.DefaultPosition,
-                                       wx.DefaultSize, sampleList, 1, 
+                                       wx.DefaultSize, sampleList, 1,
                                        wx.RA_SPECIFY_COLS | wx.NO_BORDER)
         upSizer.Add(self.trackButton, 0, wx.BOTTOM|wx.LEFT|wx.RIGHT, 5)
 
-        sampleList = ["Current Soundfile", "All Soundfiles", 
+        sampleList = ["Current Soundfile", "All Soundfiles",
                       "Not Applied to Soundfiles"]
-        self.sndButton = wx.RadioBox(panel, -1, "", 
+        self.sndButton = wx.RadioBox(panel, -1, "",
                                        wx.DefaultPosition,
-                                       wx.DefaultSize, sampleList, 1, 
+                                       wx.DefaultSize, sampleList, 1,
                                        wx.RA_SPECIFY_COLS | wx.NO_BORDER)
         upSizer.Add(self.sndButton, 0, wx.BOTTOM|wx.LEFT|wx.RIGHT, 5)
 
@@ -43,20 +43,20 @@ class InterpTimeFrame(wx.Frame):
 
         knobSizer = wx.BoxSizer(wx.HORIZONTAL)
         self.method = wx.Choice(panel, -1, choices=[
-                                                "Overwrite", 
-                                                "Add to Current Values", 
+                                                "Overwrite",
+                                                "Add to Current Values",
                                                 "Substract to Current Values"])
         self.method.SetSelection(0)
-        self.knob = QLiveControlKnob(panel, INTERPTIME_MIN, INTERPTIME_MAX, 
-                                     init=QLiveLib.getVar("globalInterpTime"), 
+        self.knob = QLiveControlKnob(panel, INTERPTIME_MIN, INTERPTIME_MAX,
+                                     init=QLiveLib.getVar("globalInterpTime"),
                                      showAutomation=False, label="Time")
         self.knob.SetFocus()
-        knobSizer.Add(self.method, 0, 
+        knobSizer.Add(self.method, 0,
                       wx.ALIGN_CENTER_VERTICAL|wx.LEFT|wx.RIGHT, 5)
         knobSizer.Add(self.knob, 1, wx.LEFT | wx.RIGHT, 30)
         sizer.Add(knobSizer, 0, wx.TOP | wx.BOTTOM, 10)
-        
-        sizer.Add(wx.StaticLine(panel, size=(360,1)), 0, 
+
+        sizer.Add(wx.StaticLine(panel, size=(360,1)), 0,
                   wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, 4)
 
         applyButton = wx.Button(panel, -1, label="Apply")
@@ -65,7 +65,7 @@ class InterpTimeFrame(wx.Frame):
         closeButton.Bind(wx.EVT_BUTTON, self.onClose)
         downSizer.Add(applyButton, 0, wx.RIGHT, 5)
         downSizer.Add(closeButton, 0, wx.RIGHT, 5)
-        sizer.Add(downSizer, 0, 
+        sizer.Add(downSizer, 0,
                   wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_RIGHT|wx.TOP, 10)
 
         panel.SetSizerAndFit(sizer)
@@ -121,8 +121,8 @@ class ControlPanel(wx.Panel):
         self.audioButton.Bind(wx.EVT_TOGGLEBUTTON, self.onAudioButton)
         self.mainSizer.Add(self.audioButton, 0, wx.ALL, 5)
 
-        self.mainSizer.Add(wx.StaticLine(self, size=(1, 1)), 0, 
-                           wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, 5)        
+        self.mainSizer.Add(wx.StaticLine(self, size=(1, 1)), 0,
+                           wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, 5)
 
         title = wx.StaticText(self, label="-- CUES --")
         self.mainSizer.Add(title, 0, wx.ALIGN_CENTER, 5)
@@ -157,7 +157,7 @@ class ControlPanel(wx.Panel):
         self.downButton.SetToolTip(QLiveTooltip('Move cue down'))
         self.upDownSizer.Add(self.downButton, 1)
 
-        self.mainSizer.Add(self.upDownSizer, 0, 
+        self.mainSizer.Add(self.upDownSizer, 0,
                            wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, 5)
 
         self.SetSizerAndFit(self.mainSizer)
@@ -239,7 +239,7 @@ class ControlPanel(wx.Panel):
                 obj.SetBitmapLabel(self.downmidbmp)
             midi.noteonscan(self.getMidiScan)
             self.learnButton = obj
-        
+
     def resetCueButtonBackgroundColour(self):
         if self.learnButton is not None:
             if self.learnButton == self.upButton:
@@ -259,7 +259,7 @@ class ControlPanel(wx.Panel):
 
 class CuesPanel(scrolled.ScrolledPanel):
     def __init__(self, parent=None, size=(95, 500)):
-        scrolled.ScrolledPanel.__init__(self, parent, size=size, 
+        scrolled.ScrolledPanel.__init__(self, parent, size=size,
                                         style=wx.SUNKEN_BORDER)
 
         self.currentCue = 0
@@ -282,7 +282,7 @@ class CuesPanel(scrolled.ScrolledPanel):
             return True
         else:
             return False
-        
+
     def clearButtons(self):
         for button in self.cueButtons:
             self.mainSizer.Remove(button)
@@ -293,7 +293,7 @@ class CuesPanel(scrolled.ScrolledPanel):
     def appendCueButton(self):
         number = len(self.cueButtons)
         butHeight = self.GetTextExtent("9")[1] + 8
-        but = CueButton(self, size=(50, butHeight), number=number, 
+        but = CueButton(self, size=(50, butHeight), number=number,
                         evtHandler=self.onCueSelection)
         self.mainSizer.Add(but, 0, wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT, 5)
         self.cueButtons.append(but)
@@ -310,15 +310,15 @@ class CuesPanel(scrolled.ScrolledPanel):
     def onCueSelection(self, x):
         old = self.currentCue
         if self.setSelectedCue(x):
-            evt = CueEvent(type=CUE_TYPE_SELECT, current=self.currentCue, 
+            evt = CueEvent(type=CUE_TYPE_SELECT, current=self.currentCue,
                            old=old, total=len(self.cueButtons))
             self.sendCueEvent(evt)
 
     def loadCurrentCue(self):
-            evt = CueEvent(type=CUE_TYPE_SELECT, current=self.currentCue, 
+            evt = CueEvent(type=CUE_TYPE_SELECT, current=self.currentCue,
                            old=None, total=len(self.cueButtons))
             self.sendCueEvent(evt)
-        
+
     def onDelCue(self):
         button = self.cueButtons.pop(self.currentCue)
         button.Destroy()
@@ -333,28 +333,28 @@ class CuesPanel(scrolled.ScrolledPanel):
         else:
             selection = 0
         if self.setSelectedCue(selection):
-            evt = CueEvent(type=CUE_TYPE_DELETE, current=self.currentCue, 
+            evt = CueEvent(type=CUE_TYPE_DELETE, current=self.currentCue,
                            old=deletedCue, total=len(self.cueButtons))
             self.sendCueEvent(evt)
 
     def onSaveCue(self):
-        evt = CueEvent(type=CUE_TYPE_SAVE, current=self.currentCue, 
+        evt = CueEvent(type=CUE_TYPE_SAVE, current=self.currentCue,
                        old=None, total=len(self.cueButtons))
         self.sendCueEvent(evt)
-        
+
     def onNewCue(self):
         old = self.currentCue
         self.appendCueButton()
-        evt = CueEvent(type=CUE_TYPE_NEW, current=self.currentCue, 
+        evt = CueEvent(type=CUE_TYPE_NEW, current=self.currentCue,
                        old=old, total=len(self.cueButtons))
         self.sendCueEvent(evt)
-        
+
     def getNumberOfCues(self):
         return len(self.cueButtons)
-        
+
     def getCurrentCue(self):
         return self.currentCue
-        
+
     def onMoveCueUp(self):
         self.onCueSelection(self.currentCue - 1)
 

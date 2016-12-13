@@ -18,7 +18,7 @@ class QLiveApp(wx.App):
         QLiveLib.setVar("MainWindow", self.frame)
         if hasattr(self, "filenames"):
             self.frame.loadFile(QLiveLib.ensureNFD(self.filenames[0]))
-            
+
     def MacOpenFiles(self, filenames):
         if type(filenames) != list:
             filenames = [filenames]

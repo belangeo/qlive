@@ -334,7 +334,7 @@ class QLiveControlKnob(wx.Panel):
                 dc.DrawLabel("M : %d" % self.midictl, wx.Rect(5, 72, 41, 11),
                              wx.ALIGN_CENTER_VERTICAL)
             else:
-                dc.DrawLabel("M :...", wx.Rect(5, 72, 41, 11), 
+                dc.DrawLabel("M :...", wx.Rect(5, 72, 41, 11),
                              wx.ALIGN_CENTER_VERTICAL)
 
             if self.autoPlay:
@@ -419,7 +419,7 @@ class NumericCtrl(wx.TextCtrl):
             self.ChangeValue(str(self.value))
         else:
             self.ChangeValue(str(self.interp))
-        
+
     def changeMode(self, x):
         if x == self.mode:
             return
@@ -444,7 +444,7 @@ class TransportButtons(wx.Panel):
         self.playIcon = wx.Bitmap(ICON_PLAY, wx.BITMAP_TYPE_PNG)
         self.playPressedIcon = wx.Bitmap(ICON_PLAY_PRESSED, wx.BITMAP_TYPE_PNG)
         self.recordIcon = wx.Bitmap(ICON_RECORD, wx.BITMAP_TYPE_PNG)
-        self.recordPressedIcon = wx.Bitmap(ICON_RECORD_PRESSED, 
+        self.recordPressedIcon = wx.Bitmap(ICON_RECORD_PRESSED,
                                            wx.BITMAP_TYPE_PNG)
 
         self.play = wx.BitmapButton(self, wx.ID_ANY, self.playIcon)
@@ -559,19 +559,19 @@ class CueButton(wx.Panel):
     def select(self, state):
         if state:
             if self.number == 0:
-                wx.CallAfter(self.SetBackgroundColour, 
+                wx.CallAfter(self.SetBackgroundColour,
                              CUEBUTTON_0_SELECTED_COLOUR)
-                wx.CallAfter(self.labtext.SetBackgroundColour, 
+                wx.CallAfter(self.labtext.SetBackgroundColour,
                              CUEBUTTON_0_SELECTED_COLOUR)
             else:
-                wx.CallAfter(self.SetBackgroundColour, 
+                wx.CallAfter(self.SetBackgroundColour,
                              CUEBUTTON_SELECTED_COLOUR)
-                wx.CallAfter(self.labtext.SetBackgroundColour, 
+                wx.CallAfter(self.labtext.SetBackgroundColour,
                              CUEBUTTON_SELECTED_COLOUR)
         else:
-            wx.CallAfter(self.SetBackgroundColour, 
+            wx.CallAfter(self.SetBackgroundColour,
                          CUEBUTTON_UNSELECTED_COLOUR)
-            wx.CallAfter(self.labtext.SetBackgroundColour, 
+            wx.CallAfter(self.labtext.SetBackgroundColour,
                          CUEBUTTON_UNSELECTED_COLOUR)
         wx.CallAfter(self.Refresh)
 
@@ -784,7 +784,7 @@ class MeterControlSlider(wx.Panel):
 
     def keyDown(self, event):
         if QLiveLib.getVar("MidiLearnMode"):
-            if event.GetKeyCode() in [wx.WXK_BACK, wx.WXK_DELETE, 
+            if event.GetKeyCode() in [wx.WXK_BACK, wx.WXK_DELETE,
                                         wx.WXK_NUMPAD_DELETE]:
                 self.revertMidiAssignation()
             event.Skip()

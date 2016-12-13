@@ -1,7 +1,7 @@
 TODO
 ----
 
-- *Important* Need to document how things work right now (shortcut, 
+- *Important* Need to document how things work right now (shortcut,
   key bindings, mouse bindings, buttons, etc.).
 - Do we offer synthesis algorithms as input boxes?
 - Software preferences (record options, audio driver setup)

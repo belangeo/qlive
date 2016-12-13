@@ -5,7 +5,7 @@ from constants import *
 
 class CurrentCuePanel(wx.Frame):
     def __init__(self, parent):
-        wx.Frame.__init__(self, parent, title="Current Cue Window", 
+        wx.Frame.__init__(self, parent, title="Current Cue Window",
                           size=(600, 600))
         self.parent = parent
         self.SetBackgroundColour(wx.BLACK)
@@ -16,7 +16,7 @@ class CurrentCuePanel(wx.Frame):
         str = "0"
         self.text = wx.StaticText(self, -1, str)
         self.text.SetForegroundColour((255,255,255))
-        font = wx.Font(450, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, 
+        font = wx.Font(450, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
                        wx.FONTWEIGHT_BOLD)
         self.text.SetFont(font)
 

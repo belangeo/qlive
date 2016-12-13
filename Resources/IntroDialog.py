@@ -4,8 +4,8 @@ import QLiveLib
 
 class IntroDialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, wx.ID_ANY, "QLive Intro", 
-                           size=wx.DefaultSize, pos=wx.DefaultPosition, 
+        wx.Dialog.__init__(self, parent, wx.ID_ANY, "QLive Intro",
+                           size=wx.DefaultSize, pos=wx.DefaultPosition,
                            style=wx.DEFAULT_DIALOG_STYLE)
 
         self.Bind(wx.EVT_CLOSE, self.onQuit)
@@ -14,7 +14,7 @@ class IntroDialog(wx.Dialog):
         self.createDir = False
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-    
+
         msg = "Choose a QLive project to open or create a new one..."
         label = wx.StaticText(self, -1, msg)
         sizer.Add(label, 0, wx.ALIGN_CENTER|wx.ALL, 10)
@@ -36,13 +36,13 @@ class IntroDialog(wx.Dialog):
         recentFiles = QLiveLib.getRecentFiles()
         self.recentFilesLabel = wx.StaticText(self, -1, "Recent projects: ")
         self.recentFilesLabel.Disable()
-        self.recentFilesChoice = wx.Choice(self, -1, choices=recentFiles, 
+        self.recentFilesChoice = wx.Choice(self, -1, choices=recentFiles,
                                            size=(350,-1))
         self.recentFilesChoice.Disable()
         self.recentFilesChoice.Bind(wx.EVT_CHOICE, self.openRecent)
-        hsizerRecentFiles.Add(self.recentFilesLabel, 0, 
+        hsizerRecentFiles.Add(self.recentFilesLabel, 0,
                               wx.LEFT|wx.ALIGN_CENTER, 10)
-        hsizerRecentFiles.Add(self.recentFilesChoice, 1, 
+        hsizerRecentFiles.Add(self.recentFilesChoice, 1,
                               wx.TOP|wx.BOTTOM|wx.RIGHT, 10)
 
         sizer.Add(hsizerRecentFiles, 0, wx.ALL|wx.EXPAND, 0)
@@ -78,7 +78,7 @@ class IntroDialog(wx.Dialog):
 
         btnsizer.Realize()
 
-        sizer.Add(btnsizer, 0, 
+        sizer.Add(btnsizer, 0,
                   wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL|wx.TOP|wx.BOTTOM, 5)
 
         if PLATFORM == "darwin":
@@ -102,7 +102,7 @@ class IntroDialog(wx.Dialog):
             tw, _ = self.GetTextExtent("O")
             n = w / (tw + 1)
         head = "Selected Project:\n\n"
-        path = textwrap.fill(path, n) 
+        path = textwrap.fill(path, n)
         self.pathtext.SetLabel(head+path)
 
     def openRecent(self, evt):
@@ -117,11 +117,11 @@ class IntroDialog(wx.Dialog):
             self.okbtn.SetFocus()
 
     def open(self, evt):
-        dlg = wx.FileDialog(self, 
-                            "Open Qlive Projet", 
-                            os.path.expanduser("~"), 
+        dlg = wx.FileDialog(self,
+                            "Open Qlive Projet",
+                            os.path.expanduser("~"),
                             "",
-                            "QLive Project files (*.qlp)|*.qlp", 
+                            "QLive Project files (*.qlp)|*.qlp",
                             style=wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             self.recentFilesLabel.Disable()
@@ -136,12 +136,12 @@ class IntroDialog(wx.Dialog):
             self.okbtn.SetDefault()
         else:
             self.okbtn.SetFocus()
-    
+
     def new(self, evt):
-        dlg = wx.FileDialog(self, 
-                            "Create Qlive Projet Folder", 
-                            os.path.expanduser("~"), 
-                            "newproject", 
+        dlg = wx.FileDialog(self,
+                            "Create Qlive Projet Folder",
+                            os.path.expanduser("~"),
+                            "newproject",
                             style=wx.SAVE|wx.FD_OVERWRITE_PROMPT)
         if dlg.ShowModal() == wx.ID_OK:
             self.recentFilesLabel.Disable()

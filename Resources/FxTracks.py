@@ -7,11 +7,11 @@ from FxTrack import *
 class FxTracks(wx.ScrolledWindow):
     def __init__(self, parent):
         wx.ScrolledWindow.__init__(self, parent, style=wx.SUNKEN_BORDER)
-        self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)  
+        self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
         self.SetBackgroundColour(TRACKS_BACKGROUND_COLOUR)
 
         self.selectedTrack = 0
-        
+
         self.createTracks(2)
 
         self.SetVirtualSize((MAX_WIDTH, MAX_HEIGHT))
@@ -49,9 +49,9 @@ class FxTracks(wx.ScrolledWindow):
         track.setTrackHeight(h)
         self.tracks.append(track)
         self.drawAndRefresh()
-        
+
     def setFont(self, ptsize=10):
-        self.font = wx.Font(ptsize, wx.FONTFAMILY_DEFAULT, wx.NORMAL, 
+        self.font = wx.Font(ptsize, wx.FONTFAMILY_DEFAULT, wx.NORMAL,
                             wx.FONTWEIGHT_NORMAL, face="Monospace")
 
     def createButtonBitmap(self, enable=True):
@@ -91,7 +91,7 @@ class FxTracks(wx.ScrolledWindow):
 
     def OnPaint(self, evt):
         dc = wx.BufferedPaintDC(self, self.buffer, wx.BUFFER_VIRTUAL_AREA)
-        
+
     def DoDrawing(self, dc):
         dc.BeginDrawing()
 
@@ -202,8 +202,8 @@ class FxTracks(wx.ScrolledWindow):
             for track in self.tracks:
                 track.setTrackGlobalInterpTime(value, allcues, meth)
         else:
-            self.tracks[self.selectedTrack].setTrackGlobalInterpTime(value, 
-                                                                     allcues, 
+            self.tracks[self.selectedTrack].setTrackGlobalInterpTime(value,
+                                                                     allcues,
                                                                      meth)
 
     def getSaveDict(self):
@@ -220,7 +220,7 @@ class FxTracks(wx.ScrolledWindow):
     def cueEvent(self, evt):
         for track in self.tracks:
             track.cueEvent(evt)
- 
+
     def start(self):
         for track in self.tracks:
             track.start()
@@ -239,17 +239,17 @@ class FxTracks(wx.ScrolledWindow):
         self.selectedTrack -= 1
         if self.selectedTrack < 0:
             self.selectedTrack = 0
-                
+
         [track.setId(i) for i, track in enumerate(self.tracks)]
         x = 25
         for track in self.tracks:
             track.setTrackPosition(x)
             x += track.getTrackHeight()
         self.drawAndRefresh()
-        
+
     def setSelectedTrack(self, id=-1):
         if id == -1:
-            id = (self.selectedTrack + 1) % len(self.tracks)        
+            id = (self.selectedTrack + 1) % len(self.tracks)
         self.selectedTrack = id
         self.drawAndRefresh()
 

@@ -37,8 +37,8 @@ def getAvailableAudioMidiDrivers():
         defaultMidiDriver = midiDriverList[midiDriverIndexes.index(midiDefault)]
     else:
         defaultMidiDriver = ""
-    return (inDriverList, inDriverIndexes, defaultInputDriver, 
-            outDriverList, outDriverIndexes, defaultOutputDriver, 
+    return (inDriverList, inDriverIndexes, defaultInputDriver,
+            outDriverList, outDriverIndexes, defaultOutputDriver,
             midiDriverList, midiDriverIndexes, defaultMidiDriver)
 
 # getter/setter for global variables defined at runtime (see variables.py)

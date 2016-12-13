@@ -37,7 +37,7 @@ class FxTrack:
     def setFont(self, ptsize=8):
         if PLATFORM == "darwin":
             ptsize += 3
-        self.font = wx.Font(ptsize, wx.FONTFAMILY_DEFAULT, wx.NORMAL, 
+        self.font = wx.Font(ptsize, wx.FONTFAMILY_DEFAULT, wx.NORMAL,
                             wx.FONTWEIGHT_NORMAL, face="Monospace")
 
     def createButtons(self):
@@ -105,7 +105,7 @@ class FxTrack:
             if obj.name == "AudioIn":
                 inchnls = obj.getInChannels()
                 ismulti = obj.getIsMultiChannels()
-                channels = [audioMixer.getInputChannel(i).getOutput() 
+                channels = [audioMixer.getInputChannel(i).getOutput()
                             for i in range(NUM_INPUTS) if inchnls[i]]
                 if not ismulti:
                     channels = sum(channels)
@@ -123,7 +123,7 @@ class FxTrack:
                 outchnls = obj.getOutChannels()
                 channels = [j for j in range(NUM_OUTPUTS) if outchnls[j]]
                 for j in range(chnls):
-                    audioMixer.addToMixer(channels[j % len(channels)], 
+                    audioMixer.addToMixer(channels[j % len(channels)],
                                           obj.getOutput()[j])
 
     def checkForDeletedSoundfile(self, id):
@@ -139,7 +139,7 @@ class FxTrack:
                         obj.setSoundfile(str(str(oid)))
                         if obj.view is not None:
                             obj.view.setSoundfile(str(oid))
-                    
+
     def onPaint(self, dc, buttonBitmap, disableButtonBitmap, selectedTrack):
         gc = wx.GraphicsContext_Create(dc)
 
@@ -164,7 +164,7 @@ class FxTrack:
 
         dc.SetTextForeground("#FFFFFF")
         rect = wx.Rect(0, self.trackPosition, 25, self.trackHeight)
-        dc.DrawLabel(str(self.id), rect, wx.ALIGN_CENTER)    
+        dc.DrawLabel(str(self.id), rect, wx.ALIGN_CENTER)
 
         dc.SetTextForeground(FXBOX_FOREGROUND_COLOUR)
         for i, inputBut in enumerate(self.buttonsInputs):
@@ -178,23 +178,23 @@ class FxTrack:
                 gc.DrawBitmap(buttonBitmap, r[0], r[1], r[2], r[3])
             else:
                 gc.DrawBitmap(disableButtonBitmap, r[0], r[1], r[2], r[3])
-            dc.DrawLabel(button.name, r, wx.ALIGN_CENTER)    
+            dc.DrawLabel(button.name, r, wx.ALIGN_CENTER)
 
         dc.SetPen(wx.Pen("#222222", 1))
         y = self.trackPosition + self.trackHeight
         dc.DrawLine(0, y, MAX_WIDTH, y)
- 
+
     def setTrackGlobalInterpTime(self, value, allcues, meth):
         tmp = self.buttonsFxs + self.buttonsInputs
         for but in tmp:
             but.setGlobalInterpTime(value, allcues, meth)
-        
+
     def getSaveDict(self):
         dict = {}
         dict["fxsValues"] = []
         for i, button in enumerate(self.buttonsFxs):
             dict["fxsValues"].append(button.getSaveDict())
-            
+
         dict["inputValues"] = []
         for i, inputBut in enumerate(self.buttonsInputs):
             dict["inputValues"].append(inputBut.getSaveDict())
@@ -204,7 +204,7 @@ class FxTrack:
         dict["rows"] = self.rows
         dict["cols"] = self.cols
         return dict
-        
+
     def setSaveDict(self, saveDict):
         self.rows = saveDict["rows"]
         self.cols = len(saveDict["fxsValues"]) # saveDict["cols"]
@@ -215,7 +215,7 @@ class FxTrack:
             button.setSaveDict(saveDict["fxsValues"][i])
         for i, inputBut in enumerate(self.buttonsInputs):
             inputBut.setSaveDict(saveDict["inputValues"][i])
-            
+
     def cueEvent(self, evt):
         for i, button in enumerate(self.buttonsFxs):
             button.cueEvent(evt)

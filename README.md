@@ -1,7 +1,7 @@
 QLive
 =====
 
-QLive is a cues-based software to help the creation of mixed music 
+QLive is a cues-based software to help the creation of mixed music
 (live instruments + electronic).
 
 Main goals of the project

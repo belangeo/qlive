@@ -39,7 +39,7 @@ class SoundFileObject:
         self.gainDict = None
 
         self.showInterp = 0
-        
+
         self.playerRef = None
         self.transpoAutoWindow = None
         self.gainAutoWindow = None
@@ -58,8 +58,8 @@ class SoundFileObject:
     def openTranspoAutomationWindow(self):
         parent = QLiveLib.getVar("MainWindow")
         title = "Transpo Automations on Soundfile %d" % (self.id+1)
-        self.transpoAutoWindow = AutomationWindow(parent, title, self, 
-                                                  self.closeTranspoWindow, 
+        self.transpoAutoWindow = AutomationWindow(parent, title, self,
+                                                  self.closeTranspoWindow,
                                                   self.setAutoTranspo)
         if self.transpoDict is not None:
             self.transpoAutoWindow.setAttributes(self.transpoDict)
@@ -70,8 +70,8 @@ class SoundFileObject:
     def openGainAutomationWindow(self):
         parent = QLiveLib.getVar("MainWindow")
         title = "Gain Automations on Soundfile %d" % (self.id+1)
-        self.gainAutoWindow = AutomationWindow(parent, title, self, 
-                                               self.closeGainWindow, 
+        self.gainAutoWindow = AutomationWindow(parent, title, self,
+                                               self.closeGainWindow,
                                                self.setGainTranspo)
         if self.gainDict is not None:
             self.gainAutoWindow.setAttributes(self.gainDict)
@@ -101,14 +101,14 @@ class SoundFileObject:
             else:
                 gainDict = None
         return copy.deepcopy({
-                ID_COL_FILENAME: self.filename, 
-                ID_COL_LOOPMODE: self.loopmode, 
-                ID_COL_TRANSPO: self.transpo, 
-                ID_COL_GAIN: self.gain, 
-                ID_COL_PLAYING: self.playing, 
+                ID_COL_FILENAME: self.filename,
+                ID_COL_LOOPMODE: self.loopmode,
+                ID_COL_TRANSPO: self.transpo,
+                ID_COL_GAIN: self.gain,
+                ID_COL_PLAYING: self.playing,
                 ID_COL_DIRECTOUT: self.directout,
-                ID_COL_STARTPOINT: self.startpoint, 
-                ID_COL_ENDPOINT: self.endpoint, 
+                ID_COL_STARTPOINT: self.startpoint,
+                ID_COL_ENDPOINT: self.endpoint,
                 ID_COL_CROSSFADE: self.crossfade,
                 ID_COL_CHANNEL: self.channel,
                 ID_COL_TRANSPOX: self.transpox,
@@ -140,7 +140,7 @@ class SoundFileObject:
         if self.gainDict is not None:
             if self.gainAutoWindow is not None:
                 self.gainAutoWindow.setAttributes(self.gainDict)
-            
+
     def copy(self, obj):
         self.setAttributes(copy.deepcopy(obj.getAttributes()))
         self.currentCue = obj.getCurrentCue()
@@ -243,7 +243,7 @@ class SoundFileObject:
                     gain = INTERPTIME_MIN
                 self.cues[self.currentCue][ID_COL_TRANSPOX] = tr
                 self.cues[self.currentCue][ID_COL_GAINX] = gain
-                
+
         self.transpox = self.cues[self.currentCue][ID_COL_TRANSPOX]
         self.gainx = self.cues[self.currentCue][ID_COL_GAINX]
 
@@ -263,7 +263,7 @@ class SoundFileObject:
         if self.playerRef is not None:
             player = self.playerRef()
             player.setAttribute(id, value)
-        
+
     def getFilename(self):
         return self.filename
 
@@ -273,14 +273,14 @@ class SoundFileObject:
 
     def getTranspo(self):
         return self.transpo
-        
+
     def setTranspo(self, x):
         self.transpo = x
         self.setPlayerAttribute(ID_COL_TRANSPO, x)
 
     def getTranspox(self):
         return self.transpox
-        
+
     def setTranspox(self, x):
         self.transpox = x
         self.setPlayerAttribute(ID_COL_TRANSPOX, x)
@@ -510,7 +510,7 @@ class SoundFileGrid(gridlib.Grid):
         self.SetAttr(row, ID_COL_CHANNEL, attr)
         rd = gridlib.GridCellNumberRenderer()
         self.SetCellRenderer(row, ID_COL_CHANNEL, rd)
-        
+
         self.SetCellAlignment(row, 0, wx.ALIGN_LEFT, wx.ALIGN_CENTER)
         for i in range(1, len(LABELS)):
             self.SetCellAlignment(row, i, wx.ALIGN_CENTER, wx.ALIGN_CENTER)
@@ -538,17 +538,17 @@ class SoundFileGrid(gridlib.Grid):
                     self.SetCellValue(row, ID_COL_GAIN, str(attrs[key]))
             elif key == ID_TRANSPO_AUTO:
                 if self.isAutomationActive(attrs[key]):
-                    self.SetCellBackgroundColour(row, ID_COL_TRANSPO, 
+                    self.SetCellBackgroundColour(row, ID_COL_TRANSPO,
                                         SOUNDFILE_AUTO_CELL_BACKGROUND_COLOUR)
                 else:
-                    self.SetCellBackgroundColour(row, ID_COL_TRANSPO, 
+                    self.SetCellBackgroundColour(row, ID_COL_TRANSPO,
                                         SOUNDFILE_CELL_BACKGROUND_COLOUR)
             elif key == ID_GAIN_AUTO:
                 if self.isAutomationActive(attrs[key]):
-                    self.SetCellBackgroundColour(row, ID_COL_GAIN, 
+                    self.SetCellBackgroundColour(row, ID_COL_GAIN,
                                         SOUNDFILE_AUTO_CELL_BACKGROUND_COLOUR)
                 else:
-                    self.SetCellBackgroundColour(row, ID_COL_GAIN, 
+                    self.SetCellBackgroundColour(row, ID_COL_GAIN,
                                         SOUNDFILE_CELL_BACKGROUND_COLOUR)
             else:
                 self.SetCellValue(row, key, str(attrs[key]))
@@ -678,8 +678,8 @@ class SoundFileGrid(gridlib.Grid):
     def OnCellLeftClick(self, evt):
         self.selRow, self.selCol = evt.GetRow(), evt.GetCol()
         if self.selCol == ID_COL_FILENAME:
-            dlg = wx.FileDialog(self, 
-                                "Open Soundfile...", os.path.expanduser("~"), 
+            dlg = wx.FileDialog(self,
+                                "Open Soundfile...", os.path.expanduser("~"),
                                 "", AUDIO_FILE_WILDCARD, style=wx.OPEN)
             if dlg.ShowModal() == wx.ID_OK:
                 path = dlg.GetPath()
@@ -716,9 +716,9 @@ class SoundFileGrid(gridlib.Grid):
     def OnLabelRightClick(self, evt):
         row = evt.GetRow()
         if row != -1 and row < len(self.objects):
-            actions = [("Duplicate Row", wx.ITEM_NORMAL), 
-                       ("Delete Row", wx.ITEM_NORMAL), 
-                       ("Show Parameter Values", wx.ITEM_RADIO), 
+            actions = [("Duplicate Row", wx.ITEM_NORMAL),
+                       ("Delete Row", wx.ITEM_NORMAL),
+                       ("Show Parameter Values", wx.ITEM_RADIO),
                        ("Show Interpolation Times", wx.ITEM_RADIO),
                        ("Show Automations for Transpo Parameter", wx.ITEM_NORMAL),
                        ("Show Automations for Gain Parameter", wx.ITEM_NORMAL)]
@@ -754,16 +754,16 @@ class SoundFileGrid(gridlib.Grid):
             QLiveLib.getVar("FxTracks").checkForDeletedSoundfile(self.selRow)
             del self.objects[self.selRow]
             self.DeleteRows(self.selRow, 1, True)
-        
+
         if evt.GetId() in [3, 4]: # Show parameter values/interpolation times
             self.objects[self.selRow].setShowInterp(evt.GetId() - 3)
             self.putObjectAttrOnCells(self.objects[self.selRow], self.selRow)
-        
+
         if evt.GetId() == 5:
             self.objects[self.selRow].openTranspoAutomationWindow()
         elif evt.GetId() == 6:
             self.objects[self.selRow].openGainAutomationWindow()
-            
+
         for i, obj in enumerate(self.objects):
             obj.setId(i)
 
@@ -811,7 +811,7 @@ class SoundFileGrid(gridlib.Grid):
 
     def getSoundFileObjects(self):
         return self.objects
-        
+
     def getSelectedSoundFile(self):
         if self.selRow == -1 or self.selRow >= len(self.objects):
             return None
@@ -868,13 +868,13 @@ class SoundFilePanel(wx.Panel):
             filename = dict["filename"]
             self.grid.addObject(id, filename)
             self.grid.setObjectCues(id, dict["cues"])
-            
+
     def getSaveState(self):
         self.saveCue()
         l = []
         for obj in self.getSoundFileObjects():
-            dict = {"id": obj.getId(), 
-                    "filename": obj.getFilename(), 
+            dict = {"id": obj.getId(),
+                    "filename": obj.getFilename(),
                     "cues": obj.getCues()}
             l.append(dict)
         return l
