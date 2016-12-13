@@ -41,7 +41,8 @@ class SliderWidget(wx.Panel):
 
     def MouseRightDown(self, evt):
         if evt.ShiftDown():
-            QLiveLib.getVar("MidiServer").unbind("ctls", self.slider.midictl, self.midi)
+            QLiveLib.getVar("MidiServer").unbind("ctls", self.slider.midictl, 
+                                                 self.midi)
             self.slider.setMidiCtl(None)
             return
         if not self.midiscanning:
@@ -64,9 +65,9 @@ class SliderWidget(wx.Panel):
         self.setInterpValue(interpTime, True)
 
     def midi(self, value):
-        self.slider.SetValue(rescale(value, 0, 127, self.parameters[2], 
-                                     self.parameters[3], ylog=self.parameters[5]), 
-                            True)
+        v = rescale(value, 0, 127, self.parameters[2], self.parameters[3], 
+                    ylog=self.parameters[5])
+        self.slider.SetValue(v, True)
 
     def getMidiBinding(self):
         return self.slider.midictl
@@ -145,26 +146,28 @@ class FxSlidersView(wx.Frame):
         self.cue8Id = KEY_EVENT_FIRST_ID + 10
         self.cue9Id = KEY_EVENT_FIRST_ID + 11
         self.cue10Id = KEY_EVENT_FIRST_ID + 12
-        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('W'), closeId),
-                                        (wx.ACCEL_NORMAL,  wx.WXK_TAB, tabId),
-                                        (wx.ACCEL_NORMAL,  wx.WXK_LEFT, self.prevId),
-                                        (wx.ACCEL_NORMAL,  wx.WXK_RIGHT, self.nextId),
-                                        (wx.ACCEL_NORMAL,  wx.WXK_ESCAPE, self.cueZeroId),
-                                        (wx.ACCEL_NORMAL,  ord("1"), self.cue1Id),
-                                        (wx.ACCEL_NORMAL,  ord("2"), self.cue2Id),
-                                        (wx.ACCEL_NORMAL,  ord("3"), self.cue3Id),
-                                        (wx.ACCEL_NORMAL,  ord("4"), self.cue4Id),
-                                        (wx.ACCEL_NORMAL,  ord("5"), self.cue5Id),
-                                        (wx.ACCEL_NORMAL,  ord("6"), self.cue6Id),
-                                        (wx.ACCEL_NORMAL,  ord("7"), self.cue7Id),
-                                        (wx.ACCEL_NORMAL,  ord("8"), self.cue8Id),
-                                        (wx.ACCEL_NORMAL,  ord("9"), self.cue9Id),
-                                        (wx.ACCEL_NORMAL,  ord("0"), self.cue10Id)])
+        accel_tbl = wx.AcceleratorTable([
+                            (wx.ACCEL_CTRL, ord('W'), closeId),
+                            (wx.ACCEL_NORMAL,  wx.WXK_TAB, tabId),
+                            (wx.ACCEL_NORMAL,  wx.WXK_LEFT, self.prevId),
+                            (wx.ACCEL_NORMAL,  wx.WXK_RIGHT, self.nextId),
+                            (wx.ACCEL_NORMAL,  wx.WXK_ESCAPE, self.cueZeroId),
+                            (wx.ACCEL_NORMAL,  ord("1"), self.cue1Id),
+                            (wx.ACCEL_NORMAL,  ord("2"), self.cue2Id),
+                            (wx.ACCEL_NORMAL,  ord("3"), self.cue3Id),
+                            (wx.ACCEL_NORMAL,  ord("4"), self.cue4Id),
+                            (wx.ACCEL_NORMAL,  ord("5"), self.cue5Id),
+                            (wx.ACCEL_NORMAL,  ord("6"), self.cue6Id),
+                            (wx.ACCEL_NORMAL,  ord("7"), self.cue7Id),
+                            (wx.ACCEL_NORMAL,  ord("8"), self.cue8Id),
+                            (wx.ACCEL_NORMAL,  ord("9"), self.cue9Id),
+                            (wx.ACCEL_NORMAL,  ord("0"), self.cue10Id)])
         self.SetAcceleratorTable(accel_tbl)
         
         mainWin = QLiveLib.getVar("MainWindow")
         self.Bind(wx.EVT_MENU, mainWin.onTabulate, id=tabId)
-        self.Bind(wx.EVT_MENU, mainWin.onMoveCue, id=KEY_EVENT_FIRST_ID, id2=KEY_EVENT_FIRST_ID+100)
+        self.Bind(wx.EVT_MENU, mainWin.onMoveCue, id=KEY_EVENT_FIRST_ID, 
+                  id2=KEY_EVENT_FIRST_ID+100)
 
         self.Bind(wx.EVT_MENU, self.onClose, id=closeId)
         self.Bind(wx.EVT_CLOSE, self.onClose)

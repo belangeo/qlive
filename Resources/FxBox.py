@@ -1,11 +1,10 @@
-#!/usr/bin/python
 # encoding: utf-8
 import wx
 import weakref
-from .constants import *
-from .fxbox_def import *
-from . import QLiveLib
-from .FxView import FxSlidersView
+from constants import *
+from fxbox_def import *
+import QLiveLib
+from FxView import FxSlidersView
 
 class BaseFxBox(object):
     def __init__(self, parent):
@@ -123,7 +122,8 @@ class BaseFxBox(object):
             for name in self.choices:
                 menu.Append(id, name)
                 id += 1
-        fxTracks.Bind(wx.EVT_MENU, self.select, id=BOX_MENU_ITEM_FIRST_ID, id2=id)
+        fxTracks.Bind(wx.EVT_MENU, self.select, 
+                      id=BOX_MENU_ITEM_FIRST_ID, id2=id)
         fxTracks.PopupMenu(menu, event.GetPosition())
         menu.Destroy()
 
@@ -166,7 +166,8 @@ class BaseFxBox(object):
                 parameters = self.module_dict[self.category][self.name]
             if self.isInput == True:
                 parameters = self.module_dict[self.name]
-            self.view = FxSlidersView(QLiveLib.getVar("MainWindow"), self, parameters)
+            self.view = FxSlidersView(QLiveLib.getVar("MainWindow"), 
+                                      self, parameters)
 
     def delete(self):
         if self.view is not None:
@@ -299,7 +300,8 @@ class BaseFxBox(object):
                 'id': self.id,
                 'cues': self.cues}
         if self.view is not None:
-            midi = [widget.getMidiBinding() for widget in self.view.getWidgets()]
+            midi = [widget.getMidiBinding() \
+                        for widget in self.view.getWidgets()]
             dict["midiBindings"] = midi
         if hasattr(self, "inChannels"):
             dict["inChannels"] = self.inChannels
@@ -320,7 +322,8 @@ class BaseFxBox(object):
         if self.view is not None:
             midi = saveDict.get("midiBindings", None)
             if midi is not None:
-                [widget.setMidiBinding(midi[i]) for i, widget in enumerate(self.view.getWidgets())]
+                [widget.setMidiBinding(midi[i]) \
+                    for i, widget in enumerate(self.view.getWidgets())]
             if hasattr(self, "inChannels"):
                 self.inChannels = saveDict["inChannels"]
                 self.view.setInChannelChecks(self.inChannels)

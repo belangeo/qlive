@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # encoding: utf-8
 import wx
 import wx.lib.scrolledpanel as scrolled
@@ -32,7 +31,8 @@ class InterpTimeFrame(wx.Frame):
                                        wx.RA_SPECIFY_COLS | wx.NO_BORDER)
         upSizer.Add(self.trackButton, 0, wx.BOTTOM|wx.LEFT|wx.RIGHT, 5)
 
-        sampleList = ["Current Soundfile", "All Soundfiles", "Not Applied to Soundfiles"]
+        sampleList = ["Current Soundfile", "All Soundfiles", 
+                      "Not Applied to Soundfiles"]
         self.sndButton = wx.RadioBox(panel, -1, "", 
                                        wx.DefaultPosition,
                                        wx.DefaultSize, sampleList, 1, 
@@ -42,17 +42,22 @@ class InterpTimeFrame(wx.Frame):
         sizer.Add(upSizer, 0)
 
         knobSizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.method = wx.Choice(panel, -1, choices=["Overwrite", "Add to Current Values", "Substract to Current Values"])
+        self.method = wx.Choice(panel, -1, choices=[
+                                                "Overwrite", 
+                                                "Add to Current Values", 
+                                                "Substract to Current Values"])
         self.method.SetSelection(0)
         self.knob = QLiveControlKnob(panel, INTERPTIME_MIN, INTERPTIME_MAX, 
                                      init=QLiveLib.getVar("globalInterpTime"), 
                                      showAutomation=False, label="Time")
         self.knob.SetFocus()
-        knobSizer.Add(self.method, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.RIGHT, 5)
+        knobSizer.Add(self.method, 0, 
+                      wx.ALIGN_CENTER_VERTICAL|wx.LEFT|wx.RIGHT, 5)
         knobSizer.Add(self.knob, 1, wx.LEFT | wx.RIGHT, 30)
         sizer.Add(knobSizer, 0, wx.TOP | wx.BOTTOM, 10)
         
-        sizer.Add(wx.StaticLine(panel, size=(360,1)), 0, wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, 4)
+        sizer.Add(wx.StaticLine(panel, size=(360,1)), 0, 
+                  wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, 4)
 
         applyButton = wx.Button(panel, -1, label="Apply")
         applyButton.Bind(wx.EVT_BUTTON, self.onApply)
@@ -60,7 +65,8 @@ class InterpTimeFrame(wx.Frame):
         closeButton.Bind(wx.EVT_BUTTON, self.onClose)
         downSizer.Add(applyButton, 0, wx.RIGHT, 5)
         downSizer.Add(closeButton, 0, wx.RIGHT, 5)
-        sizer.Add(downSizer, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALIGN_RIGHT | wx.TOP, 10)
+        sizer.Add(downSizer, 0, 
+                  wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_RIGHT|wx.TOP, 10)
 
         panel.SetSizerAndFit(sizer)
         psize = panel.GetSize()
