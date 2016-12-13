@@ -4,9 +4,11 @@ import QLiveLib
 from Widgets import *
 
 class AutomationWindow(wx.Frame):
-    def __init__(self, parent, title, object=None, closeCallback=None, paramCallback=None):
+    def __init__(self, parent, title, object=None, closeCallback=None, 
+                 paramCallback=None):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT
-        wx.Frame.__init__(self, parent, -1, title=title, size=(450,600), style=style)
+        wx.Frame.__init__(self, parent, -1, title=title, size=(450,600), 
+                          style=style)
 
         closeId = wx.NewId()
         self.prevId = KEY_EVENT_FIRST_ID
@@ -22,24 +24,26 @@ class AutomationWindow(wx.Frame):
         self.cue8Id = KEY_EVENT_FIRST_ID + 10
         self.cue9Id = KEY_EVENT_FIRST_ID + 11
         self.cue10Id = KEY_EVENT_FIRST_ID + 12
-        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('W'), closeId),
-                                        (wx.ACCEL_NORMAL,  wx.WXK_LEFT, self.prevId),
-                                        (wx.ACCEL_NORMAL,  wx.WXK_RIGHT, self.nextId),
-                                        (wx.ACCEL_NORMAL,  wx.WXK_ESCAPE, self.cueZeroId),
-                                        (wx.ACCEL_NORMAL,  ord("1"), self.cue1Id),
-                                        (wx.ACCEL_NORMAL,  ord("2"), self.cue2Id),
-                                        (wx.ACCEL_NORMAL,  ord("3"), self.cue3Id),
-                                        (wx.ACCEL_NORMAL,  ord("4"), self.cue4Id),
-                                        (wx.ACCEL_NORMAL,  ord("5"), self.cue5Id),
-                                        (wx.ACCEL_NORMAL,  ord("6"), self.cue6Id),
-                                        (wx.ACCEL_NORMAL,  ord("7"), self.cue7Id),
-                                        (wx.ACCEL_NORMAL,  ord("8"), self.cue8Id),
-                                        (wx.ACCEL_NORMAL,  ord("9"), self.cue9Id),
-                                        (wx.ACCEL_NORMAL,  ord("0"), self.cue10Id)])
+        accel_tbl = wx.AcceleratorTable([
+                            (wx.ACCEL_CTRL, ord('W'), closeId),
+                            (wx.ACCEL_NORMAL,  wx.WXK_LEFT, self.prevId),
+                            (wx.ACCEL_NORMAL,  wx.WXK_RIGHT, self.nextId),
+                            (wx.ACCEL_NORMAL,  wx.WXK_ESCAPE, self.cueZeroId),
+                            (wx.ACCEL_NORMAL,  ord("1"), self.cue1Id),
+                            (wx.ACCEL_NORMAL,  ord("2"), self.cue2Id),
+                            (wx.ACCEL_NORMAL,  ord("3"), self.cue3Id),
+                            (wx.ACCEL_NORMAL,  ord("4"), self.cue4Id),
+                            (wx.ACCEL_NORMAL,  ord("5"), self.cue5Id),
+                            (wx.ACCEL_NORMAL,  ord("6"), self.cue6Id),
+                            (wx.ACCEL_NORMAL,  ord("7"), self.cue7Id),
+                            (wx.ACCEL_NORMAL,  ord("8"), self.cue8Id),
+                            (wx.ACCEL_NORMAL,  ord("9"), self.cue9Id),
+                            (wx.ACCEL_NORMAL,  ord("0"), self.cue10Id)])
         self.SetAcceleratorTable(accel_tbl)
         
         mainWin = QLiveLib.getVar("MainWindow")
-        self.Bind(wx.EVT_MENU, mainWin.onMoveCue, id=KEY_EVENT_FIRST_ID, id2=KEY_EVENT_FIRST_ID+100)
+        self.Bind(wx.EVT_MENU, mainWin.onMoveCue, id=KEY_EVENT_FIRST_ID, 
+                  id2=KEY_EVENT_FIRST_ID+100)
 
         self.Bind(wx.EVT_MENU, self.OnClose, id=closeId)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -94,25 +98,32 @@ class AutomationPanel(wx.Panel):
                          "Times and replace main value"]
         headSizer = wx.BoxSizer(wx.HORIZONTAL)
         headSizer.AddStretchSpacer(1)
-        methodLabel = wx.StaticText(self, -1, label="Multiple Automations Mixing Method:")
+        methodLabel = wx.StaticText(self, -1, 
+                                    label="Multiple Automations Mixing Method:")
         self.method = wx.Choice(self, -1, choices=methodChoices)
         self.method.SetSelection(0)
         self.method.Bind(wx.EVT_CHOICE, self.changeMixingMethod)
         headSizer.Add(methodLabel, 0, wx.RIGHT|wx.TOP, 5)
         headSizer.Add(self.method, 0, wx.ALIGN_CENTER_HORIZONTAL)
 
-        # Collapsible Panes
+        # Collapsible Panes - TODO: remove those we won't use in the prototype?
         id = AUTOMATION_PANEL_FIRST_ID
         self.bpfCp = wx.CollapsiblePane(self, id, label="BPF", style=cpstyle)
         self.lfoCp = wx.CollapsiblePane(self, id+1, label="LFO", style=cpstyle)
-        self.randCp = wx.CollapsiblePane(self, id+2, label="Random", style=cpstyle)
-        self.envCp = wx.CollapsiblePane(self, id+3, label="Envelope Follower", style=cpstyle)
+        self.randCp = wx.CollapsiblePane(self, id+2, label="Random", 
+                                         style=cpstyle)
+        self.envCp = wx.CollapsiblePane(self, id+3, label="Envelope Follower", 
+                                        style=cpstyle)
         self.MakeEnvPaneContent(self.envCp.GetPane())
-        self.pitCp = wx.CollapsiblePane(self, id+4, label="Pitch Follower", style=cpstyle)
-        self.zeroCp = wx.CollapsiblePane(self, id+5, label="Zero-Crossing", style=cpstyle)
-        self.centCp = wx.CollapsiblePane(self, id+6, label="Centroid", style=cpstyle)
+        self.pitCp = wx.CollapsiblePane(self, id+4, label="Pitch Follower", 
+                                        style=cpstyle)
+        self.zeroCp = wx.CollapsiblePane(self, id+5, label="Zero-Crossing", 
+                                         style=cpstyle)
+        self.centCp = wx.CollapsiblePane(self, id+6, label="Centroid", 
+                                         style=cpstyle)
 
-        self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.OnPaneChanged, id=id, id2=id+6)
+        self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.OnPaneChanged, 
+                  id=id, id2=id+6)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(title, 0, wx.ALL|wx.CENTER, 5)
@@ -146,7 +157,8 @@ class AutomationPanel(wx.Panel):
 
         headSizer = wx.BoxSizer(wx.HORIZONTAL)
         headSizer.AddStretchSpacer(1)
-        self.envActiveCheck = wx.CheckBox(panel, -1, "Active:", style=wx.ALIGN_RIGHT)
+        self.envActiveCheck = wx.CheckBox(panel, -1, "Active:", 
+                                          style=wx.ALIGN_RIGHT)
         self.envActiveCheck.Bind(wx.EVT_CHECKBOX, self.envOnActivate)
         headSizer.Add(self.envActiveCheck, 0, wx.ALIGN_CENTER_HORIZONTAL)
 
@@ -162,10 +174,14 @@ class AutomationPanel(wx.Panel):
             self.envChannelChecks.append(check)
             selectorSizer.Add(check, 1, wx.EXPAND|wx.ALL, 5)
 
-        interpLabel = wx.StaticText(panel, -1, label="Input Interpolation Time in Seconds: ")
-        self.envInInterpCtrl = NumericCtrl(panel, value=interpTime, interp=0, size=(80, -1), callback=self.envOnInputsInterp)
+        interpLabel = wx.StaticText(panel, -1, 
+                                label="Input Interpolation Time in Seconds: ")
+        self.envInInterpCtrl = NumericCtrl(panel, value=interpTime, 
+                                           interp=0, size=(80, -1), 
+                                           callback=self.envOnInputsInterp)
         interpSizer = wx.BoxSizer(wx.HORIZONTAL)
-        interpSizer.Add(interpLabel, -1, wx.LEFT|wx.RIGHT|wx.ALIGN_CENTER_VERTICAL, 5)
+        interpSizer.Add(interpLabel, -1, 
+                        wx.LEFT|wx.RIGHT|wx.ALIGN_CENTER_VERTICAL, 5)
         interpSizer.Add(self.envInInterpCtrl)
 
         sampleList = ["Parameter Values", "Interpolation Times"]
@@ -284,8 +300,3 @@ class AutomationPanel(wx.Panel):
         for key in dict.keys():
             if key in maps:
                 maps[key](dict[key])
-
-if __name__ == "__main__":
-    app = wx.App()
-    f = AutomationWindow(None, title="Test Automation Window")
-    app.MainLoop()

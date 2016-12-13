@@ -67,7 +67,8 @@ class Automator:
         if self.envInputs != dict[ID_ENV_INPUTS]:
             self.envInputs = dict[ID_ENV_INPUTS]
             # TODO: Use Mix object instead of summation?
-            new = sum([self.mixer.getInputChannel(x).getOutput() for x in self.envInputs if x == 1])
+            new = sum([self.mixer.getInputChannel(x).getOutput() \
+                        for x in self.envInputs if x == 1])
             self.envInput.setInput(new, dict[ID_ENV_INPUTS_INTERP])
         self.envThreshold.time = dict[ID_ENV_THRESHOLD_INTERP]
         self.envThreshold.value = dict[ID_ENV_THRESHOLD]
@@ -108,7 +109,8 @@ class SoundFilePlayer:
         self.chnls = len(self.table)
         self.transpo = Automator(init=1)
         self.gain = Automator(init=0)
-        self.looper = Looper(self.table, pitch=self.transpo.sig(), mul=self.gain.sig()).stop()
+        self.looper = Looper(self.table, pitch=self.transpo.sig(), 
+                             mul=self.gain.sig()).stop()
         self.directout = False
         self.mixerInputId = []
         self.chnl = 0
@@ -122,8 +124,10 @@ class SoundFilePlayer:
     def setAttributes(self, dict):
         interpTime = QLiveLib.getVar("globalInterpTime")
         self.looper.mode = dict[ID_COL_LOOPMODE]
-        self.transpo.setParam(dict[ID_COL_TRANSPO], dict.get(ID_COL_TRANSPOX, interpTime))
-        self.gain.setParam(pow(10, dict[ID_COL_GAIN] * 0.05), dict.get(ID_COL_GAINX, interpTime))
+        self.transpo.setParam(dict[ID_COL_TRANSPO], 
+                              dict.get(ID_COL_TRANSPOX, interpTime))
+        self.gain.setParam(pow(10, dict[ID_COL_GAIN] * 0.05), 
+                           dict.get(ID_COL_GAINX, interpTime))
         self.looper.start = dict[ID_COL_STARTPOINT]
         self.looper.dur = dict[ID_COL_ENDPOINT] - dict[ID_COL_STARTPOINT]
         self.looper.xfade = dict[ID_COL_CROSSFADE]
@@ -253,35 +257,40 @@ class SoundfileIn(BaseAudioObject):
 class FxLowpass(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.filter = Biquad(self.input, freq=self.freq, q=self.Q, mul=self.gain)
+        self.filter = Biquad(self.input, freq=self.freq, q=self.Q, 
+                             mul=self.gain)
         self.process = Interp(self.input, self.filter, self.dryWet)
         self.output = Sig(self.process)
 
 class FxHighpass(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)        
-        self.filter = Biquad(self.input, freq=self.freq, q=self.Q, type=1, mul=self.gain)
+        self.filter = Biquad(self.input, freq=self.freq, q=self.Q, type=1, 
+                             mul=self.gain)
         self.process = Interp(self.input, self.filter, self.dryWet)
         self.output = Sig(self.process)
 
 class FxBandpass(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)        
-        self.filter = Biquadx(self.input, freq=self.freq, q=self.Q, type=2, stages=2, mul=self.gain)
+        self.filter = Biquadx(self.input, freq=self.freq, q=self.Q, type=2, 
+                              stages=2, mul=self.gain)
         self.process = Interp(self.input, self.filter, self.dryWet)
         self.output = Sig(self.process)
 
 class FxFreeverb(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)        
-        self.reverb = Freeverb(self.input, self.size, self.damp, 1, mul=self.gain)
+        self.reverb = Freeverb(self.input, self.size, self.damp, 1, 
+                               mul=self.gain)
         self.process = Interp(self.input, self.reverb, self.dryWet)
         self.output = Sig(self.process)
 
 class FxStereoVerb(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)        
-        self.reverb = STRev(self.input, self.pan, self.revtime, self.cutoff, 1, mul=self.gain)
+        self.reverb = STRev(self.input, self.pan, self.revtime, self.cutoff, 
+                            1, mul=self.gain)
         self.process = Interp(self.input, self.reverb, self.dryWet)
         self.output = Sig(self.process)
 
@@ -295,7 +304,8 @@ class FxDisto(BaseAudioObject):
 class FxDelay(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)        
-        self.delay = Delay(self.input, self.deltime, self.feed, 5, mul=self.gain)
+        self.delay = Delay(self.input, self.deltime, self.feed, 5, 
+                           mul=self.gain)
         self.process = Interp(self.input, self.delay, self.dryWet)
         self.output = Sig(self.process)
 
@@ -317,14 +327,16 @@ class FxFreqShift(BaseAudioObject):
 class FxHarmonizer(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)        
-        self.harmon = Harmonizer(self.input, self.transpo, self.feed, mul=self.gain)
+        self.harmon = Harmonizer(self.input, self.transpo, self.feed, 
+                                 mul=self.gain)
         self.process = Interp(self.input, self.harmon, self.dryWet)
         self.output = Sig(self.process)
 
 class FxPanning(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.process = Pan(self.input, self.chnls, self.pan, self.spread, mul=self.gain)
+        self.process = Pan(self.input, self.chnls, self.pan, self.spread, 
+                           mul=self.gain)
         self.output = Sig(self.process)
 
 class FxAudioOut(BaseAudioObject):
@@ -333,11 +345,13 @@ class FxAudioOut(BaseAudioObject):
         self.process = self.input
         self.output = Sig(self.process, mul=self.gain)
 
-AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn, "Soundfile": SoundfileIn, "Lowpass": FxLowpass,
-                "Highpass": FxHighpass, "Bandpass": FxBandpass, "Freeverb": FxFreeverb, 
-                "StereoVerb": FxStereoVerb, "Disto": FxDisto, "Delay": FxDelay, 
-                "Compressor": FxCompressor, "FreqShift": FxFreqShift,
-                "Harmonizer": FxHarmonizer, "Panning": FxPanning, "AudioOut": FxAudioOut}
+AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn, 
+                 "Soundfile": SoundfileIn, "Lowpass": FxLowpass,
+                "Highpass": FxHighpass, "Bandpass": FxBandpass, 
+                "Freeverb": FxFreeverb, "StereoVerb": FxStereoVerb, 
+                "Disto": FxDisto, "Delay": FxDelay, "Compressor": FxCompressor, 
+                "FreqShift": FxFreqShift, "Harmonizer": FxHarmonizer, 
+                "Panning": FxPanning, "AudioOut": FxAudioOut}
 
 class AudioServer:
     def __init__(self):
@@ -567,7 +581,8 @@ class AudioServer:
         if not filename:
             filename = os.path.basename(QLiveLib.getVar("currentProject"))
         filename, ext = os.path.splitext(filename)
-        filename = os.path.join(QLiveLib.getVar("projectFolder"), "bounce", filename)
+        filename = os.path.join(QLiveLib.getVar("projectFolder"), 
+                                "bounce", filename)
         if fileformat >= 0 and fileformat < 8:
             ext = RECORD_EXTENSIONS[fileformat]
         else: 
