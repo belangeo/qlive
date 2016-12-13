@@ -747,8 +747,6 @@ class MeterControlSlider(wx.Panel):
         return interpFloat(inter, self.minvalue, self.maxvalue)
 
     def SetValue(self, value, propagate=True):
-        # TODO: setting value is often ovveride by
-        # setRms calls and the label is not always updated
         self.propagate = propagate
         if self.HasCapture():
             self.ReleaseMouse()

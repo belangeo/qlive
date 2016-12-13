@@ -66,8 +66,8 @@ class Automator:
         self.envActive = active
         if self.envInputs != dict[ID_ENV_INPUTS]:
             self.envInputs = dict[ID_ENV_INPUTS]
-            new = Mix([self.mixer.getInputChannel(x).getOutput() \
-                        for x in self.envInputs if x == 1])
+            new = Mix([self.mixer.getInputChannel(i).getOutput() \
+                        for i, x in enumerate(self.envInputs) if x == 1])
             self.envInput.setInput(new, dict[ID_ENV_INPUTS_INTERP])
         self.envThreshold.time = dict[ID_ENV_THRESHOLD_INTERP]
         self.envThreshold.value = dict[ID_ENV_THRESHOLD]
@@ -142,7 +142,6 @@ class SoundFilePlayer:
         if dict[ID_GAIN_AUTO] is not None:
             self.gain.setAttributes(dict[ID_GAIN_AUTO])
 
-    # TODO: Handling automator live attribute changes
     def setAttribute(self, id, value):
         if id == ID_COL_LOOPMODE:
             self.looper.mode = value
