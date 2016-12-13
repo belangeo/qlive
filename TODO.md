@@ -35,7 +35,7 @@ TODO / Meeting on 05/10/2015
     - Add Cut/copy/paste options for Cues
     - **urgent** fix crash when closing the audio server
     - fix 'new project' option in the menu **done**
-    - parameters values for soundfiles should update in 'realtime'
+    - parameters values for soundfiles should update in 'realtime' **done**
     - macro task: conceive a monitor module, which will provide realtime
       visualization of automations and other parameters (probably using OSC).
 
