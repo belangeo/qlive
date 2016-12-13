@@ -34,17 +34,19 @@ class SliderWidget(wx.Panel):
                                 backColour=CONTROLSLIDER_BACK_COLOUR_INTERP)
         self.sizer.Add(self.interpKnob, 0, wx.ALL, 5)
 
-        self.slider.Bind(wx.EVT_RIGHT_DOWN, self.MouseRightDown)
-
         self.interpKnob.Hide()
         self.SetSizer(self.sizer)
 
-    def MouseRightDown(self, evt):
-        if evt.ShiftDown():
-            QLiveLib.getVar("MidiServer").unbind("ctls", self.slider.midictl,
-                                                 self.midi)
-            self.slider.setMidiCtl(None)
-            return
+    def revertMidiAssignation(self):
+        self.midiscanning = False
+        QLiveLib.getVar("MidiServer").ctlscan(None)
+        self.slider.setMidiLearn(False)
+        #self.revertMidiBackgroundColour()
+        QLiveLib.getVar("MidiServer").unbind("ctls", self.slider.midictl,
+                                             self.midi)
+        self.slider.setMidiCtl(None)
+
+    def handleMidiScan(self):
         if not self.midiscanning:
             self.midiscanning = True
             QLiveLib.getVar("MidiServer").ctlscan(self.getMidiScan)

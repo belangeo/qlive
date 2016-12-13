@@ -35,7 +35,7 @@ def powOfTwoToInt(x):
 
 class QLiveControlKnob(wx.Panel):
     def __init__(self, parent, minvalue, maxvalue, init=None, pos=(0,0),
-                 size=(50,85), log=False, outFunction=None, integer=False,
+                 size=(50,90), log=False, outFunction=None, integer=False,
                  backColour=None, label='', showAutomation=True,
                  editFunction=None, outOnShiftFunction=None):
         wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY, pos=pos,
@@ -70,6 +70,7 @@ class QLiveControlKnob(wx.Panel):
         self.colours = {0: "#000000", 1: "#FF0000", 2: "#00FF00"}
         if backColour: self.backColour = backColour
         else: self.backColour = CONTROLSLIDER_BACK_COLOUR
+        self.knobColour = CONTROLSLIDER_KNOB_COLOUR
         if init != None:
             self.SetValue(init)
             self.init = init
@@ -101,6 +102,12 @@ class QLiveControlKnob(wx.Panel):
 
     def setEnable(self, enable):
         self._enable = enable
+        if self._enable:
+            self.backColour = self.backColour
+            self.knobColour = CONTROLSLIDER_KNOB_COLOUR
+        else:
+            self.backColour = CONTROLSLIDER_DISABLE_BACK_COLOUR
+            self.knobColour = CONTROLSLIDER_DISABLE_KNOB_COLOUR
         wx.CallAfter(self.Refresh)
 
     def getInit(self):
@@ -159,6 +166,12 @@ class QLiveControlKnob(wx.Panel):
         wx.CallAfter(self.Refresh)
 
     def keyDown(self, event):
+        if QLiveLib.getVar("MidiLearnMode"):
+            if event.GetKeyCode() in [wx.WXK_BACK, wx.WXK_DELETE,
+                                        wx.WXK_NUMPAD_DELETE]:
+                self.parent.revertMidiAssignation()
+            event.Skip()
+            return
         if self.selected:
             char = ''
             if event.GetKeyCode() in range(324, 334):
@@ -195,9 +208,19 @@ class QLiveControlKnob(wx.Panel):
 
     def setMidiLearn(self, state):
         self.midiLearn = state
+        if self.midiLearn:
+            QLiveLib.setVar("CanProcessCueKeys", False)
+            self.backColour = MIDILEARN_COLOUR
+        else:
+            QLiveLib.setVar("CanProcessCueKeys", True)
+            self.backColour = CONTROLSLIDER_BACK_COLOUR
         wx.CallAfter(self.Refresh)
 
     def MouseDown(self, evt):
+        if QLiveLib.getVar("MidiLearnMode"):
+            self.parent.handleMidiScan()
+            evt.Skip()
+            return
         w, h = self.GetSize()
         if self._enable:
             rec = wx.Rect(5, 13, 45, 45)
@@ -220,6 +243,8 @@ class QLiveControlKnob(wx.Panel):
             self.ReleaseMouse()
 
     def DoubleClick(self, event):
+        if QLiveLib.getVar("MidiLearnMode"):
+            return
         if self._enable:
             w, h = self.GetSize()
             pos = event.GetPosition()
@@ -235,6 +260,8 @@ class QLiveControlKnob(wx.Panel):
         event.Skip()
 
     def MouseMotion(self, evt):
+        if QLiveLib.getVar("MidiLearnMode"):
+            return
         if self._enable:
             if evt.Dragging() and evt.LeftIsDown() and self.HasCapture():
                 pos = wx.GetMousePosition()
@@ -262,15 +289,8 @@ class QLiveControlKnob(wx.Panel):
         dc = self.dcref(self)
         gc = wx.GraphicsContext_Create(dc)
 
-        if self._enable:
-            backColour = self.backColour
-            knobColour = CONTROLSLIDER_KNOB_COLOUR
-        else:
-            backColour = CONTROLSLIDER_DISABLE_BACK_COLOUR
-            knobColour = CONTROLSLIDER_DISABLE_KNOB_COLOUR
-
         dc.Clear()
-        gc.SetBrush(wx.Brush(backColour, wx.SOLID))
+        gc.SetBrush(wx.Brush(self.backColour, wx.SOLID))
 
         # Draw background
         gc.SetPen(wx.Pen("#777777", width=self.borderWidth, style=wx.SOLID))
@@ -296,7 +316,7 @@ class QLiveControlKnob(wx.Panel):
         ph = val * math.pi * 2 - (3 * math.pi / 2.2)
         X = r * math.cos(ph)*45
         Y = r * math.sin(ph)*45
-        gc.SetBrush(wx.Brush(knobColour, wx.SOLID))
+        gc.SetBrush(wx.Brush(self.knobColour, wx.SOLID))
         gc.SetPen(wx.Pen(self.colours[self.mode], width=2, style=wx.SOLID))
         self.knobPointPos = (X+25, Y+35)
         R = math.sqrt(X*X + Y*Y)
@@ -326,10 +346,6 @@ class QLiveControlKnob(wx.Panel):
             dc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT,
                                wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL,
                                face=FONT_FACE))
-            if self.midiLearn:
-                gc.SetPen(wx.Pen(MIDILEARN_COLOUR, 1))
-                gc.SetBrush(wx.Brush(MIDILEARN_COLOUR))
-                gc.DrawRoundedRectangle(3, 70, 43, 11, 2)
             if self.midictl is not None:
                 dc.DrawLabel("M : %d" % self.midictl, wx.Rect(5, 72, 41, 11),
                              wx.ALIGN_CENTER_VERTICAL)
