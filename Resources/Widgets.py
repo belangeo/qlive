@@ -508,24 +508,30 @@ class CueButton(wx.Panel):
         self.evtHandler = evtHandler
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
-        self.Bind(wx.EVT_RIGHT_DOWN, self.midiLearn)
+        self.Bind(wx.EVT_KEY_DOWN, self.keyDown)
         self.labtext.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
-        self.labtext.Bind(wx.EVT_RIGHT_DOWN, self.midiLearn)
+        self.labtext.Bind(wx.EVT_KEY_DOWN, self.keyDown)
         wx.CallAfter(self.setNumber, number)
+
+    def keyDown(self, evt):
+        if QLiveLib.getVar("MidiLearnMode"):
+            if evt.GetKeyCode() in [wx.WXK_BACK, wx.WXK_DELETE,
+                                    wx.WXK_NUMPAD_DELETE]:
+                # remove current binding
+                midi = QLiveLib.getVar("MidiServer")
+                self.learning = False
+                self.select(0)
+                midi.noteonscan(None)
+                if self.midinote is not None:
+                    midi.unbind("noteon", self.midinote, self.midi)
+                self.midinote = None
+                self.SetToolTip(QLiveTooltip(""))
+        evt.Skip()
 
     def midiLearn(self, evt):
         midi = QLiveLib.getVar("MidiServer")
-        # remove current binding
-        if evt.ShiftDown():
-            self.learning = False
-            self.select(0)
-            midi.noteonscan(None)
-            if self.midinote is not None:
-                midi.unbind("noteon", self.midinote, self.midi)
-            self.midinote = None
-            self.SetToolTip(QLiveTooltip(""))
         # stop midi learn
-        elif self.learning:
+        if self.learning:
             self.learning = False
             self.select(0)
             midi.noteonscan(None)
@@ -551,6 +557,10 @@ class CueButton(wx.Panel):
         self.evtHandler(self.getNumber())
 
     def OnLeftDown(self, evt):
+        if QLiveLib.getVar("MidiLearnMode"):
+            self.midiLearn(evt)
+            evt.Skip()
+            return
         self.evtHandler(self.getNumber())
 
     def OnSize(self, evt):

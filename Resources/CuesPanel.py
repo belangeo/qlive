@@ -146,7 +146,6 @@ class ControlPanel(wx.Panel):
         self.upButton = wx.BitmapButton(self, wx.ID_ANY, self.upbmp)
         self.upButton.Bind(wx.EVT_BUTTON, self.onMoveCueUp)
         self.upButton.Bind(wx.EVT_KEY_DOWN, self.keyDown)
-        #self.upButton.Bind(wx.EVT_RIGHT_DOWN, self.midiLearn)
         self.upButton.SetToolTip(QLiveTooltip('Move cue up'))
         self.upDownSizer.Add(self.upButton, 1)
 
@@ -155,7 +154,6 @@ class ControlPanel(wx.Panel):
         self.downButton = wx.BitmapButton(self, wx.ID_ANY, self.downbmp)
         self.downButton.Bind(wx.EVT_BUTTON, self.onMoveCueDown)
         self.downButton.Bind(wx.EVT_KEY_DOWN, self.keyDown)
-        #self.downButton.Bind(wx.EVT_RIGHT_DOWN, self.midiLearn)
         self.downButton.SetToolTip(QLiveTooltip('Move cue down'))
         self.upDownSizer.Add(self.downButton, 1)
 
