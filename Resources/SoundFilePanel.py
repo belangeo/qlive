@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # encoding: utf-8
 import wx, os, shutil, weakref, copy
 import wx.grid as gridlib
@@ -914,3 +913,13 @@ class SoundFilePanel(wx.Panel):
             if selected is not None:
                 selected.setGlobalInterpTime(value, allcues, meth)
         self.grid.refresh()
+
+    def cleanUpSoundsFolder(self):
+        usedSounds = []
+        for object in self.grid.getSoundFileObjects():
+            usedSounds.append(object.getFilename())
+        folder = os.path.join(QLiveLib.getVar("projectFolder"), "sounds")
+        sounds = os.listdir(folder)
+        for sound in sounds:
+            if not sound in usedSounds:
+                os.remove(os.path.join(folder, sound))

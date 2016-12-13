@@ -304,6 +304,7 @@ class MainWindow(wx.Frame):
 
     def onNew(self, evt):
         if self.askForSaving():
+            QLiveLib.getVar("Soundfiles").cleanUpSoundsFolder()
             self.Hide()
             self.showIntro()
 
@@ -454,6 +455,7 @@ class MainWindow(wx.Frame):
         if self.audioServer.isBooted():
             self.audioServer.shutdown()
             time.sleep(0.25)
+        QLiveLib.getVar("Soundfiles").cleanUpSoundsFolder()
         QLiveLib.saveVars()
         self.tracks.close()
         self.Destroy()
