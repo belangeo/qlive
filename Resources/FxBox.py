@@ -173,6 +173,7 @@ class BaseFxBox(object):
     def delete(self):
         if self.view is not None:
             self.view.Destroy()
+            self.view = None
 
     def getParams(self):
         if self.view is not None:
