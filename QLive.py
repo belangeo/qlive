@@ -23,8 +23,7 @@ class QLiveApp(wx.App):
     def MacOpenFiles(self, filenames):
         if type(filenames) != list:
             filenames = [filenames]
-        if "QLive.py" in filenames:
-            filenames.remove("QLive.py")
+        filenames = [f for f in filenames if f.endswith(".qlp")]
         self.filenames = filenames
 
     def MacReopenApp(self):
@@ -38,7 +37,8 @@ if __name__ == "__main__":
     QLiveLib.loadVars()
     qlfile = None
     if len(sys.argv) > 1:
-        qlfile = sys.argv[1]
+        if sys.argv[1].endswith(".qlp"):
+            qlfile = sys.argv[1]
 
     app = QLiveApp()
     if qlfile:

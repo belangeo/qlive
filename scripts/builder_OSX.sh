@@ -2,15 +2,14 @@
 # QLive OSX standalone application
 # builder script.
 #
-# Olivier Belanger, 2015
+# Olivier Belanger, 2016
 ##################################
 
-export DMG_DIR="QLive 0.1.0"
-export DMG_NAME="QLive_0.1.0.dmg"
+export DMG_DIR="QLive 0.1.1"
+export DMG_NAME="QLive_0.1.1.dmg"
 
-py2applet --make-setup --argv-emulation=0 QLive.py Resources/*
-python setup.py py2app --plist=scripts/info.plist
-rm -f setup.py
+python2 setup.py py2app
+
 rm -rf build
 mv dist QLive_OSX
 
@@ -31,7 +30,11 @@ ditto --rsrc --arch x86_64 QLive.app QLive-x86_64.app
 rm -rf QLive.app
 mv QLive-x86_64.app QLive.app
 
-cd ..
+# Fixed wrong path in Info.plist
+cd QLive.app/Contents
+awk '{gsub("Library/Frameworks/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python", "@executable_path/../Frameworks/Python.framework/Versions/2.7/Python")}1' Info.plist > Info.plist_tmp && mv Info.plist_tmp Info.plist
+
+cd ../../..
 cp -R QLive_OSX/QLive.app .
 
 echo "assembling DMG..."
