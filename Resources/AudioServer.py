@@ -333,6 +333,7 @@ class FxHarmonizer(BaseAudioObject):
 class FxPanning(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.chnls *= 2
         self.process = Pan(self.input, self.chnls, self.pan, self.spread,
                            mul=self.gain)
         self.output = Sig(self.process)
@@ -517,6 +518,9 @@ class AudioServer:
                                                   but.getCurrentInterps())
                         but.setAudioRef(obj)
                         self.audioObjects.append(obj)
+                        # Hack: panning is always stereo for the time being.
+                        if name in ["Panning", "StereoVerb"]:
+                            chnls = 2
 
     def resetPlayerRefs(self):
         objs = QLiveLib.getVar("Soundfiles").getSoundFileObjects()
