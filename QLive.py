@@ -17,11 +17,14 @@ class QLiveApp(wx.App):
         self.frame = MainWindow(pos=(20, 20), size=(sizex, sizey))
         QLiveLib.setVar("MainWindow", self.frame)
         if hasattr(self, "filenames"):
-            self.frame.loadFile(QLiveLib.ensureNFD(self.filenames[0]))
+            if len(self.filenames) > 0:
+                self.frame.loadFile(QLiveLib.ensureNFD(self.filenames[0]))
 
     def MacOpenFiles(self, filenames):
         if type(filenames) != list:
             filenames = [filenames]
+        if "QLive.py" in filenames:
+            filenames.remove("QLive.py")
         self.filenames = filenames
 
     def MacReopenApp(self):
