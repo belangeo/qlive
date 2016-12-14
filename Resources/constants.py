@@ -6,8 +6,8 @@ sys.setdefaultencoding("utf-8")
 
 QLIVE_MAGIC_LINE = "### QLIVE PROJECT FILE ###\n"
 APP_NAME = "QLive"
-APP_VERSION = "0.1.0"
-APP_COPYRIGHT = '???,  2015'
+APP_VERSION = "0.1.1"
+APP_COPYRIGHT = 'litem.umontreal.ca,  2016'
 FILE_EXTENSION = "qlp"
 
 DEFAULT_ENCODING = sys.getdefaultencoding()

@@ -23,7 +23,6 @@ class GeneralPrefsTab(wx.Panel):
     def enableTooltips(self, state):
         QLiveLib.setVar("useTooltips", state.GetEventObject().GetValue())
 
-#TODO: needs better GUI design (why?)
 class AudioPrefsTab(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
