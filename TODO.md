@@ -1,24 +1,20 @@
 TODO
 ----
 
-- *Important* Need to document how things work right now (shortcut,
+- Need to document how things work right now (shortcut,
   key bindings, mouse bindings, buttons, etc.).
-  
-- Automatically clean up sounds folder on close/quit. **done**
-
-- Do we offer synthesis algorithms as input boxes?
 - Software preferences (record options, audio driver setup)
     - partially done, missing nchnls and inchnls
-- BPF - playback mode, window size
 - Automatic fx connection (serial, parallel), GUI conection design
 - Record functions for both the input sound and the processed sound
 - Edit mode versus playing mode
 - Master effects for both input and output section
 - Spatialisation (partially done with the Pan object)
-- Licensing
-- Improving effect modules (with categories)
-- Documentation/archive prototype
+- Improving effect modules (add spectral category)
 - Designing project architecture (save file)
+- Do we offer synthesis algorithms as input boxes?
+- BPF - playback mode, window size
+- Documentation/archive prototype
 
 TODO / Meeting on 18/09/2015
 ---------------------
@@ -26,8 +22,6 @@ TODO / Meeting on 18/09/2015
     - autoremove config/project file if not valid
         - Need a sanity function to check loaded prefs...
     - add symbols to make it more intuitive
-    - all available effects should be there for Master input/output
-    - Add phase vocoder dans une categorie "spectrale"
 
 TODO / Meeting on 05/10/2015
 ---------------------
@@ -75,3 +69,5 @@ Recently done
 - fix: harmonizer mutes the output when activated **done**
 - Use shift+crtl+c for Cue windows instead of ctrl+c **done**
 - classer les effets par categorie (filtres, delay, reverb...) **done**
+- Automatically clean up sounds folder on close/quit. **done**
+- Licensing **done**
