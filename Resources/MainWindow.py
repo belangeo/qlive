@@ -478,5 +478,6 @@ class MainWindow(wx.Frame):
             time.sleep(0.25)
         QLiveLib.getVar("Soundfiles").cleanUpSoundsFolder()
         QLiveLib.saveVars()
+        QLiveLib.saveMEI()
         self.tracks.close()
         self.Destroy()

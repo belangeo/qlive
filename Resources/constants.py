@@ -36,6 +36,13 @@ SYSTEM_ENCODING = sys.getfilesystemencoding()
 
 PLATFORM = sys.platform
 
+# Use MEI only if pymei module is available
+try:
+    import pymei
+    PYMEI = True
+except ImportError:
+    PYMEI = False
+
 if '/%s.app' % APP_NAME in os.getcwd():
     RESOURCES_PATH = os.getcwd()
 else:

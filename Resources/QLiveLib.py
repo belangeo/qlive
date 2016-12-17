@@ -75,6 +75,16 @@ def saveVars():
 def loadVars():
     vars.readQLivePrefsFromFile()
 
+def saveMEI():
+    if PYMEI:
+        import MEI
+        MEI.saveMEI()
+    else:
+        pass
+
+def loadMEI():
+    MEI.loadMEI()
+
 def queryAudioMidiDrivers():
     driverInfos = getAvailableAudioMidiDrivers()
     inputs = driverInfos[0]
