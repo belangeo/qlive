@@ -38,9 +38,9 @@ def buildMEI():
 
     return doc
 
-def saveMEI():
+def saveMEI(path):
     doc = buildMEI()
-    status = documentToFile(doc, 'testdoc.mei')
+    status = documentToFile(doc, str(path))
 
 def loadMEI():
     pass

@@ -75,10 +75,10 @@ def saveVars():
 def loadVars():
     vars.readQLivePrefsFromFile()
 
-def saveMEI():
+def saveMEI(path):
     if PYMEI:
         import MEI
-        MEI.saveMEI()
+        MEI.saveMEI(path)
     else:
         pass
 

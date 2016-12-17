@@ -85,6 +85,10 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.onSave, id=wx.ID_SAVE)
         menu1.Append(wx.ID_SAVEAS, "Save As...\tShift+Ctrl+S")
         self.Bind(wx.EVT_MENU, self.onSaveAs, id=wx.ID_SAVEAS)
+        menu1.Append(EXPORT_MEI_ID, "Export MEI...\tShift+Ctrl+M")
+        self.Bind(wx.EVT_MENU, self.onExportMEI, id=EXPORT_MEI_ID)
+        if not PYMEI:
+            menu1.Enable(EXPORT_MEI_ID, False)
         if PLATFORM != "darwin":
             menu1.AppendSeparator()
         prefItem = menu1.Append(wx.ID_PREFERENCES, "Preferences...\tCtrl+;")
@@ -280,6 +284,9 @@ class MainWindow(wx.Frame):
             f.write("### %s ###\n" % APP_VERSION)
             f.write("dictSave = %s" % pprint.pformat(dictSave, indent=4))
 
+    def saveMEI(self, path):
+        QLiveLib.saveMEI(path)
+
     def loadFile(self, path):
         with open(path, "r") as f:
             magicline = f.readline()
@@ -399,6 +406,23 @@ class MainWindow(wx.Frame):
             self.saveFile(path)
         dlg.Destroy()
 
+    def onExportMEI(self, evt):
+        if QLiveLib.getVar("currentProject"):
+            filepath = os.path.split(QLiveLib.getVar("currentProject"))
+        else:
+            filepath = os.path.join(os.path.expanduser("~"),
+                                    "qlive_project.mei")
+            filepath = os.path.split(filepath)
+        dlg = wx.FileDialog(self, "Export Qlive Projet in MEI format",
+                            filepath[0], os.path.splitext(filepath[1])[0]+".mei",
+                            "MEI files (*.mei)|*.mei",
+                            style=wx.SAVE|wx.FD_OVERWRITE_PROMPT)
+        if dlg.ShowModal() == wx.ID_OK:
+            path = dlg.GetPath()
+            self.saveMEI(path)
+        dlg.Destroy()
+
+
     def onNewTrack(self, evt):
         self.tracks.addTrack()
 
@@ -478,6 +502,5 @@ class MainWindow(wx.Frame):
             time.sleep(0.25)
         QLiveLib.getVar("Soundfiles").cleanUpSoundsFolder()
         QLiveLib.saveVars()
-        QLiveLib.saveMEI()
         self.tracks.close()
         self.Destroy()
