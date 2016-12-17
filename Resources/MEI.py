@@ -21,17 +21,82 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from pymei import *
+from constants import *
+from datetime import date
 
 def buildMEI():
 
-    # Basic structure
+    # Root structure
     mei = MeiElement("mei")
-    head = MeiElement("meiHead")
-    mus = MeiElement("music")
+    meiHead = MeiElement("meiHead")
+    fileDesc = MeiElement("fileDesc")
+    workDesc = MeiElement("workDesc")
+    encodingDesc = MeiElement("encodingDesc")
+    music = MeiElement("music")
     body = MeiElement("body")
-    mei.addChild(head)
-    mei.addChild(mus)
-    mus.addChild(body)
+
+    # Header structure
+    appInfo = MeiElement("appInfo")
+    application = MeiElement("application")
+    name_application = MeiElement("name")
+    perfMedium = MeiElement("perfMedium")
+    instrumentation = MeiElement("instrumentation")
+    titleStmt_file = MeiElement("titleStmt")
+    titleStmt_work = MeiElement("titleStmt")
+    respStmt = MeiElement("respStmt")
+    work = MeiElement("work")
+    title_file = MeiElement("title") # Machine readable work title (ex.: electronic part of composition X)
+    title_work = MeiElement("title") # Master work title (ex.: Composition X)
+    title_file.value = "Electronic part for Composition X"
+    title_work.value = "Composition X"
+    pubStmt = MeiElement("pubStmt")
+    unpub = MeiElement("unpub")
+    unpub.value = "Working in progress."
+    persName_composer = MeiElement("persName")
+    persName_encoder = MeiElement("persName")
+    persName_composer.addAttribute("role", "composer")
+    persName_encoder.addAttribute("role", "encoder")
+    persName_composer.value = "Mrs. Test Q. L. Composer"
+    persName_encoder.value = "Mrs. Test Q. L. Encoder"
+
+    # Building header tree
+    mei.addChild(meiHead)
+    meiHead.addChild(fileDesc)
+    meiHead.addChild(workDesc)
+    meiHead.addChild(encodingDesc)
+    fileDesc.addChild(titleStmt_file)
+    work.addChild(titleStmt_work)
+    work.addChild(perfMedium)
+    perfMedium.addChild(instrumentation)
+
+    # must be a dynamic loopvar assignment
+    instrVoice1 = MeiElement("instrVoice")
+    instrVoice2 = MeiElement("instrVoice")
+    instrVoice1.value = "Cello"
+    instrVoice2.value = "Electronics"
+    instrumentation.addChild(instrVoice1)
+    instrumentation.addChild(instrVoice2)
+    # ================================
+
+    encodingDesc.addChild(appInfo)
+    appInfo.addChild(application)
+    application.addChild(name_application)
+    name_application.value = APP_NAME
+    application.addAttribute("version", APP_VERSION)
+    today = date.today().isoformat()
+    application.addAttribute("isodate", today)
+    workDesc.addChild(work)
+    fileDesc.addChild(pubStmt)
+    titleStmt_file.addChild(title_file)
+    titleStmt_file.addChild(respStmt)
+    titleStmt_work.addChild(title_work)
+    respStmt.addChild(persName_composer)
+    respStmt.addChild(persName_encoder)
+    pubStmt.addChild(unpub)
+
+    # Content
+    mei.addChild(music)
+    music.addChild(body)
 
     doc = MeiDocument()
     doc.root = mei
