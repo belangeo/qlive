@@ -234,7 +234,7 @@ class BaseAudioObject:
                 inter = interpTime
             else:
                 inter = interps[i]
-            if name == "gain":
+            if "gain" in name:
                 val = pow(10, val * 0.05)
             setattr(self, name, SigTo(val, time=inter, init=val))
 
@@ -260,7 +260,13 @@ class AudioNone(BaseAudioObject):
 class AudioIn(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.output = Sig(self.input, mul=self.gain)
+        self.gainCtrls = [self.gain1, self.gain2, self.gain3, self.gain4,
+                          self.gain5, self.gain6, self.gain7, self.gain8]
+        self.output = Sig(self.input, mul=0.0)
+
+    def setGains(self, inchnls):
+        self.gain = [ctl for i, ctl in enumerate(self.gainCtrls) if inchnls[i]]
+        self.output.mul = self.gain
 
     def setEnable(self, x):
         self.output.value = [[0.0] * self.chnls, self.input][x]
@@ -526,6 +532,8 @@ class AudioServer:
                                               but.getCurrentInterps())
                     but.setAudioRef(obj)
                     self.audioObjects.append(obj)
+                    if name == "AudioIn":
+                        obj.setGains(inchnls)
             for but in track.getButtonFxs():
                 name = but.name
                 category = but.category

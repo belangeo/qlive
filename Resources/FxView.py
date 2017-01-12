@@ -56,6 +56,10 @@ class SliderWidget(wx.Panel):
         self.interpKnob.Hide()
         self.SetSizer(self.sizer)
 
+    def setEnable(self, state):
+        self.slider.setEnable(state)
+        self.interpKnob.setEnable(state)
+
     def revertMidiAssignation(self):
         self.midiscanning = False
         QLiveLib.getVar("MidiServer").ctlscan(None)
@@ -282,6 +286,10 @@ class FxSlidersView(wx.Frame):
                 knobSizer.Add(slider,0,wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM,5)
             self.sizer.Add(knobSizer, 0, wx.EXPAND)
 
+        if "inselect" in self.parameters:
+            for i, widget in enumerate(self.widgets):
+                widget.setEnable(i == 0)
+
         self.graph = Grapher(self.panel, xlen=256, yrange=(0, 1),
                              init=[(0,0), (0.5,0.5), (1,0)],
                              mode=0, outFunction=None)
@@ -296,8 +304,8 @@ class FxSlidersView(wx.Frame):
         self.SetSizerAndFit(self.frameSizer)
 
         self.Bind(wx.EVT_ENTER_WINDOW, self.getFocus)
-        self.SetMinSize((500, -1))
-        self.SetSize((500, -1))
+        self.SetMinSize((560, -1))
+        self.SetSize((560, -1))
 
     def getFocus(self, evt):
         if "select" in self.parameters:
@@ -337,12 +345,25 @@ class FxSlidersView(wx.Frame):
     def setInChannelChecks(self, lst):
         for i, check in enumerate(self.inChannelChecks):
             check.SetValue(lst[i])
+            self.widgets[i].setEnable(lst[i])
 
     def setIsMultiChannels(self, state):
         self.chnlsButton.SetSelection(state)
+        if state:
+            for i, state in enumerate(self.fxbox.inChannels):
+                self.widgets[i].setEnable(state)
+        else:
+            for i, widget in enumerate(self.widgets):
+                widget.setEnable(i == 0)
 
     def onChnlsRadioBox(self, evt):
         self.fxbox.setIsMultiChannels(evt.GetInt())
+        if evt.GetInt():
+            for i, state in enumerate(self.fxbox.inChannels):
+                self.widgets[i].setEnable(state)
+        else:
+            for i, widget in enumerate(self.widgets):
+                widget.setEnable(i == 0)
 
     def setOutChannelChecks(self, lst):
         for i, check in enumerate(self.outChannelChecks):
@@ -368,6 +389,7 @@ class FxSlidersView(wx.Frame):
         obj = evt.GetEventObject()
         which = int(obj.GetLabel()) - 1
         self.fxbox.checkInChannel(which, state)
+        self.widgets[which].setEnable(state)
 
     def onCheckOutSelect(self, evt):
         state = evt.GetInt()

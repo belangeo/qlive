@@ -89,9 +89,9 @@ class QLiveControlKnob(wx.Panel):
         self.autoPlay = False
         self.showEdit = False
         self.colours = {0: "#000000", 1: "#FF0000", 2: "#00FF00"}
-        if backColour: self.backColour = backColour
-        else: self.backColour = CONTROLSLIDER_BACK_COLOUR
-        self.knobColour = CONTROLSLIDER_KNOB_COLOUR
+        if backColour: self.backColour = self.realBackColour = backColour
+        else: self.backColour = self.realBackColour = CONTROLSLIDER_BACK_COLOUR
+        self.knobColour = self.realKnobColour = CONTROLSLIDER_KNOB_COLOUR
         if init != None:
             self.SetValue(init)
             self.init = init
@@ -124,8 +124,8 @@ class QLiveControlKnob(wx.Panel):
     def setEnable(self, enable):
         self._enable = enable
         if self._enable:
-            self.backColour = self.backColour
-            self.knobColour = CONTROLSLIDER_KNOB_COLOUR
+            self.backColour = self.realBackColour
+            self.knobColour = self.realKnobColour
         else:
             self.backColour = CONTROLSLIDER_DISABLE_BACK_COLOUR
             self.knobColour = CONTROLSLIDER_DISABLE_KNOB_COLOUR

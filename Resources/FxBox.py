@@ -64,7 +64,7 @@ class BaseFxBox(object):
         interpTime = QLiveLib.getVar("globalInterpTime")
         if self.audioRef is not None:
             audio = self.audioRef()
-            if name == "gain":
+            if "gain" in name:
                 value = pow(10, value * 0.05)
             if fromUser:
                 getattr(audio, name).time = interpTime
