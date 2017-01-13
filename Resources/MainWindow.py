@@ -270,6 +270,8 @@ class MainWindow(wx.Frame):
         dictSave["mixer"] = self.mixer.getSaveDict()
         dictSave["soundfiles"] = self.soundfiles.getSaveState()
         dictSave["control"] = self.controlPanel.getSaveState()
+        dictSave["main"] = {"position": self.GetPosition(),
+                            "size": self.GetSize()}
         #dictSave["server"] = self.audioServer.getSaveState()
         return dictSave
 
@@ -311,6 +313,9 @@ class MainWindow(wx.Frame):
         #self.audioServer.setSaveState(self.saveState.get("server", {}))
         linkMenuItem = self.GetMenuBar().FindItemById(LINK_STEREO_ID)
         linkMenuItem.Check(dictSave["mixer"].get("inputLinked", False))
+        if "main" in self.saveState:
+            self.SetPosition(self.saveState["main"]["position"])
+            self.SetSize(self.saveState["main"]["size"])
 
     def askForSaving(self):
         state = True

@@ -20,7 +20,7 @@ TODO
 - Arbitrary interpolation between two cues
 - On tracks canvas: Double-click to open the FxView. **done** 
 - On tracks canvas: Click+drag to move FxBoxes. **done**
-- Remember app pos and size in saved file.
+- Remember app pos and size in saved file. **done**
 - Automators on fx parameters.
 
 
