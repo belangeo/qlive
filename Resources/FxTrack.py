@@ -59,6 +59,20 @@ class FxTrack:
         self.font = wx.Font(ptsize, wx.FONTFAMILY_DEFAULT, wx.NORMAL,
                             wx.FONTWEIGHT_NORMAL, face="Monospace")
 
+    def checkTrackSize(self):
+        xid = max([but.getId()[0] for but in self.buttonsFxs])
+        yid = max([but.getId()[1] for but in self.buttonsFxs] + \
+               [but.getId()[1] for but in self.buttonsInputs])
+
+        if self.cols > (xid + 1):
+            self.cols = xid + 2
+
+        if self.rows > (yid + 1):
+            self.rows = yid + 2
+        elif (yid + 2) > self.rows:
+            self.rows += 1
+        self.trackHeight = TRACK_ROW_SIZE * self.rows
+
     def createButtonFromDict(self, dic, type):
         if type == "fx":
             but = FxBox(self)
@@ -67,6 +81,38 @@ class FxTrack:
             but = InputBox(self)
             self.buttonsInputs.append(but)
         but.setSaveDict(dic)
+
+    def isIdAvailable(self, id, isInput):
+        if isInput:
+            for button in self.buttonsInputs:
+                if button.getId() == id:
+                    return False
+            return True
+        else:
+            for button in self.buttonsFxs:
+                if button.getId() == id:
+                    return False
+            return True
+
+    def moveButton(self, button, pos):
+        yid = (pos[1] - self.trackPosition) / TRACK_ROW_SIZE
+        if yid < 0:
+            yid = 0
+        if button.isInput:
+            id = [0, yid]
+            if self.isIdAvailable(id, isInput=True):
+                button.setId(id)
+        else:
+            xid = (pos[0] - 125) / TRACK_COL_SIZE
+            if xid < 0:
+                xid = 0
+            id = [xid, yid]
+            if self.isIdAvailable(id, isInput=False):
+                button.setId(id)
+
+        self.checkTrackSize()
+
+        QLiveLib.getVar("FxTracks").drawAndRefresh()
 
     def createButton(self, pos):
         yid = (pos[1] - self.trackPosition) / TRACK_ROW_SIZE
@@ -82,10 +128,9 @@ class FxTrack:
             if (xid + 1) > self.cols:
                 self.cols = xid + 2
 
-        trackHeight = TRACK_ROW_SIZE * (yid + 2)
-        if trackHeight > self.trackHeight:
-            self.trackHeight = trackHeight
-            self.rows += 1
+        self.checkTrackSize()
+
+        QLiveLib.getVar("FxTracks").drawAndRefresh()
 
     def deleteButton(self, but):
         if but.isInput:
@@ -93,17 +138,7 @@ class FxTrack:
         else:
             self.buttonsFxs.remove(but)
         but.delete()
-        xid = max([but.getId()[0] for but in self.buttonsFxs])
-        yid = max([but.getId()[1] for but in self.buttonsFxs] + \
-               [but.getId()[1] for but in self.buttonsInputs])
-
-        if self.cols > (xid + 1):
-            self.cols = xid + 2
-
-        if self.rows > (yid + 1):
-            self.rows = yid + 2
-            self.trackHeight = TRACK_ROW_SIZE * self.rows
-
+        self.checkTrackSize()
         QLiveLib.getVar("FxTracks").drawAndRefresh()
 
     def close(self):

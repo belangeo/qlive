@@ -333,8 +333,8 @@ class BaseFxBox(object):
                 'id': self.id,
                 'cues': self.cues}
         if self.view is not None:
-            midi = [widget.getMidiBinding() \
-                        for widget in self.view.getWidgets()]
+            widgets = self.view.getWidgets()
+            midi = [widget.getMidiBinding() for widget in widgets]
             dict["midiBindings"] = midi
         if hasattr(self, "inChannels"):
             dict["inChannels"] = self.inChannels

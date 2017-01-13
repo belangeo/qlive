@@ -31,6 +31,8 @@ class FxTracks(wx.ScrolledWindow):
 
         self.selectedTrack = 0
 
+        self.dragTrack = self.dragButton = None
+
         self.createTracks(2)
 
         self.SetVirtualSize((MAX_WIDTH, MAX_HEIGHT))
@@ -45,8 +47,10 @@ class FxTracks(wx.ScrolledWindow):
 
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_LEFT_DOWN, self.leftClicked)
+        self.Bind(wx.EVT_LEFT_UP, self.leftUp)
         self.Bind(wx.EVT_LEFT_DCLICK, self.leftDClicked)
         self.Bind(wx.EVT_RIGHT_DOWN, self.rightClicked)
+        self.Bind(wx.EVT_MOTION, self.onMotion)
 
     def createTracks(self, num):
         self.tracks = []
@@ -128,90 +132,73 @@ class FxTracks(wx.ScrolledWindow):
 
         dc.EndDrawing()
 
+    def getTrackFromPos(self, pos):
+        for track in self.tracks:
+            tpos = track.getTrackPosition()
+            theight = track.getTrackHeight()
+            if pos[1] > tpos and pos[1] < tpos + theight:
+                return track
+        return None
+
+    def getButtonFromPos(self, track, pos):
+        for button in track.buttonsInputs:
+            if button.getRect().Contains(pos):
+                return button
+        for button in track.buttonsFxs:
+            if button.getRect().Contains(pos):
+                return button
+        return None
+
+    def leftUp(self, evt):
+        self.dragTrack = self.dragButton = None
+        if self.HasCapture():
+            self.ReleaseMouse()
+        evt.Skip()
+
     def leftClicked(self, evt):
         pos = self.CalcUnscrolledPosition(evt.GetPosition())
-        trackFounded = buttonFounded = None
-        for track in self.tracks:
-            if pos[1] > track.getTrackPosition() and \
-               pos[1] < track.getTrackPosition() + track.getTrackHeight():
-                trackFounded = track
-                break
-        if trackFounded is not None:
-            buttonFounded = None
+        track = self.getTrackFromPos(pos)
+        if track is not None:
             if pos[0] < 25:
                 self.setSelectedTrack(track.getId())
-            elif pos[0] < 125:
-                for but in track.buttonsInputs:
-                    if but.getRect().Contains(pos):
-                        buttonFounded = but
-                        break
             else:
-                for but in track.buttonsFxs:
-                    if but.getRect().Contains(pos):
-                        buttonFounded = but
-                        break
-        if buttonFounded is not None:
-            if evt.ShiftDown():
-                trackFounded.deleteButton(buttonFounded)
-            else:
-                buttonFounded.openView()
+                button = self.getButtonFromPos(track, pos)
+                self.dragTrack = track
+                self.dragButton = button
+                self.CaptureMouse()
         evt.Skip()
 
     def leftDClicked(self, evt):
         pos = self.CalcUnscrolledPosition(evt.GetPosition())
-        trackFounded = buttonFounded = selection = None
-        for track in self.tracks:
-            if pos[1] > track.getTrackPosition() and \
-               pos[1] < track.getTrackPosition() + track.getTrackHeight():
-                trackFounded = track
-                break
-        if trackFounded is not None:
-            buttonFounded = None
+        track = self.getTrackFromPos(pos)
+        if track is not None:
             if pos[0] < 25:
                 self.setSelectedTrack(track.getId())
-                selection = track.getId()
-            elif pos[0] < 125:
-                for but in track.buttonsInputs:
-                    if but.getRect().Contains(pos):
-                        buttonFounded = but
-                        break
             else:
-                for but in track.buttonsFxs:
-                    if but.getRect().Contains(pos):
-                        buttonFounded = but
-                        break
-        else:
-            evt.Skip()
-            return
-
-        if buttonFounded is None and selection is None:
-            track.createButton(pos)
-            self.drawAndRefresh()
+                button = self.getButtonFromPos(track, pos)
+                if button is not None:
+                    if evt.ShiftDown():
+                        track.deleteButton(button)
+                    else:
+                        button.openView()
+                else:
+                    track.createButton(pos)
         evt.Skip()
 
     def rightClicked(self, evt):
         pos = self.CalcUnscrolledPosition(evt.GetPosition())
-        trackFounded = buttonFounded = None
-        for track in self.tracks:
-            if pos[1] > track.getTrackPosition() and \
-               pos[1] < track.getTrackPosition() + track.getTrackHeight():
-                trackFounded = track
-                break
-        if trackFounded is not None:
-            buttonFounded = None
-            if pos[0] < 100:
-                for but in track.buttonsInputs:
-                    if but.getRect().Contains(pos):
-                        buttonFounded = but
-                        break
-            else:
-                for but in track.buttonsFxs:
-                    if but.getRect().Contains(pos):
-                        buttonFounded = but
-                        break
-        if buttonFounded is not None:
-            buttonFounded.openMenu(evt)
-            self.drawAndRefresh()
+        track = self.getTrackFromPos(pos)
+        if track is not None:
+            button = self.getButtonFromPos(track, pos)
+            if button is not None:
+                button.openMenu(evt)
+                self.drawAndRefresh()
+        evt.Skip()
+
+    def onMotion(self, evt):
+        if self.HasCapture() and evt.LeftIsDown():
+            pos = self.CalcUnscrolledPosition(evt.GetPosition())
+            self.dragTrack.moveButton(self.dragButton, pos)
         evt.Skip()
 
     def checkForDeletedSoundfile(self, id):

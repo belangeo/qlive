@@ -18,9 +18,10 @@ TODO
 - META data framework
 - AudioIn, one gain per input **done** (do we do the same for AudioOut?) **done**
 - Arbitrary interpolation between two cues
-- On tracks canvas: Double-click to open the FxView 
-- On track canvas: Click+drag to move FxBoxes.
+- On tracks canvas: Double-click to open the FxView. **done** 
+- On tracks canvas: Click+drag to move FxBoxes. **done**
 - Remember app pos and size in saved file.
+- Automators on fx parameters.
 
 
 TODO / Meeting on 18/09/2015
