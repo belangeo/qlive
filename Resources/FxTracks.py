@@ -20,10 +20,8 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 import wx
-from FxTrack import *
-
-# TODO: create the FxBox at the clicked position
-# TODO: Review the FxBox/effects connection design
+from constants import *
+from FxTrack import FxTrack
 
 class FxTracks(wx.ScrolledWindow):
     def __init__(self, parent):
@@ -89,11 +87,7 @@ class FxTracks(wx.ScrolledWindow):
         else:
             gc.SetBrush(wx.Brush(FXBOX_DISABLE_BACKGROUND_COLOUR, wx.SOLID))
         rect = wx.Rect(0, 0, w, h)
-        rectI = wx.Rect(0, 6, w/12., h-13)
-        rectO = wx.Rect(w*11/12., 6, w/12., h-13)
         gc.DrawRoundedRectangle(rect[0], rect[1], rect[2], rect[3], 5)
-        gc.DrawRoundedRectangle(rectI[0], rectI[1], rectI[2], rectI[3], 2)
-        gc.DrawRoundedRectangle(rectO[0], rectO[1], rectO[2], rectO[3], 2)
         dc.SelectObject(wx.NullBitmap)
         if enable:
             self.buttonBitmap = b
@@ -126,9 +120,11 @@ class FxTracks(wx.ScrolledWindow):
         dc.DrawLine(25, 0, 25, MAX_HEIGHT)
         dc.DrawLine(125, 0, 125, MAX_HEIGHT)
 
+        trackPosition = 25
         for track in self.tracks:
-            track.onPaint(dc, self.buttonBitmap, self.disableButtonBitmap,
-                            self.selectedTrack)
+            trackPosition = track.onPaint(dc, self.buttonBitmap,
+                                          self.disableButtonBitmap,
+                                          self.selectedTrack, trackPosition)
 
         dc.EndDrawing()
 
@@ -184,6 +180,10 @@ class FxTracks(wx.ScrolledWindow):
                     if but.getRect().Contains(pos):
                         buttonFounded = but
                         break
+        else:
+            evt.Skip()
+            return
+
         if buttonFounded is None and selection is None:
             track.createButton(pos)
             self.drawAndRefresh()

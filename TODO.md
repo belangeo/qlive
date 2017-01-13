@@ -5,7 +5,7 @@ TODO
   key bindings, mouse bindings, buttons, etc.).
 - Software preferences (record options, audio driver setup)
     - partially done, missing nchnls and inchnls
-- Automatic fx connection (serial, parallel), GUI conection design
+- Automatic fx connection (serial, parallel), GUI conection design **done**
 - Record functions for both the input sound and the processed sound
 - Edit mode versus playing mode
 - Master effects for both input and output section
@@ -18,6 +18,10 @@ TODO
 - META data framework
 - AudioIn, one gain per input **done** (do we do the same for AudioOut?)
 - Arbitrary interpolation between two cues
+- On tracks canvas: Double-click to open the FxView 
+- On track canvas: Click+drag to move FxBoxes.
+- Remember app pos and size in saved file.
+
 
 TODO / Meeting on 18/09/2015
 ---------------------

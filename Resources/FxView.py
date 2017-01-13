@@ -304,6 +304,7 @@ class FxSlidersView(wx.Frame):
         self.SetSizerAndFit(self.frameSizer)
 
         self.Bind(wx.EVT_ENTER_WINDOW, self.getFocus)
+        # Effects windows are too small just after creation (at least on linux).
         self.SetMinSize((560, -1))
         self.SetSize((560, -1))
 

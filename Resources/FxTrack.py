@@ -20,9 +20,9 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 import wx
-from constants import *
-from FxBox import *
 import QLiveLib
+from constants import *
+from FxBox import FxBox, InputBox
 
 class FxTrack:
     def __init__(self, parent, id=0):
@@ -31,9 +31,9 @@ class FxTrack:
         self.trackHeight = TRACK_ROW_SIZE * 2
         self.cols = 1
         self.rows = 1
-
+        self.buttonsFxs = []
+        self.buttonsInputs = []
         self.setFont()
-        self.createButtons()
 
     def setId(self, id):
         self.id = id
@@ -59,42 +59,51 @@ class FxTrack:
         self.font = wx.Font(ptsize, wx.FONTFAMILY_DEFAULT, wx.NORMAL,
                             wx.FONTWEIGHT_NORMAL, face="Monospace")
 
-    def createButtons(self):
-        # TODO: Buttons should be created at a position according to ther ids
-        self.buttonsFxs = []
-        self.buttonsInputs = []
-        for i in range(self.rows):
-            for j in range(self.cols):
-                but = FxBox(self)
-                but.setId([j,i])
-                self.buttonsFxs.append(but)
+    def createButtonFromDict(self, dic, type):
+        if type == "fx":
+            but = FxBox(self)
+            self.buttonsFxs.append(but)
+        else:
             but = InputBox(self)
-            but.setId([0,i])
             self.buttonsInputs.append(but)
+        but.setSaveDict(dic)
 
     def createButton(self, pos):
+        yid = (pos[1] - self.trackPosition) / TRACK_ROW_SIZE
         if pos[0] > 25 and pos[0] < 125:
             but = InputBox(self)
-            but.setId([0, len(self.buttonsInputs)])
+            but.setId([0, yid])
             self.buttonsInputs.append(but)
         else:
-            # TODO: need to retrieve the correct id from the position
+            xid = (pos[0] - 125) / TRACK_COL_SIZE
             but = FxBox(self)
-            but.setId([len(self.buttonsFxs), 0])
+            but.setId([xid, yid])
             self.buttonsFxs.append(but)
+            if (xid + 1) > self.cols:
+                self.cols = xid + 2
+
+        trackHeight = TRACK_ROW_SIZE * (yid + 2)
+        if trackHeight > self.trackHeight:
+            self.trackHeight = trackHeight
+            self.rows += 1
 
     def deleteButton(self, but):
         if but.isInput:
             self.buttonsInputs.remove(but)
-            lst = self.buttonsInputs
         else:
             self.buttonsFxs.remove(but)
-            lst = self.buttonsFxs
-        for i, but in enumerate(lst):
-            id = but.getId()
-            id[0] = i
-            but.setId(id)
         but.delete()
+        xid = max([but.getId()[0] for but in self.buttonsFxs])
+        yid = max([but.getId()[1] for but in self.buttonsFxs] + \
+               [but.getId()[1] for but in self.buttonsInputs])
+
+        if self.cols > (xid + 1):
+            self.cols = xid + 2
+
+        if self.rows > (yid + 1):
+            self.rows = yid + 2
+            self.trackHeight = TRACK_ROW_SIZE * self.rows
+
         QLiveLib.getVar("FxTracks").drawAndRefresh()
 
     def close(self):
@@ -113,11 +122,18 @@ class FxTrack:
         return self.buttonsFxs
 
     def createConnections(self):
-        for i, button in enumerate(self.buttonsFxs):
-            if i == 0: # TODO: Should be based on the id...
-                button.setInput(self.buttonsInputs[i].getOutput())
-            else:
-                button.setInput(self.buttonsFxs[i-1].getOutput())
+        inputs = [but.getOutput() for but in self.buttonsInputs]
+        insum = sum([inp for inp in inputs if inp is not None])
+        for col in range(self.cols):
+            accum = []
+            for but in self.buttonsFxs:
+                if but.getId()[0] == col:
+                    but.setInput(insum)
+                    if but.getOutput() is not None:
+                        accum.append(but.getOutput())
+            if accum != []:
+                insum = sum(accum)
+
         self.connectAudioMixer()
 
     def connectAudioMixer(self):
@@ -163,10 +179,13 @@ class FxTrack:
                         if obj.view is not None:
                             obj.view.setSoundfile(str(oid))
 
-    def onPaint(self, dc, buttonBitmap, disableButtonBitmap, selectedTrack):
+    def onPaint(self, dc, buttonBitmap, disableButtonBitmap, selectedTrack,
+                trackPosition):
         gc = wx.GraphicsContext_Create(dc)
 
         dc.SetFont(self.font)
+
+        self.trackPosition = trackPosition
 
         # grid
         dc.SetPen(wx.Pen("#3F3F3F", 1))
@@ -207,6 +226,8 @@ class FxTrack:
         y = self.trackPosition + self.trackHeight
         dc.DrawLine(0, y, MAX_WIDTH, y)
 
+        return self.trackHeight + self.trackPosition
+
     def setTrackGlobalInterpTime(self, value, allcues, meth):
         tmp = self.buttonsFxs + self.buttonsInputs
         for but in tmp:
@@ -229,15 +250,16 @@ class FxTrack:
         return dict
 
     def setSaveDict(self, saveDict):
+        self.buttonsFxs = []
+        self.buttonsInputs = []
         self.rows = saveDict["rows"]
-        self.cols = len(saveDict["fxsValues"]) # saveDict["cols"]
+        self.cols = saveDict["cols"]
         self.trackPosition = saveDict.get("trackPosition", 0)
         self.trackHeight = saveDict.get("trackHeight", TRACK_ROW_SIZE * 2)
-        self.createButtons()
-        for i, button in enumerate(self.buttonsFxs):
-            button.setSaveDict(saveDict["fxsValues"][i])
-        for i, inputBut in enumerate(self.buttonsInputs):
-            inputBut.setSaveDict(saveDict["inputValues"][i])
+        for dic in saveDict["fxsValues"]:
+            self.createButtonFromDict(dic, type="fx")
+        for dic in saveDict["inputValues"]:
+            self.createButtonFromDict(dic, type="input")
 
     def cueEvent(self, evt):
         for i, button in enumerate(self.buttonsFxs):
