@@ -103,7 +103,7 @@ class FxTrack:
             if self.isIdAvailable(id, isInput=True):
                 button.setId(id)
         else:
-            xid = (pos[0] - 125) / TRACK_COL_SIZE
+            xid = (pos[0] - INPUTS_LINE_POS) / TRACK_COL_SIZE
             if xid < 0:
                 xid = 0
             id = [xid, yid]
@@ -116,12 +116,12 @@ class FxTrack:
 
     def createButton(self, pos):
         yid = (pos[1] - self.trackPosition) / TRACK_ROW_SIZE
-        if pos[0] > 25 and pos[0] < 125:
+        if pos[0] > SELECTION_LINE_POS and pos[0] < INPUTS_LINE_POS:
             but = InputBox(self)
             but.setId([0, yid])
             self.buttonsInputs.append(but)
         else:
-            xid = (pos[0] - 125) / TRACK_COL_SIZE
+            xid = (pos[0] - INPUTS_LINE_POS) / TRACK_COL_SIZE
             but = FxBox(self)
             but.setId([xid, yid])
             self.buttonsFxs.append(but)
@@ -229,7 +229,7 @@ class FxTrack:
             dc.DrawLine(27, y, 124, y)
             dc.DrawLine(127, y, MAX_WIDTH-127, y)
         for i in range(1, MAX_WIDTH/(TRACK_COL_SIZE-1)):
-            x = i * TRACK_COL_SIZE + 125
+            x = i * TRACK_COL_SIZE + INPUTS_LINE_POS
             end = self.trackPosition + self.trackHeight
             dc.DrawLine(x, self.trackPosition, x, end)
 
@@ -240,7 +240,7 @@ class FxTrack:
             gc.DrawRoundedRectangle(r[0], r[1], r[2], r[3], 3)
 
         dc.SetTextForeground("#FFFFFF")
-        rect = wx.Rect(0, self.trackPosition, 25, self.trackHeight)
+        rect = wx.Rect(0, self.trackPosition, SELECTION_LINE_POS, self.trackHeight)
         dc.DrawLabel(str(self.id), rect, wx.ALIGN_CENTER)
 
         dc.SetTextForeground(FXBOX_FOREGROUND_COLOUR)

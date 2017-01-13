@@ -54,7 +54,7 @@ class FxTracks(wx.ScrolledWindow):
 
     def createTracks(self, num):
         self.tracks = []
-        x = 25
+        x = SELECTION_LINE_POS
         h = TRACK_ROW_SIZE * 2
         for i in range(num):
             track = FxTrack(self, i)
@@ -121,10 +121,10 @@ class FxTracks(wx.ScrolledWindow):
 
         dc.SetPen(wx.Pen("#222222", 1))
         dc.DrawLine(0, 25, MAX_WIDTH, 25)
-        dc.DrawLine(25, 0, 25, MAX_HEIGHT)
-        dc.DrawLine(125, 0, 125, MAX_HEIGHT)
+        dc.DrawLine(SELECTION_LINE_POS, 0, SELECTION_LINE_POS, MAX_HEIGHT)
+        dc.DrawLine(INPUTS_LINE_POS, 0, INPUTS_LINE_POS, MAX_HEIGHT)
 
-        trackPosition = 25
+        trackPosition = SELECTION_LINE_POS
         for track in self.tracks:
             trackPosition = track.onPaint(dc, self.buttonBitmap,
                                           self.disableButtonBitmap,
@@ -159,7 +159,7 @@ class FxTracks(wx.ScrolledWindow):
         pos = self.CalcUnscrolledPosition(evt.GetPosition())
         track = self.getTrackFromPos(pos)
         if track is not None:
-            if pos[0] < 25:
+            if pos[0] < SELECTION_LINE_POS:
                 self.setSelectedTrack(track.getId())
             else:
                 button = self.getButtonFromPos(track, pos)
@@ -172,7 +172,7 @@ class FxTracks(wx.ScrolledWindow):
         pos = self.CalcUnscrolledPosition(evt.GetPosition())
         track = self.getTrackFromPos(pos)
         if track is not None:
-            if pos[0] < 25:
+            if pos[0] < SELECTION_LINE_POS:
                 self.setSelectedTrack(track.getId())
             else:
                 button = self.getButtonFromPos(track, pos)
@@ -249,7 +249,7 @@ class FxTracks(wx.ScrolledWindow):
             self.selectedTrack = 0
 
         [track.setId(i) for i, track in enumerate(self.tracks)]
-        x = 25
+        x = SELECTION_LINE_POS
         for track in self.tracks:
             track.setTrackPosition(x)
             x += track.getTrackHeight()
