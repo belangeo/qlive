@@ -369,7 +369,14 @@ class FxAudioOut(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
         self.process = self.input
-        self.output = Sig(self.process, mul=self.gain)
+        self.gainCtrls = [self.gain1, self.gain2, self.gain3, self.gain4,
+                          self.gain5, self.gain6, self.gain7, self.gain8]
+        self.output = Sig(self.process, mul=0.0)
+
+    def setGains(self, outchnls):
+        # What if len(self.input) != outchnls.count(1) ?
+        self.gain = [ctl for i, ctl in enumerate(self.gainCtrls) if outchnls[i]]
+        self.output.mul = self.gain
 
 AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn,
                  "Soundfile": SoundfileIn, "Lowpass": FxLowpass,
@@ -547,6 +554,8 @@ class AudioServer:
                                                   but.getCurrentInterps())
                         but.setAudioRef(obj)
                         self.audioObjects.append(obj)
+                        if name == "AudioOut":
+                            obj.setGains(but.getOutChannels())
                         # Hack: panning is always stereo for the time being.
                         if name in ["Panning", "StereoVerb"]:
                             chnls = 2

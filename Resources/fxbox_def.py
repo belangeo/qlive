@@ -102,7 +102,14 @@ FX_DICT = {
 
     "Others": {
         "None": {"ctrls": []},
-        "AudioOut": {"ctrls":[GAIN_DEF],
+        "AudioOut": {"ctrls":[["gain1", 0, -60, 18, "dB", False],
+                              ["gain2", 0, -60, 18, "dB", False],
+                              ["gain3", 0, -60, 18, "dB", False],
+                              ["gain4", 0, -60, 18, "dB", False],
+                              ["gain5", 0, -60, 18, "dB", False],
+                              ["gain6", 0, -60, 18, "dB", False],
+                              ["gain7", 0, -60, 18, "dB", False],
+                              ["gain8", 0, -60, 18, "dB", False]],
                      "outselect": [str(x+1) for x in range(NUM_OUTPUTS)]}
     }
 }

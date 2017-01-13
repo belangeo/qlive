@@ -16,7 +16,7 @@ TODO
 - BPF - playback mode, window size
 - Documentation/archive prototype
 - META data framework
-- AudioIn, one gain per input **done** (do we do the same for AudioOut?)
+- AudioIn, one gain per input **done** (do we do the same for AudioOut?) **done**
 - Arbitrary interpolation between two cues
 - On tracks canvas: Double-click to open the FxView 
 - On track canvas: Click+drag to move FxBoxes.

@@ -286,7 +286,7 @@ class FxSlidersView(wx.Frame):
                 knobSizer.Add(slider,0,wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM,5)
             self.sizer.Add(knobSizer, 0, wx.EXPAND)
 
-        if "inselect" in self.parameters:
+        if "inselect" in self.parameters or "outselect" in self.parameters:
             for i, widget in enumerate(self.widgets):
                 widget.setEnable(i == 0)
 
@@ -369,6 +369,7 @@ class FxSlidersView(wx.Frame):
     def setOutChannelChecks(self, lst):
         for i, check in enumerate(self.outChannelChecks):
             check.SetValue(lst[i])
+            self.widgets[i].setEnable(lst[i])
 
     def showMorphEvent(self, evt):
         for widget in self.widgets:
@@ -397,6 +398,7 @@ class FxSlidersView(wx.Frame):
         obj = evt.GetEventObject()
         which = int(obj.GetLabel()) - 1
         self.fxbox.checkOutChannel(which, state)
+        self.widgets[which].setEnable(state)
 
     def getWidgets(self):
         return self.widgets
