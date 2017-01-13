@@ -183,17 +183,17 @@ class MainWindow(wx.Frame):
         self.currentCueWindow = CurrentCuePanel(self)
         QLiveLib.setVar("CurrentCueWindow", self.currentCueWindow)
 
-        splitter = wx.SplitterWindow(self.mainPanel,
+        self.splitter = wx.SplitterWindow(self.mainPanel,
                                      style=wx.SP_LIVE_UPDATE|wx.SP_3DSASH)
 
-        self.soundfiles = SoundFilePanel(splitter)
+        self.soundfiles = SoundFilePanel(self.splitter)
         QLiveLib.setVar("Soundfiles", self.soundfiles)
 
-        self.tracks = FxTracks(splitter)
+        self.tracks = FxTracks(self.splitter)
         QLiveLib.setVar("FxTracks", self.tracks)
 
-        splitter.SetMinimumPaneSize(60)
-        splitter.SplitHorizontally(self.tracks, self.soundfiles, 350)
+        self.splitter.SetMinimumPaneSize(60)
+        self.splitter.SplitHorizontally(self.tracks, self.soundfiles, 350)
 
         self.mixer = MixerPanel(self.mainPanel, self.audioMixer)
         QLiveLib.setVar("MixerPanel", self.mixer)
@@ -203,7 +203,7 @@ class MainWindow(wx.Frame):
         self.controlSizer = wx.BoxSizer(wx.VERTICAL)
         self.controlSizer.Add(self.controlPanel, 0)
         self.controlSizer.Add(self.cues, 1, wx.EXPAND)
-        self.rightSizer.Add(splitter, 1, wx.EXPAND, 5)
+        self.rightSizer.Add(self.splitter, 1, wx.EXPAND, 5)
         self.rightSizer.Add(self.mixer, 0, wx.EXPAND, 5)
         self.mainSizer.Add(self.controlSizer, 0)
         self.mainSizer.AddSizer(self.rightSizer, 2, wx.EXPAND, 5)
@@ -271,7 +271,8 @@ class MainWindow(wx.Frame):
         dictSave["soundfiles"] = self.soundfiles.getSaveState()
         dictSave["control"] = self.controlPanel.getSaveState()
         dictSave["main"] = {"position": self.GetPosition(),
-                            "size": self.GetSize()}
+                            "size": self.GetSize(),
+                            "sashpos": self.splitter.GetSashPosition()}
         #dictSave["server"] = self.audioServer.getSaveState()
         return dictSave
 
@@ -316,6 +317,7 @@ class MainWindow(wx.Frame):
         if "main" in self.saveState:
             self.SetPosition(self.saveState["main"]["position"])
             self.SetSize(self.saveState["main"]["size"])
+            self.splitter.SetSashPosition(self.saveState["main"]["sashpos"])
 
     def askForSaving(self):
         state = True

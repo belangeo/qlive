@@ -374,7 +374,6 @@ class FxAudioOut(BaseAudioObject):
         self.output = Sig(self.process, mul=0.0)
 
     def setGains(self, outchnls):
-        # What if len(self.input) != outchnls.count(1) ?
         self.gain = [ctl for i, ctl in enumerate(self.gainCtrls) if outchnls[i]]
         self.output.mul = self.gain
 
@@ -513,8 +512,9 @@ class AudioServer:
     def createBoxObjects(self):
         tracks = QLiveLib.getVar("FxTracks").getTracks()
         for track in tracks:
-            chnls = 1
+            trackchnls = 1
             for but in track.getButtonInputs():
+                chnls = 1
                 name = but.name
                 if not name:
                     name = "None"
@@ -541,6 +541,7 @@ class AudioServer:
                     self.audioObjects.append(obj)
                     if name == "AudioIn":
                         obj.setGains(inchnls)
+                trackchnls = max(trackchnls, chnls)
             for but in track.getButtonFxs():
                 name = but.name
                 category = but.category
@@ -550,15 +551,15 @@ class AudioServer:
                     ctrls = FX_DICT[category][name]["ctrls"]
                     values = but.getCurrentValues()
                     if values is not None:
-                        obj = AUDIO_OBJECTS[name](chnls, ctrls, values,
+                        obj = AUDIO_OBJECTS[name](trackchnls, ctrls, values,
                                                   but.getCurrentInterps())
                         but.setAudioRef(obj)
                         self.audioObjects.append(obj)
                         if name == "AudioOut":
                             obj.setGains(but.getOutChannels())
-                        # Hack: panning is always stereo for the time being.
+                        # TODO: we will need a better algorithm for spatialization.
                         if name in ["Panning", "StereoVerb"]:
-                            chnls = 2
+                            trackchnls *= 2
 
     def resetPlayerRefs(self):
         objs = QLiveLib.getVar("Soundfiles").getSoundFileObjects()
