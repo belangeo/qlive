@@ -273,7 +273,8 @@ class BaseFxBox(object):
                 widget.setInterpValue(x, propagate=True)
 
     def saveCue(self):
-        self.cues[self.currentCue] = self.getParams()
+        if not QLiveLib.getVar("locked"):
+            self.cues[self.currentCue] = self.getParams()
 
     def addCue(self, x):
         self.currentCue = x

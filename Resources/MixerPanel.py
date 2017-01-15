@@ -139,6 +139,13 @@ class MixerPanel(wx.Panel):
         mainSizer.Add(outputBox, 1, wx.EXPAND)
         self.SetSizer(mainSizer)
 
+    def setBackgroundColour(self, colour):
+        self.SetBackgroundColour(colour)
+        for slider in self.inputSliders:
+            slider.setBackgroundColour(colour)
+        for slider in self.outputSliders:
+            slider.setBackgroundColour(colour)
+
     def connectSliders(self):
         for i in range(NUM_INPUTS):
             channel = self.audioMixer.getInputChannel(i)

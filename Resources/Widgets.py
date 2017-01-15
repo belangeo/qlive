@@ -920,6 +920,7 @@ class MeterControlSlider(wx.Panel):
     def setBackgroundColour(self, colour):
         self.backgroundColour = colour
         self.SetBackgroundColour(self.backgroundColour)
+        self.createKnobBitmap()
         wx.CallAfter(self.Refresh)
 
     def setMidiBackgroundColour(self, colour):

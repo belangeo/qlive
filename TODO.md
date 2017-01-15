@@ -7,7 +7,7 @@ TODO
     - partially done, missing nchnls and inchnls
 - Automatic fx connection (serial, parallel), GUI conection design **done**
 - Record functions for both the input sound and the processed sound
-- Edit mode versus playing mode
+- Edit mode versus playing mode **done**
 - Master effects for both input and output section
 - Spatialisation (partially done with the Pan object) Need more work.
 - Improving effect modules (add spectral category)
@@ -23,6 +23,7 @@ TODO
 - Remember app pos and size in saved file. **done**
 - Automators on fx parameters.
 - Live update of changes on a track. **done**
+- SaveAs should copy the entire project, not just create a new .qlp file.
 
 TODO / Meeting on 18/09/2015
 ---------------------
@@ -47,11 +48,13 @@ TODO / Meeting on 05/10/2015
 
 TODO / Play mode (frozen session)
 ---------
-- No "saveCue()" before loading a new cue
-- Can't add or delete a soundfile
-- Can't add or delete a cue
-- Can't add, delete, move or replace an fxbox or a track
-- Background colour darker.
+- Background colour darker **done**
+- No "saveCue()" before loading a new cue **done**
+- Can't add or delete a soundfile **done**
+- Can't add or delete a cue **done**
+- Can't add, delete, move or replace an fxbox or a track **done**
+- disable menu items **done**
+- ask for saving when switching in play mode **done**
 
 Recently done
 -------------

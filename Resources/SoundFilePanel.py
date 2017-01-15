@@ -707,7 +707,7 @@ class SoundFileGrid(gridlib.Grid):
 
     def OnCellLeftClick(self, evt):
         self.selRow, self.selCol = evt.GetRow(), evt.GetCol()
-        if self.selCol == ID_COL_FILENAME:
+        if self.selCol == ID_COL_FILENAME and not QLiveLib.getVar("locked"):
             dlg = wx.FileDialog(self,
                                 "Open Soundfile...", os.path.expanduser("~"),
                                 "", AUDIO_FILE_WILDCARD, style=wx.OPEN)
@@ -759,6 +759,9 @@ class SoundFileGrid(gridlib.Grid):
                 if i in [1, 3]:
                     menu.AppendSeparator()
             menu.Check(self.objects[self.selRow].getShowInterp()+3, True)
+            if QLiveLib.getVar("locked"):
+                menu.Enable(1, False)
+                menu.Enable(2, False)
 
             menu.Bind(wx.EVT_MENU, self.doLabelAction, id=1, id2=i+1)
             self.PopupMenu(menu, evt.GetPosition())
@@ -860,6 +863,10 @@ class SoundFilePanel(wx.Panel):
         self.sizer.Add(self.grid, 1, wx.EXPAND)
         self.SetSizer(self.sizer)
 
+    def setBackgroundColour(self, colour):
+        self.SetBackgroundColour(colour)
+        self.grid.SetLabelBackgroundColour(colour)
+
     def loadCue(self, x):
         self.saveCue()
         for obj in self.getSoundFileObjects():
@@ -867,8 +874,9 @@ class SoundFilePanel(wx.Panel):
             self.grid.putObjectAttrOnCells(obj, obj.getId())
 
     def saveCue(self):
-        for obj in self.getSoundFileObjects():
-            obj.saveCue()
+        if not QLiveLib.getVar("locked"):
+            for obj in self.getSoundFileObjects():
+                obj.saveCue()
 
     def addCue(self, x):
         self.saveCue()
@@ -939,6 +947,10 @@ class SoundFilePanel(wx.Panel):
         for object in self.grid.getSoundFileObjects():
             usedSounds.append(object.getFilename())
         folder = os.path.join(QLiveLib.getVar("projectFolder"), "sounds")
+
+        if not os.path.isdir(folder):
+            return
+
         sounds = os.listdir(folder)
         for sound in sounds:
             if not sound in usedSounds:

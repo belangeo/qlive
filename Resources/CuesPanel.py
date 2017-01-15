@@ -182,6 +182,14 @@ class ControlPanel(wx.Panel):
 
         self.SetSizerAndFit(self.mainSizer)
 
+    def onPlayMode(self, state):
+        if state:
+            self.newButton.Disable()
+            self.delButton.Disable()
+        else:
+            self.newButton.Enable()
+            self.delButton.Enable()
+
     def onAudioButton(self, evt):
         server = QLiveLib.getVar("AudioServer")
         server.start(evt.GetInt())

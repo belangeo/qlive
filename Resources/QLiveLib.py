@@ -75,6 +75,12 @@ def saveVars():
 def loadVars():
     vars.readQLivePrefsFromFile()
 
+def getBackgroundColour():
+    if getVar("locked"):
+        return BACKGROUND_COLOUR_LOCKED
+    else:
+        return BACKGROUND_COLOUR
+
 def saveMEI(path):
     if PYMEI:
         import MEI

@@ -39,6 +39,7 @@ QLiveVariables["Soundfiles"] = None
 QLiveVariables["FxViews"] = []
 QLiveVariables["CanProcessCueKeys"] = True
 QLiveVariables["MidiLearnMode"] = False
+QLiveVariables["locked"] = True
 
 # Audio / Midi
 QLiveVariables['availableAudioOutputs'] = []

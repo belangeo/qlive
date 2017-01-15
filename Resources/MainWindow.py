@@ -32,12 +32,18 @@ from SoundFilePanel import SoundFilePanel
 from PreferencePanel import PreferenceFrame
 from CurrentCuePanel import CurrentCuePanel
 
+class PlayModeEvt:
+    def __init__(self, state):
+        self.state = state
+
+    def GetInt(self):
+        return self.state
+
 class MainWindow(wx.Frame):
     def __init__(self, pos, size):
         wx.Frame.__init__(self, None, pos=pos, size=size)
 
         self.SetMinSize((600, 400))
-        self.SetTitle("QLive Session")
 
         # Status bar, the third field is unused yet.
         self.status = self.CreateStatusBar(3)
@@ -116,6 +122,10 @@ class MainWindow(wx.Frame):
         menubar.Append(menu2, 'Tracks')
 
         menu3 = wx.Menu()
+        item = menu3.AppendCheckItem(PLAY_MODE_ID, "Play Mode\tCtrl+E")
+        item.Check(True)
+        self.Bind(wx.EVT_MENU, self.onPlayMode, id=PLAY_MODE_ID)
+        menu3.AppendSeparator()
         menu3.AppendCheckItem(MIDI_LEARN_ID, "Midi Learn Mode\tShift+Ctrl+M")
         self.Bind(wx.EVT_MENU, self.onMidiLearn, id=MIDI_LEARN_ID)
         menu3.AppendSeparator()
@@ -168,7 +178,6 @@ class MainWindow(wx.Frame):
                   id2=KEY_EVENT_FIRST_ID+100)
 
         self.mainPanel = wx.Panel(self, style=wx.SUNKEN_BORDER)
-        self.mainPanel.SetBackgroundColour(BACKGROUND_COLOUR)
 
         self.audioMixer = AudioMixer()
         QLiveLib.setVar("AudioMixer", self.audioMixer)
@@ -208,6 +217,8 @@ class MainWindow(wx.Frame):
         self.mainSizer.Add(self.controlSizer, 0)
         self.mainSizer.AddSizer(self.rightSizer, 2, wx.EXPAND, 5)
         self.mainPanel.SetSizer(self.mainSizer)
+
+        self.setTitle()
 
         wx.CallAfter(self.showIntro)
 
@@ -277,15 +288,29 @@ class MainWindow(wx.Frame):
         return dictSave
 
     def saveFile(self, path):
-        QLiveLib.getVar("CuesPanel").onSaveCue()
-        dictSave = self.getCurrentState()
-        self.saveState = copy.deepcopy(dictSave)
-        QLiveLib.setVar("currentProject", path)
-        QLiveLib.setVar("projectFolder", os.path.dirname(path))
-        with open(path, "w") as f:
-            f.write(QLIVE_MAGIC_LINE)
-            f.write("### %s ###\n" % APP_VERSION)
-            f.write("dictSave = %s" % pprint.pformat(dictSave, indent=4))
+        curpath = QLiveLib.getVar("currentProject")
+        bakpath = curpath + ".bak"
+        shutil.copy(curpath, bakpath)
+        try:
+            if not QLiveLib.getVar("locked"):
+                QLiveLib.getVar("CuesPanel").onSaveCue()
+            dictSave = self.getCurrentState()
+            self.saveState = copy.deepcopy(dictSave)
+            QLiveLib.setVar("currentProject", path)
+            QLiveLib.setVar("projectFolder", os.path.dirname(path))
+            with open(path, "w") as f:
+                f.write(QLIVE_MAGIC_LINE)
+                f.write("### %s ###\n" % APP_VERSION)
+                f.write("dictSave = %s" % pprint.pformat(dictSave, indent=4))
+            success = True
+            self.setTitle(os.path.split(path)[1])
+        except:
+            msg = "Failed to save file. Backup was created in project directory..."
+            win = wx.MessageDialog(self, msg, style=wx.OK|wx.ICON_ERROR)
+            success = False
+
+        if success:
+            os.remove(bakpath)
 
     def saveMEI(self, path):
         QLiveLib.saveMEI(path)
@@ -301,9 +326,11 @@ class MainWindow(wx.Frame):
         if path == NEW_FILE_PATH:
             QLiveLib.setVar("currentProject", "")
             QLiveLib.setVar("projectFolder", "")
+            filename = "Untitled"
         else:
             QLiveLib.setVar("currentProject", path)
             QLiveLib.setVar("projectFolder", os.path.dirname(path))
+            filename = os.path.split(path)[1]
             self.newRecent(path)
         self.saveState = copy.deepcopy(dictSave)
         self.soundfiles.setSaveState(self.saveState.get("soundfiles", []))
@@ -318,6 +345,17 @@ class MainWindow(wx.Frame):
             self.SetPosition(self.saveState["main"]["position"])
             self.SetSize(self.saveState["main"]["size"])
             self.splitter.SetSashPosition(self.saveState["main"]["sashpos"])
+
+        self.setTitle(filename)
+
+        self.onPlayMode(PlayModeEvt(1), force=True)
+
+    def setTitle(self, filename=""):
+        if QLiveLib.getVar("locked"):
+            state = "Play Mode"
+        else:
+            state = "Edit Mode"
+        self.SetTitle("QLive Session - " + filename + " - " + state)
 
     def askForSaving(self):
         state = True
@@ -435,6 +473,34 @@ class MainWindow(wx.Frame):
 
     def onDeleteTrack(self, evt):
         self.tracks.removeTrack()
+
+    def onPlayMode(self, evt, force=False):
+        if evt.GetInt() and not force:
+            self.askForSaving()
+        QLiveLib.setVar("locked", bool(evt.GetInt()))
+
+        colour = QLiveLib.getBackgroundColour()
+        self.mainPanel.SetBackgroundColour(colour)
+        self.controlPanel.SetBackgroundColour(colour)
+        self.cues.SetBackgroundColour(colour)
+        self.splitter.SetBackgroundColour(colour)
+        self.soundfiles.setBackgroundColour(colour)
+        self.mixer.setBackgroundColour(colour)
+
+        self.controlPanel.onPlayMode(evt.GetInt())
+
+        state = not evt.GetInt()
+        ids = [CUE_CUT_ID, CUE_COPY_ID, CUE_PASTE_ID, NEW_TRACK_ID,
+               DELETE_TRACK_ID, MIDI_LEARN_ID, INTERP_TIME_ID]
+        menubar = self.GetMenuBar()
+        for id in ids:
+            menubar.Enable(id, state)
+
+        if QLiveLib.getVar("currentProject") == "":
+            filename = "Untitled"
+        else:
+            filename = os.path.split(QLiveLib.getVar("currentProject"))[1]
+        self.setTitle(filename)
 
     def onMidiLearn(self, evt):
         QLiveLib.setVar("MidiLearnMode", evt.GetInt())

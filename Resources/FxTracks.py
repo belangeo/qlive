@@ -167,10 +167,11 @@ class FxTracks(wx.ScrolledWindow):
             if pos[0] < SELECTION_LINE_POS:
                 self.setSelectedTrack(track.getId())
             else:
-                button = self.getButtonFromPos(track, pos)
-                self.dragTrack = track
-                self.dragButton = button
-                self.CaptureMouse()
+                if not QLiveLib.getVar("locked"):
+                    button = self.getButtonFromPos(track, pos)
+                    self.dragTrack = track
+                    self.dragButton = button
+                    self.CaptureMouse()
         evt.Skip()
 
     def leftDClicked(self, evt):
@@ -182,12 +183,13 @@ class FxTracks(wx.ScrolledWindow):
             else:
                 button = self.getButtonFromPos(track, pos)
                 if button is not None:
-                    if evt.ShiftDown():
+                    if evt.ShiftDown() and not QLiveLib.getVar("locked"):
                         track.deleteButton(button)
                     else:
                         button.openView()
                 else:
-                    track.createButton(pos)
+                    if not QLiveLib.getVar("locked"):
+                        track.createButton(pos)
         evt.Skip()
 
     def rightClicked(self, evt):
@@ -195,7 +197,7 @@ class FxTracks(wx.ScrolledWindow):
         track = self.getTrackFromPos(pos)
         if track is not None:
             button = self.getButtonFromPos(track, pos)
-            if button is not None:
+            if button is not None and not QLiveLib.getVar("locked"):
                 button.openMenu(evt)
                 self.drawAndRefresh()
         evt.Skip()
