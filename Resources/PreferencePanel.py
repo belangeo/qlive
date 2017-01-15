@@ -87,6 +87,34 @@ class AudioPrefsTab(wx.Panel):
         self.outputDeviceCB.Bind(wx.EVT_COMBOBOX, self.setOutputDevice,
                                  self.outputDeviceCB)
 
+        # Number of input channels
+        self.numInputChannelsLabel = wx.StaticText(self, -1,
+                                                     "Number of Input Channels:")
+
+        initInputChannels = str(QLiveLib.getVar("inchnls"))
+        self.numInputChannelsCB = wx.ComboBox(self, -1, initInputChannels,
+                                              wx.DefaultPosition,
+                                              wx.DefaultSize,
+                                              [str(x) for x in range(9)],
+                                              wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+        self.numInputChannelsCB.Bind(wx.EVT_COMBOBOX,
+                                     self.setnumInputChannels,
+                                     self.numInputChannelsCB)
+
+        # Number of output channels
+        self.numOutputChannelsLabel = wx.StaticText(self, -1,
+                                                    "Number of Output Channels:")
+
+        initOutputChannels = str(QLiveLib.getVar("nchnls"))
+        self.numOutputChannelsCB = wx.ComboBox(self, -1, initOutputChannels,
+                                               wx.DefaultPosition,
+                                               wx.DefaultSize,
+                                               [str(x) for x in range(9)],
+                                               wx.CB_READONLY|wx.TE_PROCESS_ENTER)
+        self.numOutputChannelsCB.Bind(wx.EVT_COMBOBOX,
+                                      self.setnumOutputChannels,
+                                      self.numOutputChannelsCB)
+
         # First physical input device
         self.firstPhysicalInputLabel = wx.StaticText(self, -1,
                                                      "First Physical Input:")
@@ -150,6 +178,8 @@ class AudioPrefsTab(wx.Panel):
         hsizerAudioDriver = wx.BoxSizer(wx.HORIZONTAL)
         hsizerInputDevice = wx.BoxSizer(wx.HORIZONTAL)
         hsizerOutputDevice = wx.BoxSizer(wx.HORIZONTAL)
+        hsizerNumInputChannels = wx.BoxSizer(wx.HORIZONTAL)
+        hsizerNumOutputChannels = wx.BoxSizer(wx.HORIZONTAL)
         hsizerFirstPhysicalInput = wx.BoxSizer(wx.HORIZONTAL)
         hsizerFirstPhysicalOutput = wx.BoxSizer(wx.HORIZONTAL)
         hsizerBufferSize  = wx.BoxSizer(wx.HORIZONTAL)
@@ -166,6 +196,14 @@ class AudioPrefsTab(wx.Panel):
         hsizerOutputDevice.Add(self.outputDeviceLabel, -1,
                                wx.ALL|wx.ALIGN_CENTER, 3)
         hsizerOutputDevice.Add(self.outputDeviceCB, -1, wx.ALL, 3)
+
+        hsizerNumInputChannels.Add(self.numInputChannelsLabel, -1,
+                                   wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerNumInputChannels.Add(self.numInputChannelsCB, -1, wx.ALL, 3)
+
+        hsizerNumOutputChannels.Add(self.numOutputChannelsLabel, -1,
+                                    wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerNumOutputChannels.Add(self.numOutputChannelsCB, -1, wx.ALL, 3)
 
         hsizerFirstPhysicalInput.Add(self.firstPhysicalInputLabel, -1,
                                      wx.ALL|wx.ALIGN_CENTER, 3)
@@ -194,6 +232,8 @@ class AudioPrefsTab(wx.Panel):
         vsizer.Add(hsizerAudioDriver, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerInputDevice, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerOutputDevice, 0, wx.ALL|wx.EXPAND, 0)
+        vsizer.Add(hsizerNumInputChannels, 0, wx.ALL|wx.EXPAND, 0)
+        vsizer.Add(hsizerNumOutputChannels, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerFirstPhysicalInput, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerFirstPhysicalOutput, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerBufferSize, 0, wx.ALL|wx.EXPAND, 0)
@@ -232,6 +272,16 @@ class AudioPrefsTab(wx.Panel):
             self.reinit_server = True
         QLiveLib.setVar("audioOutput", evt.GetString())
 
+    def setnumInputChannels(self, evt):
+        if QLiveLib.getVar("inchnls") != int(evt.GetString()):
+            self.reinit_server = True
+        QLiveLib.setVar("inchnls", int(evt.GetString()))
+
+    def setnumOutputChannels(self, evt):
+        if QLiveLib.getVar("nchnls") != int(evt.GetString()):
+            self.reinit_server = True
+        QLiveLib.setVar("nchnls", int(evt.GetString()))
+
     def setFirstPhysicalInput(self, evt):
         if QLiveLib.getVar("defaultFirstInput") != int(evt.GetString()):
             self.reinit_server = True
@@ -252,11 +302,8 @@ class AudioPrefsTab(wx.Panel):
             self.reinit_server = True
         QLiveLib.setVar("sr", evt.GetString())
 
-    def setDuplex(self, state):
-        if state.GetEventObject().GetValue() == True:
-            QLiveLib.setVar("duplex", "1")
-        else:
-            QLiveLib.setVar("duplex", "0")
+    def setDuplex(self, evt):
+        QLiveLib.setVar("duplex", evt.GetInt())
         self.reinit_server = True
 
 class PreferenceFrame(wx.Dialog):

@@ -60,9 +60,12 @@ class FxTrack:
                             wx.FONTWEIGHT_NORMAL, face="Monospace")
 
     def checkTrackSize(self):
-        xid = max([but.getId()[0] for but in self.buttonsFxs])
-        yid = max([but.getId()[1] for but in self.buttonsFxs] + \
-               [but.getId()[1] for but in self.buttonsInputs])
+        xid = yid = 0
+        if len(self.buttonsFxs):
+            xid = max([but.getId()[0] for but in self.buttonsFxs])
+        if len(self.buttonsInputs) or len(self.buttonsFxs):
+            yid = max([but.getId()[1] for but in self.buttonsFxs] + \
+                   [but.getId()[1] for but in self.buttonsInputs])
 
         if self.cols > (xid + 1):
             self.cols = xid + 2
@@ -159,6 +162,7 @@ class FxTrack:
     def createConnections(self):
         inputs = [but.getOutput() for but in self.buttonsInputs]
         insum = sum([inp for inp in inputs if inp is not None])
+
         for col in range(self.cols):
             accum = []
             for but in self.buttonsFxs:

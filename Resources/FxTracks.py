@@ -117,7 +117,7 @@ class FxTracks(wx.ScrolledWindow):
         dc.SetFont(self.font)
         dc.SetTextForeground("#FFFFFF")
         dc.DrawLabel("Inputs", wx.Rect(35, 3, 100, 22), wx.ALIGN_LEFT)
-        dc.DrawLabel("Fxs", wx.Rect(135, 3, 100, 22), wx.ALIGN_LEFT)
+        dc.DrawLabel("Fxs", wx.Rect(125, 3, 100, 22), wx.ALIGN_LEFT)
 
         dc.SetPen(wx.Pen("#222222", 1))
         dc.DrawLine(0, 25, MAX_WIDTH, 25)
@@ -196,7 +196,7 @@ class FxTracks(wx.ScrolledWindow):
         evt.Skip()
 
     def onMotion(self, evt):
-        if self.HasCapture() and evt.LeftIsDown():
+        if self.HasCapture() and evt.LeftIsDown() and self.dragButton is not None:
             pos = self.CalcUnscrolledPosition(evt.GetPosition())
             self.dragTrack.moveButton(self.dragButton, pos)
         evt.Skip()

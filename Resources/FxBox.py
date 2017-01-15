@@ -378,7 +378,7 @@ class FxBox(BaseFxBox):
         self.isInput = False
 
     def getRect(self):
-        x = TRACK_COL_SIZE * self.id[0] + 130
+        x = TRACK_COL_SIZE * self.id[0] + 120
         y = TRACK_ROW_SIZE * self.id[1]  + self.parent.trackPosition + 5
         return wx.Rect(x, y, BUTTON_WIDTH, BUTTON_HEIGHT)
 
