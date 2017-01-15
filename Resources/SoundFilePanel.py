@@ -400,12 +400,15 @@ class SoundFileGrid(gridlib.Grid):
     def __init__(self, parent):
         super(SoundFileGrid, self).__init__(parent, style=wx.SUNKEN_BORDER)
 
-        ### Reduce font point size by 1 ###
+        ### Reduce font point size ###
         font = self.GetDefaultCellFont()
         font.SetPointSize(font.GetPointSize() - 2)
         self.SetDefaultCellFont(font)
         font = self.GetLabelFont()
-        font.SetPointSize(font.GetPointSize() - 2)
+        if PLATFORM == "darwin":
+            font.SetPointSize(font.GetPointSize() - 1)
+        else:
+            font.SetPointSize(font.GetPointSize() - 2)
         self.SetLabelFont(font)
 
         self.selRow = self.selCol = -1
@@ -866,6 +869,7 @@ class SoundFilePanel(wx.Panel):
     def setBackgroundColour(self, colour):
         self.SetBackgroundColour(colour)
         self.grid.SetLabelBackgroundColour(colour)
+        self.Refresh()
 
     def loadCue(self, x):
         self.saveCue()

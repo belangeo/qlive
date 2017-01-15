@@ -480,10 +480,10 @@ class MainWindow(wx.Frame):
         QLiveLib.setVar("locked", bool(evt.GetInt()))
 
         colour = QLiveLib.getBackgroundColour()
-        self.mainPanel.SetBackgroundColour(colour)
-        self.controlPanel.SetBackgroundColour(colour)
-        self.cues.SetBackgroundColour(colour)
-        self.splitter.SetBackgroundColour(colour)
+        panels = [self.mainPanel, self.controlPanel, self.cues, self.splitter]
+        for panel in panels:
+            panel.SetBackgroundColour(colour)
+            panel.Refresh()
         self.soundfiles.setBackgroundColour(colour)
         self.mixer.setBackgroundColour(colour)
 

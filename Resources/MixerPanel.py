@@ -145,6 +145,7 @@ class MixerPanel(wx.Panel):
             slider.setBackgroundColour(colour)
         for slider in self.outputSliders:
             slider.setBackgroundColour(colour)
+        self.Refresh()
 
     def connectSliders(self):
         for i in range(NUM_INPUTS):
