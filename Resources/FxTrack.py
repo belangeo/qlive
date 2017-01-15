@@ -98,6 +98,7 @@ class FxTrack:
             return True
 
     def moveButton(self, button, pos):
+        update = False
         yid = (pos[1] - self.trackPosition) / TRACK_ROW_SIZE
         if yid < 0:
             yid = 0
@@ -105,6 +106,7 @@ class FxTrack:
             id = [0, yid]
             if self.isIdAvailable(id, isInput=True):
                 button.setId(id)
+                update = True
         else:
             xid = (pos[0] - INPUTS_LINE_POS) / TRACK_COL_SIZE
             if xid < 0:
@@ -112,10 +114,11 @@ class FxTrack:
             id = [xid, yid]
             if self.isIdAvailable(id, isInput=False):
                 button.setId(id)
+                update = True
 
-        self.checkTrackSize()
-
-        QLiveLib.getVar("FxTracks").drawAndRefresh()
+        if update:
+            self.checkTrackSize()
+            QLiveLib.getVar("FxTracks").drawAndRefresh()
 
     def createButton(self, pos):
         yid = (pos[1] - self.trackPosition) / TRACK_ROW_SIZE

@@ -22,7 +22,7 @@ TODO
 - On tracks canvas: Click+drag to move FxBoxes. **done**
 - Remember app pos and size in saved file. **done**
 - Automators on fx parameters.
-
+- Live update of changes on a track. **done**
 
 TODO / Meeting on 18/09/2015
 ---------------------
@@ -50,7 +50,8 @@ TODO / Play mode (frozen session)
 - No "saveCue()" before loading a new cue
 - Can't add or delete a soundfile
 - Can't add or delete a cue
-- Can't add, delete or replace an fxbox or a track
+- Can't add, delete, move or replace an fxbox or a track
+- Background colour darker.
 
 Recently done
 -------------

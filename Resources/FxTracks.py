@@ -22,6 +22,7 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 import wx
 from constants import *
 from FxTrack import FxTrack
+import QLiveLib
 
 class FxTracks(wx.ScrolledWindow):
     def __init__(self, parent):
@@ -107,6 +108,10 @@ class FxTracks(wx.ScrolledWindow):
     def drawAndRefresh(self):
         self.draw()
         wx.CallAfter(self.Refresh)
+        server = QLiveLib.getVar("AudioServer")
+        if server.isStarted():
+            server.start(False)
+            server.start(True)
 
     def OnPaint(self, evt):
         dc = wx.BufferedPaintDC(self, self.buffer, wx.BUFFER_VIRTUAL_AREA)
