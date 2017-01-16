@@ -323,15 +323,10 @@ class MainWindow(wx.Frame):
             return
         self.tracks.close()
         execfile(path, globals())
-        if path == NEW_FILE_PATH:
-            QLiveLib.setVar("currentProject", "")
-            QLiveLib.setVar("projectFolder", "")
-            filename = "Untitled"
-        else:
-            QLiveLib.setVar("currentProject", path)
-            QLiveLib.setVar("projectFolder", os.path.dirname(path))
-            filename = os.path.split(path)[1]
-            self.newRecent(path)
+        QLiveLib.setVar("currentProject", path)
+        QLiveLib.setVar("projectFolder", os.path.dirname(path))
+        filename = os.path.split(path)[1]
+        self.newRecent(path)
         self.saveState = copy.deepcopy(dictSave)
         self.soundfiles.setSaveState(self.saveState.get("soundfiles", []))
         self.tracks.setSaveState(self.saveState["tracks"])
@@ -430,26 +425,20 @@ class MainWindow(wx.Frame):
         self.onNew(None)
 
     def onSave(self, evt):
-        if not QLiveLib.getVar("currentProject"):
-            self.onSaveAs(None)
-        else:
-            self.saveFile(QLiveLib.getVar("currentProject"))
+        self.saveFile(QLiveLib.getVar("currentProject"))
 
     def onSaveAs(self, evt):
-        if QLiveLib.getVar("currentProject"):
-            filepath = os.path.split(QLiveLib.getVar("currentProject"))
-        else:
-            filepath = os.path.join(os.path.expanduser("~"),
-                                    "qlive_project.qlp")
-            filepath = os.path.split(filepath)
-        dlg = wx.FileDialog(self, "Save Qlive Projet",
-                            filepath[0], filepath[1],
-                            "QLive Project files (*.qlp)|*.qlp",
-                            style=wx.SAVE|wx.FD_OVERWRITE_PROMPT)
+        srcdir, srcfile = os.path.split(QLiveLib.getVar("currentProject"))
+        repo = os.path.split(srcdir)[1]
+        dlg = wx.DirDialog(self, "Create a New Qlive Projet Folder...", repo)
         if dlg.ShowModal() == wx.ID_OK:
-            path = dlg.GetPath()
-            self.saveFile(path)
+            dstdir = dlg.GetPath()
         dlg.Destroy()
+        os.rmdir(dstdir)
+        shutil.copytree(srcdir, dstdir)
+        dstfile = os.path.split(dstdir)[1] + ".qlp"
+        os.rename(os.path.join(dstdir, srcfile), os.path.join(dstdir, dstfile))
+        self.loadFile(os.path.join(dstdir, dstfile))
 
     def onExportMEI(self, evt):
         if QLiveLib.getVar("currentProject"):

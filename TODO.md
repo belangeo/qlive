@@ -4,26 +4,26 @@ TODO
 - Need to document how things work right now (shortcut,
   key bindings, mouse bindings, buttons, etc.).
 - Software preferences (record options, audio driver setup)
-    - partially done, missing nchnls and inchnls
+    - partially done
 - Automatic fx connection (serial, parallel), GUI conection design **done**
-- Record functions for both the input sound and the processed sound
 - Edit mode versus playing mode **done**
 - Master effects for both input and output section
 - Spatialisation (partially done with the Pan object) Need more work.
 - Improving effect modules (add spectral category)
-- Designing project architecture (save file)
 - Do we offer synthesis algorithms as input boxes?
 - BPF - playback mode, window size
-- Documentation/archive prototype
-- META data framework
 - AudioIn, one gain per input **done** (do we do the same for AudioOut?) **done**
-- Arbitrary interpolation between two cues
 - On tracks canvas: Double-click to open the FxView. **done** 
 - On tracks canvas: Click+drag to move FxBoxes. **done**
 - Remember app pos and size in saved file. **done**
 - Automators on fx parameters.
 - Live update of changes on a track. **done**
-- SaveAs should copy the entire project, not just create a new .qlp file.
+- SaveAs should copy the entire project, not just create a new .qlp file. **done**
+
+- Documentation/archive prototype
+- META data framework
+- Arbitrary interpolation between two cues
+- Record functions for both the input sound and the processed sound
 
 TODO / Meeting on 18/09/2015
 ---------------------
@@ -39,7 +39,7 @@ TODO / Meeting on 05/10/2015
       individual process **done**
     - Use 'del' key for unassigning MIDI **done**
     - Add Cut/copy/paste options for Cues **done**
-    - **urgent** fix crash when closing the audio server
+    - **urgent** fix crash when closing the audio server **done**
     - fix 'new project' option in the menu **done**
     - parameters values for soundfiles should update in 'realtime' **done**
 
