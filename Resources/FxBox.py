@@ -67,13 +67,19 @@ class BaseFxBox(object):
             if "gain" in name:
                 value = pow(10, value * 0.05)
             if fromUser:
-                getattr(audio, name).time = interpTime
-            getattr(audio, name).value = value
+                getattr(audio, name).setParam(value, interpTime)
+            else:
+                getattr(audio, name).setParam(value)
 
     def setInterpValue(self, name, value):
         if self.audioRef is not None:
             audio = self.audioRef()
-            getattr(audio, name).time = value
+            getattr(audio, name).setParam(time=value)
+
+    def setAutomationValues(self, name, dict):
+        if self.audioRef is not None:
+            audio = self.audioRef()
+            getattr(audio, name).setAttributes(dict)
 
     def setEnable(self, x, fromUser=False):
         self.enable = x
@@ -200,8 +206,10 @@ class BaseFxBox(object):
             widgets = self.view.getWidgets()
             params = [widget.getValue() for widget in widgets]
             inters = [widget.getInterpValue() for widget in widgets]
+            automations = [widget.getAutomationValues() for widget in widgets]
             paraDict = {"values": params,
                         "interps": inters,
+                        "automations": automations,
                         "enable": self.enable}
             return paraDict
         else:
@@ -212,10 +220,12 @@ class BaseFxBox(object):
             widgets = self.view.getWidgets()
             values = params["values"]
             inters = params["interps"]
+            automations = params["automations"]
             for i, widget in enumerate(widgets):
                 if widget.getMidiBinding() is None:
                     widget.setInterpValue(inters[i], propagate=True)
                     widget.setValue(values[i], propagate=True)
+                widget.setAutomationValues(automations[i])
             self.setEnable(params["enable"])
 
     def getCurrentValues(self):

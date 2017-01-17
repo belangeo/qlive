@@ -26,14 +26,17 @@ from fxbox_def import *
 import QLiveLib
 
 class Automator:
-    def __init__(self, init=0):
+    def __init__(self, init=0, inter=None):
         # Globals
         self.server = QLiveLib.getVar("AudioServer")
         self.mixer = QLiveLib.getVar("AudioMixer")
         interpTime = QLiveLib.getVar("globalInterpTime")
-        self.mixmethod = 0
+        self.mixmethod = -1
         # Main value
-        self.param = SigTo(init, interpTime, init)
+        if inter == None:
+            self.param = SigTo(init, interpTime, init)
+        else:
+            self.param = SigTo(init, inter, init)
         # Envelope follower signal chain
         self.envInputs = [0] * NUM_INPUTS
         self.envActive = 0
@@ -236,7 +239,7 @@ class BaseAudioObject:
                 inter = interps[i]
             if "gain" in name:
                 val = pow(10, val * 0.05)
-            setattr(self, name, SigTo(val, time=inter, init=val))
+            setattr(self, name, Automator(val, inter=inter))
 
         self.input = Sig([0] * self.chnls)
 
@@ -265,7 +268,7 @@ class AudioIn(BaseAudioObject):
         self.output = Sig(self.input, mul=0.0)
 
     def setGains(self, inchnls):
-        self.gain = [ctl for i, ctl in enumerate(self.gainCtrls) if inchnls[i]]
+        self.gain = [ctl.sig() for i, ctl in enumerate(self.gainCtrls) if inchnls[i]]
         self.output.mul = self.gain
 
     def setEnable(self, x):
@@ -274,7 +277,7 @@ class AudioIn(BaseAudioObject):
 class SoundfileIn(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.output = Sig(self.input, mul=self.gain)
+        self.output = Sig(self.input, mul=self.gain.sig())
 
     def setEnable(self, x):
         self.output.value = [[0.0] * self.chnls, self.input][x]
@@ -282,87 +285,87 @@ class SoundfileIn(BaseAudioObject):
 class FxLowpass(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.filter = Biquad(self.input, freq=self.freq, q=self.Q,
-                             mul=self.gain)
-        self.process = Interp(self.input, self.filter, self.dryWet)
+        self.filter = Biquad(self.input, freq=self.freq.sig(), q=self.Q.sig(),
+                             mul=self.gain.sig())
+        self.process = Interp(self.input, self.filter, self.dryWet.sig())
         self.output = Sig(self.process)
 
 class FxHighpass(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.filter = Biquad(self.input, freq=self.freq, q=self.Q, type=1,
-                             mul=self.gain)
-        self.process = Interp(self.input, self.filter, self.dryWet)
+        self.filter = Biquad(self.input, freq=self.freq.sig(), q=self.Q.sig(), type=1,
+                             mul=self.gain.sig())
+        self.process = Interp(self.input, self.filter, self.dryWet.sig())
         self.output = Sig(self.process)
 
 class FxBandpass(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.filter = Biquadx(self.input, freq=self.freq, q=self.Q, type=2,
-                              stages=2, mul=self.gain)
-        self.process = Interp(self.input, self.filter, self.dryWet)
+        self.filter = Biquadx(self.input, freq=self.freq.sig(), q=self.Q.sig(), type=2,
+                              stages=2, mul=self.gain.sig())
+        self.process = Interp(self.input, self.filter, self.dryWet.sig())
         self.output = Sig(self.process)
 
 class FxFreeverb(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.reverb = Freeverb(self.input, self.size, self.damp, 1,
-                               mul=self.gain)
-        self.process = Interp(self.input, self.reverb, self.dryWet)
+        self.reverb = Freeverb(self.input, self.size.sig(), self.damp.sig(), 1,
+                               mul=self.gain.sig())
+        self.process = Interp(self.input, self.reverb, self.dryWet.sig())
         self.output = Sig(self.process)
 
 class FxStereoVerb(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.reverb = STRev(self.input, self.pan, self.revtime, self.cutoff,
-                            1, mul=self.gain)
-        self.process = Interp(self.input, self.reverb, self.dryWet)
+        self.reverb = STRev(self.input, self.pan.sig(), self.revtime.sig(), self.cutoff.sig(),
+                            1, mul=self.gain.sig())
+        self.process = Interp(self.input, self.reverb, self.dryWet.sig())
         self.output = Sig(self.process)
 
 class FxDisto(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.disto = Disto(self.input, self.drive, self.slope, mul=self.gain)
-        self.process = Interp(self.input, self.disto, self.dryWet)
+        self.disto = Disto(self.input, self.drive.sig(), self.slope.sig(), mul=self.gain.sig())
+        self.process = Interp(self.input, self.disto, self.dryWet.sig())
         self.output = Sig(self.process)
 
 class FxDelay(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.delay = Delay(self.input, self.deltime, self.feed, 5,
-                           mul=self.gain)
-        self.process = Interp(self.input, self.delay, self.dryWet)
+        self.delay = Delay(self.input, self.deltime.sig(), self.feed.sig(), 5,
+                           mul=self.gain.sig())
+        self.process = Interp(self.input, self.delay, self.dryWet.sig())
         self.output = Sig(self.process)
 
 class FxCompressor(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.comp = Compress(self.input, self.thresh, self.ratio, self.attack,
-                             self.decay, 5, knee=0.5, mul=self.gain)
-        self.process = Interp(self.input, self.comp, self.dryWet)
+        self.comp = Compress(self.input, self.thresh.sig(), self.ratio.sig(), self.attack.sig(),
+                             self.decay.sig(), 5, knee=0.5, mul=self.gain.sig())
+        self.process = Interp(self.input, self.comp, self.dryWet.sig())
         self.output = Sig(self.process)
 
 class FxFreqShift(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.shifter = FreqShift(self.input, self.shift, mul=self.gain)
-        self.process = Interp(self.input, self.shifter, self.dryWet)
+        self.shifter = FreqShift(self.input, self.shift.sig(), mul=self.gain.sig())
+        self.process = Interp(self.input, self.shifter, self.dryWet.sig())
         self.output = Sig(self.process)
 
 class FxHarmonizer(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.harmon = Harmonizer(self.input, self.transpo, self.feed,
-                                 mul=self.gain)
-        self.process = Interp(self.input, self.harmon, self.dryWet)
+        self.harmon = Harmonizer(self.input, self.transpo.sig(), self.feed.sig(),
+                                 mul=self.gain.sig())
+        self.process = Interp(self.input, self.harmon, self.dryWet.sig())
         self.output = Sig(self.process)
 
 class FxPanning(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
         self.chnls *= 2
-        self.process = Pan(self.input, self.chnls, self.pan, self.spread,
-                           mul=self.gain)
+        self.process = Pan(self.input, self.chnls, self.pan.sig(), self.spread.sig(),
+                           mul=self.gain.sig())
         self.output = Sig(self.process)
 
 class FxAudioOut(BaseAudioObject):
@@ -374,7 +377,7 @@ class FxAudioOut(BaseAudioObject):
         self.output = Sig(self.process, mul=0.0)
 
     def setGains(self, outchnls):
-        self.gain = [ctl for i, ctl in enumerate(self.gainCtrls) if outchnls[i]]
+        self.gain = [ctl.sig() for i, ctl in enumerate(self.gainCtrls) if outchnls[i]]
         self.output.mul = self.gain
 
 AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn,

@@ -5,18 +5,18 @@ TODO
   key bindings, mouse bindings, buttons, etc.).
 - Software preferences (record options, audio driver setup)
     - partially done
-- Automatic fx connection (serial, parallel), GUI conection design **done**
-- Edit mode versus playing mode **done**
 - Master effects for both input and output section
 - Spatialisation (partially done with the Pan object) Need more work.
 - Improving effect modules (add spectral category)
 - Do we offer synthesis algorithms as input boxes?
 - BPF - playback mode, window size
+- Automators on fx parameters. **done**
 - AudioIn, one gain per input **done** (do we do the same for AudioOut?) **done**
 - On tracks canvas: Double-click to open the FxView. **done** 
 - On tracks canvas: Click+drag to move FxBoxes. **done**
 - Remember app pos and size in saved file. **done**
-- Automators on fx parameters.
+- Automatic fx connection (serial, parallel), GUI conection design **done**
+- Edit mode versus playing mode **done**
 - Live update of changes on a track. **done**
 - SaveAs should copy the entire project, not just create a new .qlp file. **done**
 

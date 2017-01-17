@@ -21,10 +21,10 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 """
 import os
 import wx
-from pyolib._wxwidgets import BACKGROUND_COLOUR, Grapher
 from constants import *
 from Widgets import *
 import QLiveLib
+from AutomationWindow import AutomationWindow
 
 class SliderWidget(wx.Panel):
     def __init__(self, parent, parameters, fxbox):
@@ -41,7 +41,7 @@ class SliderWidget(wx.Panel):
                                        parameters[1], label=parameters[0],
                                        log=parameters[5],
                                        outFunction=self.outputValue,
-                                       editFunction=self.onEditFunction)
+                                       editFunction=self.showAutomationWindow)
         self.sizer.Add(self.slider, 0, wx.ALL, 5)
 
         self.interpKnob = QLiveControlKnob(self,
@@ -54,6 +54,10 @@ class SliderWidget(wx.Panel):
         self.sizer.Add(self.interpKnob, 0, wx.ALL, 5)
 
         self.interpKnob.Hide()
+
+        self.automationDict = None
+        self.automationWindow = None
+
         self.SetSizer(self.sizer)
 
     def setEnable(self, state):
@@ -100,8 +104,43 @@ class SliderWidget(wx.Panel):
         if ctlnum is not None:
             self.assignMidiCtl(ctlnum)
 
-    def onEditFunction(self, state):
-        self.GetParent().GetParent().onEditButton(self, state)
+    def showAutomationWindow(self, state):
+        parent = self.GetParent().GetParent()
+        if state:
+            title = "Automations on Parameter < %s >" % self.name
+            self.automationWindow = AutomationWindow(parent, title, self,
+                                                     self.closeAutomationWindow,
+                                                     self.outputAutomationValues)
+            if self.automationDict is not None:
+                self.automationWindow.setAttributes(self.automationDict)
+        else:
+            if self.automationWindow:
+                self.automationWindow.Destroy()
+                self.automationWindow = None
+
+    def closeAutomationWindow(self):
+        self.automationWindow = None
+        self.setShowEdit(0)
+
+    def outputAutomationValues(self, dict):
+        self.fxbox.setAutomationValues(self.name, dict)
+
+    def getAutomationValues(self):
+        if self.automationWindow is not None:
+            automationDict = self.automationWindow.getAttributes()
+        else:
+            if self.automationDict is not None:
+                automationDict = self.automationDict
+            else:
+                automationDict = None
+        return automationDict
+
+    def setAutomationValues(self, automationDict):
+        self.automationDict = automationDict
+        if self.automationDict is not None:
+            self.outputAutomationValues(self.automationDict)
+            if self.automationWindow is not None:
+                self.automationWindow.setAttributes(self.automationDict)
 
     def setAutoPlay(self, state):
         self.slider.setAutoPlay(state)
@@ -151,7 +190,6 @@ class FxSlidersView(wx.Frame):
         self.fxbox = fxbox
         self.parameters = parameters
         self.last_enable = 1
-        self.graph_object = None
 
         closeId = wx.NewId()
 
@@ -290,13 +328,6 @@ class FxSlidersView(wx.Frame):
             for i, widget in enumerate(self.widgets):
                 widget.setEnable(i == 0)
 
-        self.graph = Grapher(self.panel, xlen=256, yrange=(0, 1),
-                             init=[(0,0), (0.5,0.5), (1,0)],
-                             mode=0, outFunction=None)
-        self.graph.SetSize((500, 200))
-        self.graph.Hide()
-        self.sizer.Add(self.graph, 1, wx.EXPAND|wx.ALL, 5)
-
         self.panel.SetSizer(self.sizer)
 
         self.frameSizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -326,22 +357,6 @@ class FxSlidersView(wx.Frame):
     def onChangeAllInterp(self, value):
         for slider in self.widgets:
             slider.setInterpValue(value, True)
-
-    def onEditButton(self, obj, state):
-        gsz = self.graph.GetSize()
-        sz = self.GetSize()
-        if self.graph_object is not None:
-            if self.graph_object is not obj:
-                self.graph_object.setShowEdit(False)
-        if state:
-            self.graph_object = obj
-            if not self.graph.IsShown():
-                self.graph.Show()
-                self.SetSize((sz[0], sz[1] + gsz[1]))
-        else:
-            self.graph_object = None
-            self.graph.Hide()
-            self.SetSize((sz[0], sz[1] - gsz[1]))
 
     def setInChannelChecks(self, lst):
         for i, check in enumerate(self.inChannelChecks):
