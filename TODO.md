@@ -25,6 +25,8 @@ TODO
 - Arbitrary interpolation between two cues
 - Record functions for both the input sound and the processed sound
 
+- global interpolation time does not affect automators.
+
 TODO / Meeting on 18/09/2015
 ---------------------
 

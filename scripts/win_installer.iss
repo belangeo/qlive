@@ -7,7 +7,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{A54A6BE9-9A15-49D6-B31F-4D71E2488297}
 AppName=QLive
-AppVersion=0.1.0
+AppVersion=0.1.2
 AppPublisher=iACT.umontreal.ca
 ; AppPublisherURL=http://ajaxsoundstudio.com/software/soundgrain
 ; AppSupportURL=http://ajaxsoundstudio.com/software/soundgrain
@@ -16,7 +16,7 @@ DefaultDirName={pf}\QLive
 DisableDirPage=yes
 DefaultGroupName=QLive
 AllowNoIcons=yes
-OutputBaseFilename=QLive_0.1.0_setup
+OutputBaseFilename=QLive_0.1.2_setup
 Compression=lzma
 SolidCompression=yes
 ChangesAssociations=yes
