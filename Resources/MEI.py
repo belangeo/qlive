@@ -40,7 +40,8 @@ def buildMEI():
     application = MeiElement("application")
     name_application = MeiElement("name")
     perfMedium = MeiElement("perfMedium")
-    instrumentation = MeiElement("instrumentation")
+    perfResList = MeiElement("perfResList")
+    perfRes = MeiElement("perfRes")
     titleStmt_file = MeiElement("titleStmt")
     titleStmt_work = MeiElement("titleStmt")
     respStmt = MeiElement("respStmt")
@@ -67,15 +68,12 @@ def buildMEI():
     fileDesc.addChild(titleStmt_file)
     work.addChild(titleStmt_work)
     work.addChild(perfMedium)
-    perfMedium.addChild(instrumentation)
+    perfMedium.addChild(perfResList)
+    perfResList.addChild(perfRes)
 
     # must be a dynamic loopvar assignment
-    instrVoice1 = MeiElement("instrVoice")
-    instrVoice2 = MeiElement("instrVoice")
-    instrVoice1.value = "Cello"
-    instrVoice2.value = "Electronics"
-    instrumentation.addChild(instrVoice1)
-    instrumentation.addChild(instrVoice2)
+    perfRes.value = "Cello"
+    perfRes.value = "Electronics"
     # ================================
 
     encodingDesc.addChild(appInfo)
