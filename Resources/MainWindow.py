@@ -99,8 +99,6 @@ class MainWindow(wx.Frame):
             menu1.Enable(EXPORT_MEI_ID, False)
         if PLATFORM != "darwin":
             menu1.AppendSeparator()
-        prefItem = menu1.Append(wx.ID_PREFERENCES, "Preferences...\tCtrl+;")
-        self.Bind(wx.EVT_MENU, self.openPrefs, prefItem)
         metaItem = menu1.Append(wx.ID_PROPERTIES, "Edit Metadata...")
         self.Bind(wx.EVT_MENU, self.openMeta, metaItem)
         if PLATFORM != "darwin":
@@ -116,14 +114,18 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.onCueCopy, id=CUE_COPY_ID)
         menu4.Append(CUE_PASTE_ID, "Paste Cue\tCtrl+V")
         self.Bind(wx.EVT_MENU, self.onCuePaste, id=CUE_PASTE_ID)
-        menubar.Append(menu4, 'Cues')
-
-        menu2 = wx.Menu()
-        menu2.Append(NEW_TRACK_ID, "Add Track\tCtrl+T")
+        if PLATFORM != "darwin":
+            menu4.AppendSeparator()
+        menu4.Append(NEW_TRACK_ID, "Add Track\tCtrl+T")
         self.Bind(wx.EVT_MENU, self.onNewTrack, id=NEW_TRACK_ID)
-        menu2.Append(DELETE_TRACK_ID, "Delete Track\tShift+Ctrl+D")
+        menu4.Append(DELETE_TRACK_ID, "Delete Track\tShift+Ctrl+D")
         self.Bind(wx.EVT_MENU, self.onDeleteTrack, id=DELETE_TRACK_ID)
-        menubar.Append(menu2, 'Tracks')
+        if PLATFORM != "darwin":
+            menu4.AppendSeparator()
+        prefItem = menu4.Append(wx.ID_PREFERENCES, "Preferences...\tCtrl+;")
+        self.Bind(wx.EVT_MENU, self.openPrefs, prefItem)
+        menubar.Append(menu4, 'Edit')
+
 
         menu3 = wx.Menu()
         item = menu3.AppendCheckItem(PLAY_MODE_ID, "Play Mode\tCtrl+E")
