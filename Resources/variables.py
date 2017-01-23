@@ -24,6 +24,7 @@ from constants import *
 
 QLiveVariables = dict()
 
+QLiveVariables["meta"] = []
 QLiveVariables["currentProject"] = ""
 QLiveVariables["projectFolder"] = ""
 QLiveVariables["MainWindow"] = None

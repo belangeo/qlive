@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mei meiversion="3.0.0">
+   <meiHead>
+      <fileDesc>
+         <titleStmt>
+            <title>(composition X)</title>
+            <title type="subordinate">(electronic part of composition X) </title>
+            <respStmt>
+               <persName role="creator">(composer)</persName>
+            </respStmt>
+         </titleStmt>
+         <pubStmt>
+            <unpub>Working in progress</unpub>
+         </pubStmt>
+      </fileDesc>
+      <encodingDesc>
+         <appInfo>
+            <application isodate="" version="">
+            <name>QLive</name>
+            </application>
+         </appInfo>
+      </encodingDesc>
+      <workDesc>
+         <work>
+            <titleStmt>
+               <title>(composition X)</title>
+               <title type="subordinate">(subtitle for composition X)</title>
+               <respStmt>
+                  <persName role="composer">(composer)</persName>
+               </respStmt>
+            </titleStmt>
+            <creation>Year of composition:<date isodate="2017">2017</date></creation>
+            <perfMedium>
+               <perfResList>
+                  <perfRes>Cello</perfRes>
+                  <perfRes>Electronics</perfRes>
+               </perfResList>
+            </perfMedium>
+         </work>
+      </workDesc>
+   </meiHead>
+   <music>
+      <!-- Some music here -->
+   </music>
+</mei>

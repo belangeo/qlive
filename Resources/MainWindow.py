@@ -22,6 +22,7 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 import wx, time, os, pprint, copy, codecs, shutil, psutil
 from constants import *
 import QLiveLib
+import Meta
 from AudioServer import AudioServer, MidiServer
 from AudioMixer import AudioMixer
 from FxTracks import FxTracks
@@ -31,6 +32,7 @@ from IntroDialog import IntroDialog
 from SoundFilePanel import SoundFilePanel
 from PreferencePanel import PreferenceFrame
 from CurrentCuePanel import CurrentCuePanel
+from MetaPanel import MetaFrame
 
 class PlayModeEvt:
     def __init__(self, state):
@@ -99,6 +101,8 @@ class MainWindow(wx.Frame):
             menu1.AppendSeparator()
         prefItem = menu1.Append(wx.ID_PREFERENCES, "Preferences...\tCtrl+;")
         self.Bind(wx.EVT_MENU, self.openPrefs, prefItem)
+        metaItem = menu1.Append(wx.ID_PROPERTIES, "Edit Metadata...")
+        self.Bind(wx.EVT_MENU, self.openMeta, metaItem)
         if PLATFORM != "darwin":
             menu1.AppendSeparator()
         quitItem = menu1.Append(wx.ID_EXIT, "Quit\tCtrl+Q")
@@ -218,7 +222,9 @@ class MainWindow(wx.Frame):
         self.mainSizer.AddSizer(self.rightSizer, 2, wx.EXPAND, 5)
         self.mainPanel.SetSizer(self.mainSizer)
 
+
         self.setTitle()
+
 
         wx.CallAfter(self.showIntro)
 
@@ -276,6 +282,7 @@ class MainWindow(wx.Frame):
 
     def getCurrentState(self):
         dictSave = {}
+        dictSave["meta"] = Meta.getSaveDict()
         dictSave["tracks"] = self.tracks.getSaveDict()
         dictSave["cues"] = self.cues.getSaveDict()
         dictSave["mixer"] = self.mixer.getSaveDict()
@@ -550,6 +557,11 @@ class MainWindow(wx.Frame):
         self.prefs = PreferenceFrame(self)
         self.prefs.Show()
         self.prefs.Center()
+
+    def openMeta(self, evt):
+        self.meta = MetaFrame(self)
+        self.meta.Show()
+        self.meta.Center()
 
     def OnQuit(self, evt):
         self.timer.Stop()

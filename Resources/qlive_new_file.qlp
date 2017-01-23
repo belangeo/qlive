@@ -1,6 +1,7 @@
 ### QLIVE PROJECT FILE ###
 ### 0.1.0 ###
-dictSave = {   'cues': {   'numberOfCues': 1},
+dictSave = {   'meta': None,
+    'cues': {   'numberOfCues': 1},
     'mixer': {   'inputLinked': False,
                  'inputSliderCtls': [   None,
                                         None,
