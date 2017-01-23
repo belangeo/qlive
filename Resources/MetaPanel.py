@@ -39,12 +39,29 @@ class FileDescriptionTab(wx.Panel):
 class WorkDescriptionTab(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
+
+        # Main box
         box = wx.StaticBox(self, -1, "Work description")
-        bsizer = wx.StaticBoxSizer(box, wx.VERTICAL, )
+
+        # Form
+
+        titleLabel = wx.StaticText(self, -1, "Title:")
+        titleValue = str(dictSave["meta"].get("mei").get("meiHead").get("workDesc").get("work").get("titleStmt").get("title")[0])
+        self.titleValue = wx.TextCtrl(self, value=titleValue)
+
+        # Sizers
+        vsizer = wx.StaticBoxSizer(box, wx.VERTICAL)
+        hsizerTitle = wx.BoxSizer(wx.HORIZONTAL)
+
+        hsizerTitle.Add(titleLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerTitle.Add(self.titleValue, -1, wx.ALL, 3)
+
+        vsizer.AddSpacer(5)
+        vsizer.Add(hsizerTitle, 0, wx.ALL|wx.EXPAND, 0)
 
         border = wx.BoxSizer()
-        border.Add(bsizer, 1, wx.EXPAND|wx.ALL, 10)
-        self.SetSizer(border)
+        border.Add(vsizer, -1, wx.EXPAND|wx.ALL, 5)
+        self.SetSizerAndFit(border)
 
 class MetaFrame(wx.Dialog):
     def __init__(self, parent):
@@ -59,7 +76,7 @@ class MetaFrame(wx.Dialog):
 
         box = wx.BoxSizer(wx.HORIZONTAL)
 
-        saveButton = wx.Button(panel, -1, label="Ok")
+        saveButton = wx.Button(panel, -1, label="Save")
         saveButton.Bind(wx.EVT_BUTTON, self.onSave)
         self.Bind(wx.EVT_CLOSE, self.onSave)
 
@@ -98,7 +115,6 @@ class MetaFrame(wx.Dialog):
             f.write(QLIVE_MAGIC_LINE)
             f.write("### %s ###\n" % APP_VERSION)
             f.write("dictSave = %s" % pprint.pformat(self.data, indent=4))
-        self.Destroy()
 
     def onCancel(self, evt):
         self.Destroy()
