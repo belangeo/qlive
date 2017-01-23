@@ -29,44 +29,22 @@ import pprint
 class FileDescriptionTab(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
-        self.tooltipsCheckBox = wx.CheckBox(self, -1, "Use tooltips",
-                                            style=wx.ALIGN_RIGHT)
-        self.tooltipsCheckBox.SetValue(QLiveLib.getVar("useTooltips"))
-        self.Bind(wx.EVT_CHECKBOX, self.enableTooltips, self.tooltipsCheckBox)
-
         box = wx.StaticBox(self, -1, "File description")
         bsizer = wx.StaticBoxSizer(box, wx.VERTICAL, )
-        bsizer.Add(self.tooltipsCheckBox, 0, wx.TOP|wx.LEFT, 10)
 
         border = wx.BoxSizer()
         border.Add(bsizer, 1, wx.EXPAND|wx.ALL, 10)
         self.SetSizer(border)
-
-    def enableTooltips(self, state):
-        QLiveLib.setVar("useTooltips", state.GetEventObject().GetValue())
 
 class WorkDescriptionTab(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
-        self.tooltipsCheckBox = wx.CheckBox(self, -1, "Use tooltips",
-                                            style=wx.ALIGN_RIGHT)
-        self.tooltipsCheckBox.SetValue(QLiveLib.getVar("useTooltips"))
-        self.Bind(wx.EVT_CHECKBOX, self.enableTooltips, self.tooltipsCheckBox)
-
         box = wx.StaticBox(self, -1, "Work description")
         bsizer = wx.StaticBoxSizer(box, wx.VERTICAL, )
-        bsizer.Add(self.tooltipsCheckBox, 0, wx.TOP|wx.LEFT, 10)
 
         border = wx.BoxSizer()
         border.Add(bsizer, 1, wx.EXPAND|wx.ALL, 10)
         self.SetSizer(border)
-
-    def enableTooltips(self, state):
-        QLiveLib.setVar("useTooltips", state.GetEventObject().GetValue())
-
-class OtherDescriptionTab(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent)
 
 class MetaFrame(wx.Dialog):
     def __init__(self, parent):
@@ -81,7 +59,7 @@ class MetaFrame(wx.Dialog):
 
         box = wx.BoxSizer(wx.HORIZONTAL)
 
-        saveButton = wx.Button(panel, -1, label="Save")
+        saveButton = wx.Button(panel, -1, label="Ok")
         saveButton.Bind(wx.EVT_BUTTON, self.onSave)
         self.Bind(wx.EVT_CLOSE, self.onSave)
 
@@ -101,12 +79,10 @@ class MetaFrame(wx.Dialog):
         # Create the tab windows
         self.tabFile = FileDescriptionTab(nb)
         self.tabWork = WorkDescriptionTab(nb)
-        self.tabOther = OtherDescriptionTab(nb)
 
         # Add the windows to tabs and name them.
         nb.AddPage(self.tabFile, "File")
         nb.AddPage(self.tabWork, "Work")
-        nb.AddPage(self.tabOther, "Other")
 
         # Set noteboook in a sizer to create the layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -116,12 +92,13 @@ class MetaFrame(wx.Dialog):
         Y = panel.GetSize()[1]
         self.SetSize((500, Y+35))
 
-    #TODO: move a saveFile method from mainWindow to QliveLib (?)
+    #TODO: move to a global saveFile method from mainWindow to QliveLib (?)
     def onSave(self, evt):
         with open(self.path, "w") as f:
             f.write(QLIVE_MAGIC_LINE)
             f.write("### %s ###\n" % APP_VERSION)
             f.write("dictSave = %s" % pprint.pformat(self.data, indent=4))
+        self.Destroy()
 
     def onCancel(self, evt):
         self.Destroy()
