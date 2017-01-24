@@ -30,10 +30,24 @@ class FileDescriptionTab(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         box = wx.StaticBox(self, -1, "File description")
-        bsizer = wx.StaticBoxSizer(box, wx.VERTICAL, )
+
+        # Form
+        encoderLabel = wx.StaticText(self, -1, "Encoder:")
+        encoderValue = "(Person responsible for encoding this work)"
+        self.encoderValue = wx.TextCtrl(self, value=encoderValue)
+
+        # Sizers
+        vsizer = wx.StaticBoxSizer(box, wx.VERTICAL)
+
+        hsizerEncoder = wx.BoxSizer(wx.HORIZONTAL)
+        hsizerEncoder.Add(encoderLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerEncoder.Add(self.encoderValue, -1, wx.ALL, 3)
+
+        vsizer.AddSpacer(5)
+        vsizer.Add(hsizerEncoder, 0, wx.ALL|wx.EXPAND, 0)
 
         border = wx.BoxSizer()
-        border.Add(bsizer, 1, wx.EXPAND|wx.ALL, 10)
+        border.Add(vsizer, 1, wx.EXPAND|wx.ALL, 10)
         self.SetSizer(border)
 
 class WorkDescriptionTab(wx.Panel):
@@ -44,20 +58,46 @@ class WorkDescriptionTab(wx.Panel):
         box = wx.StaticBox(self, -1, "Work description")
 
         # Form
-
         titleLabel = wx.StaticText(self, -1, "Title:")
         titleValue = str(dictSave["meta"].get("mei").get("meiHead").get("workDesc").get("work").get("titleStmt").get("title")[0])
         self.titleValue = wx.TextCtrl(self, value=titleValue)
 
+        subtitleLabel = wx.StaticText(self, -1, "Sub-title:")
+        subtitleValue = str(dictSave["meta"].get("mei").get("meiHead").get("workDesc").get("work").get("titleStmt").get("title")[1].get("#text"))
+        self.subtitleValue = wx.TextCtrl(self, value=subtitleValue)
+
+        composerLabel = wx.StaticText(self, -1, "Composer:")
+        composerValue = "(Composer)"
+        self.composerValue = wx.TextCtrl(self, value=composerValue)
+
+        yearLabel = wx.StaticText(self, -1, "Year of composition:")
+        yearValue = "(YYYY)"
+        self.yearValue = wx.TextCtrl(self, value=yearValue)
+
         # Sizers
         vsizer = wx.StaticBoxSizer(box, wx.VERTICAL)
-        hsizerTitle = wx.BoxSizer(wx.HORIZONTAL)
 
+        hsizerTitle = wx.BoxSizer(wx.HORIZONTAL)
         hsizerTitle.Add(titleLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
         hsizerTitle.Add(self.titleValue, -1, wx.ALL, 3)
 
+        hsizerSubTitle = wx.BoxSizer(wx.HORIZONTAL)
+        hsizerSubTitle.Add(subtitleLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerSubTitle.Add(self.subtitleValue, -1, wx.ALL, 3)
+
+        hsizerComposer = wx.BoxSizer(wx.HORIZONTAL)
+        hsizerComposer.Add(composerLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerComposer.Add(self.composerValue, -1, wx.ALL, 3)
+
+        hsizerYear = wx.BoxSizer(wx.HORIZONTAL)
+        hsizerYear.Add(yearLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerYear.Add(self.yearValue, -1, wx.ALL, 3)
+
         vsizer.AddSpacer(5)
         vsizer.Add(hsizerTitle, 0, wx.ALL|wx.EXPAND, 0)
+        vsizer.Add(hsizerSubTitle, 0, wx.ALL|wx.EXPAND, 0)
+        vsizer.Add(hsizerComposer, 0, wx.ALL|wx.EXPAND, 0)
+        vsizer.Add(hsizerYear, 0, wx.ALL|wx.EXPAND, 0)
 
         border = wx.BoxSizer()
         border.Add(vsizer, -1, wx.EXPAND|wx.ALL, 5)
@@ -67,7 +107,7 @@ class MetaFrame(wx.Dialog):
     def __init__(self, parent):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT
         wx.Dialog.__init__(self, parent, title="Edit metadata",
-                           style=style, size=(500, 350))
+                           style=style, size=(640, 350))
         self.parent = parent
 
         # Create a panel and notebook (tabs holder)
@@ -107,7 +147,7 @@ class MetaFrame(wx.Dialog):
         sizer.Add(box, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
         panel.SetSizerAndFit(sizer)
         Y = panel.GetSize()[1]
-        self.SetSize((500, Y+35))
+        self.SetSize((640, Y+35))
 
     #TODO: move to a global saveFile method from mainWindow to QliveLib (?)
     def onSave(self, evt):

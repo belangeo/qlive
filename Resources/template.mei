@@ -25,10 +25,10 @@
             <titleStmt>
                <title>(composition X)</title>
                <title type="subordinate">(subtitle for composition X)</title>
-               <respStmt>
-                  <persName role="composer">(composer)</persName>
-               </respStmt>
             </titleStmt>
+            <respStmt>
+               <persName role="composer">(composer)</persName>
+            </respStmt>
             <creation>Year of composition:<date isodate="2017">2017</date></creation>
             <perfMedium>
                <perfResList>
