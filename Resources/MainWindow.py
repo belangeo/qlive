@@ -32,7 +32,7 @@ from IntroDialog import IntroDialog
 from SoundFilePanel import SoundFilePanel
 from PreferencePanel import PreferenceFrame
 from CurrentCuePanel import CurrentCuePanel
-from MetaPanel import MetaFrame
+from MetaDialog import MetaDialog
 
 class PlayModeEvt:
     def __init__(self, state):
@@ -561,7 +561,7 @@ class MainWindow(wx.Frame):
         self.prefs.Center()
 
     def openMeta(self, evt):
-        self.meta = MetaFrame(self)
+        self.meta = MetaDialog(self)
         self.meta.Show()
         self.meta.Center()
 

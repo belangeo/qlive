@@ -66,6 +66,10 @@ class WorkDescriptionTab(wx.Panel):
         subtitleValue = str(dictSave["meta"].get("mei").get("meiHead").get("workDesc").get("work").get("titleStmt").get("title")[1].get("#text"))
         self.subtitleValue = wx.TextCtrl(self, value=subtitleValue)
 
+        identifierLabel = wx.StaticText(self, -1, "Identifier:")
+        identifierValue = "Op. XXX"
+        self.identifierValue = wx.TextCtrl(self, value=identifierValue)
+
         composerLabel = wx.StaticText(self, -1, "Composer:")
         composerValue = "(Composer)"
         self.composerValue = wx.TextCtrl(self, value=composerValue)
@@ -85,6 +89,10 @@ class WorkDescriptionTab(wx.Panel):
         hsizerSubTitle.Add(subtitleLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
         hsizerSubTitle.Add(self.subtitleValue, -1, wx.ALL, 3)
 
+        hsizerIdentifier = wx.BoxSizer(wx.HORIZONTAL)
+        hsizerIdentifier.Add(identifierLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerIdentifier.Add(self.identifierValue, -1, wx.ALL, 3)
+
         hsizerComposer = wx.BoxSizer(wx.HORIZONTAL)
         hsizerComposer.Add(composerLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
         hsizerComposer.Add(self.composerValue, -1, wx.ALL, 3)
@@ -96,6 +104,7 @@ class WorkDescriptionTab(wx.Panel):
         vsizer.AddSpacer(5)
         vsizer.Add(hsizerTitle, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerSubTitle, 0, wx.ALL|wx.EXPAND, 0)
+        vsizer.Add(hsizerIdentifier, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerComposer, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerYear, 0, wx.ALL|wx.EXPAND, 0)
 
@@ -103,7 +112,7 @@ class WorkDescriptionTab(wx.Panel):
         border.Add(vsizer, -1, wx.EXPAND|wx.ALL, 5)
         self.SetSizerAndFit(border)
 
-class MetaFrame(wx.Dialog):
+class MetaDialog(wx.Dialog):
     def __init__(self, parent):
         style = wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT
         wx.Dialog.__init__(self, parent, title="Edit metadata",
@@ -138,8 +147,8 @@ class MetaFrame(wx.Dialog):
         self.tabWork = WorkDescriptionTab(nb)
 
         # Add the windows to tabs and name them.
+        nb.AddPage(self.tabWork, "Work ")
         nb.AddPage(self.tabFile, "File")
-        nb.AddPage(self.tabWork, "Work")
 
         # Set noteboook in a sizer to create the layout
         sizer = wx.BoxSizer(wx.VERTICAL)
