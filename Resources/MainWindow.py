@@ -101,6 +101,7 @@ class MainWindow(wx.Frame):
             menu1.AppendSeparator()
         metaItem = menu1.Append(wx.ID_PROPERTIES, "Edit Metadata...")
         self.Bind(wx.EVT_MENU, self.openMeta, metaItem)
+        metaItem.Enable(False)
         if PLATFORM != "darwin":
             menu1.AppendSeparator()
         quitItem = menu1.Append(wx.ID_EXIT, "Quit\tCtrl+Q")
@@ -284,7 +285,7 @@ class MainWindow(wx.Frame):
 
     def getCurrentState(self):
         dictSave = {}
-        dictSave["meta"] = Meta.getSaveDict()
+        #dictSave["meta"] = Meta.getSaveDict()
         dictSave["tracks"] = self.tracks.getSaveDict()
         dictSave["cues"] = self.cues.getSaveDict()
         dictSave["mixer"] = self.mixer.getSaveDict()
