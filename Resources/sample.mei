@@ -3,7 +3,7 @@
   <meiHead>
     <fileDesc>
       <titleStmt>
-        <title>(composition X)</title>
+        <title>Composition X</title>
         <title type="subordinate">Electronic part of composition X</title>
         <respStmt>
           <persName role="creator">Composer</persName>
@@ -55,14 +55,91 @@
           <part label="Electronics">
             <cues>
               <cue n="0" label="Cue 0">
-                <!-- cue parameters -->
+                <modules>
+                  <module ref="#track1_module1">
+                    <channels>
+                      <channel n="1">
+                        <gain>0</gain>
+                      </channel>
+                      <channel n="2">
+                        <gain>0</gain>
+                      </channel>
+                    </channels>
+                  </module>
+                </modules>
               </cue>
               <cue n="1" label="Cue 1">
-                <!-- cue parameters -->
-                <tracks>
-                  <track ref="#track_1">
-                  </track>
-                </tracks>
+                <modules>
+                  <module ref="#track1_module1">
+                    <channels>
+                      <channel n="1">
+                        <gain>0.891</gain>
+                      </channel>
+                      <channel n="2">
+                        <gain>0.637</gain>
+                      </channel>
+                    </channels>
+                  </module>
+                  <module ref="#track2_module2">
+                    <parameters>
+                      <size>0.1</size>
+                      <damp>0.3</damp>
+                      <gain>0.8</gain>
+                      <drywet>0.5</drywet>
+                    </parameters>
+                  </module>
+                  <module ref="#track1_module3">
+                    <parameters>
+                      <freq>120</freq>
+                      <q>1</q>
+                      <gain>0.3</gain>
+                      <drywet>0.8</drywet>
+                    </parameters>
+                  </module>
+                  <module ref="#track1_module4">
+                    <channels>
+                      <channel n="1">
+                        <gain>0.3</gain>
+                      </channel>
+                      <channel n="2">
+                        <gain>0.8</gain>
+                      </channel>
+                    </channels>
+                  </module>
+                  <module xml:id="track2_module1" n="1">
+                    <category>Others</category>
+                    <type>input</type>
+                    <name>soundfile</name>
+                    <soundfile ref="#soundfile_1"/>
+                    <gain/>
+                  </module>
+                  <module ref="track2_module2">
+                    <parameters>
+                      <size>0.1</size>
+                      <damp>0.3</damp>
+                      <gain>0.8</gain>
+                      <drywet>0.5</drywet>
+                    </parameters>
+                  </module>
+                  <module ref="#track2_module3">
+                    <parameters>
+                      <freq>123</freq>
+                      <q>2</q>
+                      <gain>0.4</gain>
+                      <drywet>0.9</drywet>
+                    </parameters>
+                  </module>
+                  <module ref="#track2_module4">
+                    <channels>
+                      <channel n="1">
+                        <gain>0.4</gain>
+                      </channel>
+                      <channel n="2">
+                        <gain>0.5</gain>
+                      </channel>
+                    </channels>
+                  </module>
+                </modules>
                 <soundfiles>
                   <soundfile ref="#soundfile_1">
                     <playing>Play</playing>
@@ -70,50 +147,207 @@
                     <transposition>0.56</transposition>
                     <gain>0.3</gain>
                     <output>True</output>
-                    <start>0.0000</start>
-                    <end>0.2114</end>
+                    <start unit="s">0.000</start>
+                    <end unit="s">0.2114</end>
                     <xfade>5.0</xfade>
                     <outchan>0</outchan>
                   </soundfile>
                 </soundfiles>
               </cue>
-              <cue xml:id="cue_2" n="2" label="Cue 2">
-                <!-- cue parameters -->
+              <cue n="0" label="Cue 0">
+                <modules>
+                  <module ref="#track1_module1">
+                    <channels>
+                      <channel n="1">
+                        <gain>0</gain>
+                      </channel>
+                      <channel n="2">
+                        <gain>0</gain>
+                      </channel>
+                    </channels>
+                  </module>
+                </modules>
+              </cue>
+              <cue n="2" label="Cue 2">
+                <modules>
+                  <module ref="#track1_module1">
+                    <channels>
+                      <channel n="1">
+                        <gain>0.3</gain>
+                      </channel>
+                      <channel n="2">
+                        <gain>0.1</gain>
+                      </channel>
+                    </channels>
+                  </module>
+                  <module ref="#track2_module2">
+                    <parameters>
+                      <size>0.1</size>
+                      <damp>0.3</damp>
+                      <gain>0.8</gain>
+                      <drywet>0.5</drywet>
+                    </parameters>
+                  </module>
+                  <module ref="#track1_module3">
+                    <parameters>
+                      <freq>420</freq>
+                      <q>2</q>
+                      <gain>0.3</gain>
+                      <drywet>0.8</drywet>
+                    </parameters>
+                  </module>
+                  <module ref="#track1_module4">
+                    <channels>
+                      <channel n="1">
+                        <gain>0.3</gain>
+                      </channel>
+                      <channel n="2">
+                        <gain>0.8</gain>
+                      </channel>
+                    </channels>
+                  </module>
+                  <module xml:id="track2_module1" n="1">
+                    <category>Others</category>
+                    <type>input</type>
+                    <name>soundfile</name>
+                    <soundfile ref="#soundfile_1"/>
+                    <gain/>
+                  </module>
+                  <module ref="track2_module2">
+                    <parameters>
+                      <size>0.1</size>
+                      <damp>0.4</damp>
+                      <gain>0.8</gain>
+                      <drywet>0.89</drywet>
+                    </parameters>
+                  </module>
+                  <module ref="#track2_module3">
+                    <parameters>
+                      <freq>123</freq>
+                      <q>2</q>
+                      <gain>0.4</gain>
+                      <drywet>0.9</drywet>
+                    </parameters>
+                  </module>
+                  <module ref="#track2_module4">
+                    <channels>
+                      <channel n="1">
+                        <gain>0.4</gain>
+                      </channel>
+                      <channel n="2">
+                        <gain>0.5</gain>
+                      </channel>
+                    </channels>
+                  </module>
+                </modules>
+                <soundfiles>
+                  <soundfile ref="#soundfile_1">
+                    <playing>Stop</playing>
+                    <loopmode>Forward</loopmode>
+                    <transposition>0.56</transposition>
+                    <gain>0.3</gain>
+                    <output>True</output>
+                    <start unit="s">0.000</start>
+                    <end unit="s">0.2114</end>
+                    <xfade>5.0</xfade>
+                    <outchan>0</outchan>
+                  </soundfile>
+                </soundfiles>
               </cue>
             </cues>
-            <!-- second performer’s part -->
             <soundfiles>
-              <soundfile xml:id="soundfile_1" n="1" filename="snd_1.aif" />
+              <soundfile xml:id="soundfile_1" n="1" label="Soundfile 1">
+                <format>aif</format>
+                <filename>snd_1.aif</filename>
+                <title>A title for this soundfile</title>
+                <description>A short description for this soundfile</description>
+              </soundfile>
             </soundfiles>
             <tracks>
               <track xml:id="track_1" n="1" label="Track 1">
-                <boxes>
-                  <box seq="1" type="input" category="Others">
-                    <!-- available input parameters -->
-                  </box>
-                  <box seq="2" type="effect" category="Delay effects" name="Delay">
-                    <!-- available delay parameters -->
-                  </box>
-                  <box seq="3" type="output" category="Others">
-                    <!-- available output parameters -->
-                  </box>
-                </boxes>
+                <modules>
+                  <module xml:id="track1_module1" n="1">
+                    <category>Others</category>
+                    <type>input</type>
+                    <name>audioin</name>
+                    <channels>
+                      <channel n="1">
+                        <gain/>
+                      </channel>
+                      <channel n="2">
+                        <gain/>
+                      </channel>
+                    </channels>
+                  </module>
+                  <module xml:id="track1_module2" n="2">
+                    <category>Delay effects</category>
+                    <type>effect</type>
+                    <name>Delay</name>
+                    <parameters>
+                      <deltime/>
+                      <feed/>
+                      <gain/>
+                      <drywet/>
+                    </parameters>
+                  </module>
+                  <module xml:id="track1_module3" n="3">
+                    <category>Others</category>
+                    <type>output</type>
+                    <channels>
+                      <channel n="1">
+                        <gain/>
+                      </channel>
+                      <channel n="2">
+                        <gain/>
+                      </channel>
+                    </channels>
+                  </module>
+                </modules>
               </track>
               <track xml:id="track_2" n="2" label="Track 2">
-                <boxes>
-                  <box seq="1" type="input" category="Others">
-                    <!-- available input parameters -->
-                  </box>
-                  <box seq="2" type="effect" category="Reverb effects" name="Freeverb">
-                    <!-- available freeverb parameters -->
-                  </box>
-                  <box seq="2" type="effect" category="Filter effects" name="Lowpass">
-                    <!-- available lowpass parameters -->
-                  </box>
-                  <box seq="3" type="output" category="Others">
-                    <!-- available output parameters -->
-                  </box>
-                </boxes>
+                <modules>
+                  <module xml:id="track2_module1" n="1">
+                    <category>Others</category>
+                    <type>input</type>
+                    <name>soundfile</name>
+                    <soundfile ref="#soundfile_1"/>
+                    <gain/>
+                  </module>
+                  <module xml:id="track2_module2" n="2">
+                    <category>Reverb effects</category>
+                    <type>effect</type>
+                    <name>Freeverb</name>
+                    <parameters>
+                      <size/>
+                      <damp/>
+                      <gain/>
+                      <drywet/>
+                    </parameters>
+                  </module>
+                  <module xml:id="track1_module3" n="2">
+                    <category>Filter effects</category>
+                    <type>effect</type>
+                    <name>Lowpass</name>
+                    <parameters>
+                      <freq/>
+                      <q/>
+                      <gain/>
+                      <drywet/>
+                    </parameters>
+                  </module>
+                  <module xml:id="track1_module4" n="3">
+                    <category>Others</category>
+                    <type>output</type>
+                    <channels>
+                      <channel n="1">
+                        <gain/>
+                      </channel>
+                      <channel n="2">
+                        <gain/>
+                      </channel>
+                    </channels>
+                  </module>
+                </modules>
               </track>
             </tracks>
           </part>

@@ -24,6 +24,7 @@ from constants import *
 from FxTrack import FxTrack
 import QLiveLib
 
+
 class FxTracks(wx.ScrolledWindow):
     def __init__(self, parent):
         wx.ScrolledWindow.__init__(self, parent, style=wx.SUNKEN_BORDER)
