@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://www.music-encoding.org/ns/mei" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <element name="mei">
+      <attribute name="meiversion">
+        <data type="NMTOKEN"/>
+      </attribute>
+      <element name="meiHead">
+        <element name="fileDesc">
+          <ref name="titleStmt"/>
+          <element name="pubStmt">
+            <element name="unpub">
+              <text/>
+            </element>
+          </element>
+        </element>
+        <element name="encodingDesc">
+          <element name="appInfo">
+            <element name="application">
+              <attribute name="version">
+                <data type="NMTOKEN"/>
+              </attribute>
+              <ref name="name"/>
+            </element>
+          </element>
+        </element>
+        <element name="workDesc">
+          <element name="work">
+            <ref name="titleStmt"/>
+            <element name="creation">
+              <oneOrMore>
+                <choice>
+                  <text/>
+                  <element name="date">
+                    <attribute name="isodate">
+                      <data type="integer"/>
+                    </attribute>
+                    <data type="integer"/>
+                  </element>
+                </choice>
+              </oneOrMore>
+            </element>
+            <element name="perfMedium">
+              <element name="perfResList">
+                <oneOrMore>
+                  <element name="perfRes">
+                    <data type="NCName"/>
+                  </element>
+                </oneOrMore>
+              </element>
+            </element>
+          </element>
+        </element>
+      </element>
+      <element name="music">
+        <element name="front">
+          <empty/>
+        </element>
+        <element name="body">
+          <element name="mdiv">
+            <attribute name="n">
+              <data type="integer"/>
+            </attribute>
+            <attribute name="type">
+              <data type="NCName"/>
+            </attribute>
+            <element name="score">
+              <empty/>
+            </element>
+            <element name="parts">
+              <oneOrMore>
+                <element name="part">
+                  <attribute name="label">
+                    <data type="NCName"/>
+                  </attribute>
+                  <optional>
+                    <element name="cues">
+                      <oneOrMore>
+                        <element name="cue">
+                          <attribute name="label"/>
+                          <attribute name="n">
+                            <data type="integer"/>
+                          </attribute>
+                          <ref name="modules"/>
+                          <optional>
+                            <ref name="soundfiles"/>
+                          </optional>
+                        </element>
+                      </oneOrMore>
+                    </element>
+                    <ref name="soundfiles"/>
+                    <element name="tracks">
+                      <oneOrMore>
+                        <element name="track">
+                          <attribute name="label"/>
+                          <attribute name="n">
+                            <data type="integer"/>
+                          </attribute>
+                          <attribute>
+                            <name ns="http://www.w3.org/XML/1998/namespace">id</name>
+                            <data type="NCName"/>
+                          </attribute>
+                          <ref name="modules"/>
+                        </element>
+                      </oneOrMore>
+                    </element>
+                  </optional>
+                </element>
+              </oneOrMore>
+            </element>
+          </element>
+        </element>
+        <element name="back">
+          <empty/>
+        </element>
+      </element>
+    </element>
+  </start>
+  <define name="titleStmt">
+    <element name="titleStmt">
+      <oneOrMore>
+        <ref name="title"/>
+      </oneOrMore>
+      <element name="respStmt">
+        <element name="persName">
+          <attribute name="role">
+            <data type="NCName"/>
+          </attribute>
+          <text/>
+        </element>
+      </element>
+    </element>
+  </define>
+  <define name="name">
+    <element name="name">
+      <data type="NCName"/>
+    </element>
+  </define>
+  <define name="modules">
+    <element name="modules">
+      <oneOrMore>
+        <element name="module">
+          <optional>
+            <attribute name="n">
+              <data type="integer"/>
+            </attribute>
+          </optional>
+          <optional>
+            <attribute name="ref"/>
+          </optional>
+          <optional>
+            <attribute>
+              <name ns="http://www.w3.org/XML/1998/namespace">id</name>
+              <data type="NCName"/>
+            </attribute>
+          </optional>
+          <optional>
+            <element name="category">
+              <text/>
+            </element>
+            <element name="type">
+              <data type="NCName"/>
+            </element>
+          </optional>
+          <optional>
+            <ref name="name"/>
+          </optional>
+          <choice>
+            <element name="channels">
+              <oneOrMore>
+                <element name="channel">
+                  <attribute name="n">
+                    <data type="integer"/>
+                  </attribute>
+                  <ref name="gain"/>
+                </element>
+              </oneOrMore>
+            </element>
+            <element name="parameters">
+              <choice>
+                <group>
+                  <element name="deltime">
+                    <empty/>
+                  </element>
+                  <element name="feed">
+                    <empty/>
+                  </element>
+                </group>
+                <group>
+                  <element name="size">
+                    <text/>
+                  </element>
+                  <element name="damp">
+                    <text/>
+                  </element>
+                </group>
+                <group>
+                  <element name="freq">
+                    <text/>
+                  </element>
+                  <element name="q">
+                    <text/>
+                  </element>
+                </group>
+              </choice>
+              <ref name="gain"/>
+              <element name="drywet">
+                <text/>
+              </element>
+            </element>
+            <group>
+              <ref name="soundfile"/>
+              <ref name="gain"/>
+            </group>
+          </choice>
+        </element>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="soundfiles">
+    <element name="soundfiles">
+      <ref name="soundfile"/>
+    </element>
+  </define>
+  <define name="title">
+    <element name="title">
+      <optional>
+        <attribute name="type">
+          <data type="NCName"/>
+        </attribute>
+      </optional>
+      <text/>
+    </element>
+  </define>
+  <define name="gain">
+    <element name="gain">
+      <text/>
+    </element>
+  </define>
+  <define name="soundfile">
+    <element name="soundfile">
+      <optional>
+        <attribute name="label"/>
+      </optional>
+      <optional>
+        <attribute name="n">
+          <data type="integer"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="ref"/>
+      </optional>
+      <optional>
+        <attribute>
+          <name ns="http://www.w3.org/XML/1998/namespace">id</name>
+          <data type="NCName"/>
+        </attribute>
+      </optional>
+      <optional>
+        <choice>
+          <group>
+            <element name="format">
+              <data type="NCName"/>
+            </element>
+            <element name="filename">
+              <data type="NCName"/>
+            </element>
+            <ref name="title"/>
+            <element name="description">
+              <text/>
+            </element>
+          </group>
+          <group>
+            <element name="playing">
+              <data type="NCName"/>
+            </element>
+            <element name="loopmode">
+              <data type="NCName"/>
+            </element>
+            <element name="transposition">
+              <data type="decimal"/>
+            </element>
+            <ref name="gain"/>
+            <element name="output">
+              <data type="NCName"/>
+            </element>
+            <element name="start">
+              <attribute name="unit">
+                <data type="NCName"/>
+              </attribute>
+              <data type="decimal"/>
+            </element>
+            <element name="end">
+              <attribute name="unit">
+                <data type="NCName"/>
+              </attribute>
+              <data type="decimal"/>
+            </element>
+            <element name="xfade">
+              <data type="decimal"/>
+            </element>
+            <element name="outchan">
+              <data type="integer"/>
+            </element>
+          </group>
+        </choice>
+      </optional>
+    </element>
+  </define>
+</grammar>
