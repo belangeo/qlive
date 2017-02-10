@@ -21,7 +21,6 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 """
 import wx
 import QLiveLib
-import Meta
 from constants import *
 import pprint
 
@@ -59,11 +58,11 @@ class WorkDescriptionTab(wx.Panel):
 
         # Form
         titleLabel = wx.StaticText(self, -1, "Title:")
-        titleValue = str(dictSave["meta"].get("mei").get("meiHead").get("workDesc").get("work").get("titleStmt").get("title")[0])
+        titleValue = 'Title' #FIXME
         self.titleValue = wx.TextCtrl(self, value=titleValue)
 
         subtitleLabel = wx.StaticText(self, -1, "Sub-title:")
-        subtitleValue = str(dictSave["meta"].get("mei").get("meiHead").get("workDesc").get("work").get("titleStmt").get("title")[1].get("#text"))
+        subtitleValue = 'Subtitle' #FIXME
         self.subtitleValue = wx.TextCtrl(self, value=subtitleValue)
 
         identifierLabel = wx.StaticText(self, -1, "Identifier:")
@@ -137,10 +136,10 @@ class MetaDialog(wx.Dialog):
         box.Add(cancelButton, 1, wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 2)
 
 
-        self.path = QLiveLib.getVar("currentProject")
-        execfile(self.path, globals())
-        dictSave["meta"] = Meta.getSaveDict()
-        self.data = dictSave
+#        self.path = QLiveLib.getVar("currentProject")
+#        execfile(self.path, globals())
+#        dictSave["meta"] = Meta.getSaveDict()
+#        self.data = dictSave
 
         # Create the tab windows
         self.tabFile = FileDescriptionTab(nb)
@@ -160,10 +159,7 @@ class MetaDialog(wx.Dialog):
 
     #TODO: move to a global saveFile method from mainWindow to QliveLib (?)
     def onSave(self, evt):
-        with open(self.path, "w") as f:
-            f.write(QLIVE_MAGIC_LINE)
-            f.write("### %s ###\n" % APP_VERSION)
-            f.write("dictSave = %s" % pprint.pformat(self.data, indent=4))
+        pass
 
     def onCancel(self, evt):
         self.Destroy()

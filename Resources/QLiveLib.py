@@ -82,16 +82,6 @@ def getBackgroundColour():
     else:
         return BACKGROUND_COLOUR
 
-def saveMEI(path):
-    if PYMEI:
-        import MEI
-        MEI.saveMEI(path)
-    else:
-        pass
-
-def loadMEI():
-    MEI.loadMEI()
-
 def queryAudioMidiDrivers():
     driverInfos = getAvailableAudioMidiDrivers()
     inputs = driverInfos[0]

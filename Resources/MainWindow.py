@@ -23,6 +23,7 @@ import wx, time, os, pprint, copy, codecs, shutil, psutil
 from constants import *
 import QLiveLib
 import Meta
+from MEI import MEI
 from AudioServer import AudioServer, MidiServer
 from AudioMixer import AudioMixer
 from FxTracks import FxTracks
@@ -95,13 +96,10 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.onSaveAs, id=wx.ID_SAVEAS)
         menu1.Append(EXPORT_MEI_ID, "Export MEI...\tShift+Ctrl+M")
         self.Bind(wx.EVT_MENU, self.onExportMEI, id=EXPORT_MEI_ID)
-        if not PYMEI:
-            menu1.Enable(EXPORT_MEI_ID, False)
         if PLATFORM != "darwin":
             menu1.AppendSeparator()
-        metaItem = menu1.Append(wx.ID_PROPERTIES, "Edit Metadata...")
+        metaItem = menu1.Append(wx.ID_PROPERTIES, "Properties...")
         self.Bind(wx.EVT_MENU, self.openMeta, metaItem)
-        metaItem.Enable(False)
         if PLATFORM != "darwin":
             menu1.AppendSeparator()
         quitItem = menu1.Append(wx.ID_EXIT, "Quit\tCtrl+Q")
@@ -323,7 +321,11 @@ class MainWindow(wx.Frame):
             os.remove(bakpath)
 
     def saveMEI(self, path):
-        QLiveLib.saveMEI(path)
+        self.mei = MEI()
+        dictSave = self.getCurrentState()
+        mei_content = self.mei.buildMEI(dictSave)
+        with open(path, "w") as f:
+            f.write(mei_content)
 
     def loadFile(self, path):
         with open(path, "r") as f:
