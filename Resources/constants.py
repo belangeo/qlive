@@ -36,9 +36,6 @@ SYSTEM_ENCODING = sys.getfilesystemencoding()
 
 PLATFORM = sys.platform
 
-# MEI export coming soon
-PYMEI = False
-
 if '/%s.app' % APP_NAME in os.getcwd():
     RESOURCES_PATH = os.getcwd()
 else:
@@ -74,6 +71,7 @@ INTERPTIME_MAX = 600
 
 BOX_MENU_ITEM_FIRST_ID = 1000
 EXPORT_MEI_ID = 1500
+EXPORT_PDF_ID = 1600
 NEW_TRACK_ID = 2600
 DELETE_TRACK_ID = 2601
 PLAY_MODE_ID = 2700

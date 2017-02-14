@@ -96,6 +96,9 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.onSaveAs, id=wx.ID_SAVEAS)
         menu1.Append(EXPORT_MEI_ID, "Export MEI...\tShift+Ctrl+M")
         self.Bind(wx.EVT_MENU, self.onExportMEI, id=EXPORT_MEI_ID)
+        menu1.Append(EXPORT_PDF_ID, "Export PDF...\tShift+Ctrl+P")
+        self.Bind(wx.EVT_MENU, self.onExportPDF, id=EXPORT_PDF_ID)
+        menu1.Enable(EXPORT_PDF_ID, False)
         if PLATFORM != "darwin":
             menu1.AppendSeparator()
         metaItem = menu1.Append(wx.ID_PROPERTIES, "Properties...")
@@ -468,6 +471,8 @@ class MainWindow(wx.Frame):
             self.saveMEI(path)
         dlg.Destroy()
 
+    def onExportPDF(self, evt):
+        pass
 
     def onNewTrack(self, evt):
         self.tracks.addTrack()
