@@ -34,12 +34,12 @@ class PDF:
         self.PAGE_HEIGHT=defaultPageSize[1]
         self.styles = getSampleStyleSheet()
 
-        tree = ET.parse('test.mei')
+        tree = ET.parse('sample.mei')
         root = tree.getroot()
         # Loading header content
-        self.title = str(tree.find('./meiHead/workDesc/titleStmt/title').text)
-        self.subtitle = str(tree.find('./meiHead/workDesc/titleStmt/title[@type="subordinate"]').text)
-        self.composer = str(tree.find('./meiHead/workDesc/titleStmt/persName[@role="composer"]').text)
+        self.title = str(tree.find('./meiHead/workDesc/work/titleStmt/title').text)
+        self.subtitle = str(tree.find('./meiHead/workDesc/work/titleStmt/title[@type="subordinate"]').text)
+        self.composer = str(tree.find('./meiHead/workDesc/work/titleStmt/respStmt/persName[@role="composer"]').text)
         self.year = str(tree.find('./meiHead/workDesc/work/creation/date').text)
         self.abstract = """This paper describes the primative methods underlying the implementation
 of SQL query evaluation in Gadfly 2, a database management system implemented
@@ -51,8 +51,16 @@ can add functionality to the engine such as alternative disk based
 indexed table implementations, dynamic interfaces to remote data
 bases or or other data sources, and user defined computations."""
 
+        # Loading music
+        self.cues = tree.findall('./music/body/mdiv/parts/part/cues/cue')
+        self.tracks = tree.findall('./music/body/mdiv/parts/part/tracks/track')
+        self.soundfiles = tree.findall('./music/body/mdiv/parts/part/soundfiles/soundfile')
+
+        # Formating
         self.Elements = []
         self.HeaderStyle = self.styles["Heading1"]
+        self.HeaderStyle2 = self.styles["Heading2"]
+        self.HeaderStyle3 = self.styles["Heading3"]
         self.ParaStyle = self.styles["Normal"]
 
 
@@ -62,7 +70,7 @@ bases or or other data sources, and user defined computations."""
         canvas.setStrokeColorRGB(1,0,0)
         canvas.setLineWidth(5)
         canvas.line(66,72,66,self.PAGE_HEIGHT-72)
-        canvas.setFont('Times-Bold',16)
+        canvas.setFont('Times-Bold',16) #FIXME: center and breakline
         canvas.drawString(108, self.PAGE_HEIGHT-108, self.title)
         canvas.setFont('Times-Roman',9)
         canvas.drawString(inch, 0.75 * inch, "First Page / %s" % self.pageinfo)
@@ -99,11 +107,20 @@ bases or or other data sources, and user defined computations."""
         self.p(self.abstract)
         self.Elements.append(PageBreak())
         self.header("SOUNDFILES", style=self.HeaderStyle)
-        self.p(self.abstract)
+        for s in self.soundfiles:
+            header_text = s.attrib['label'] + ' (' + str(s.find('./filename').text) + ')'
+            self.header(header_text, style=self.HeaderStyle2, sep=0)
+            self.p(str(s.find('./description').text))
         self.header("TRACKS", style=self.HeaderStyle)
-        self.p(self.abstract)
+        for t in self.tracks:
+            self.header(t.attrib['label'], style=self.HeaderStyle2, sep=0)
+            self.p(str(t.find('./description').text))
         self.header("CUES", style=self.HeaderStyle)
-        self.p(self.abstract)
+        for c in self.cues:
+            self.header(c.attrib['label'], style=self.HeaderStyle2, sep=0)
+            self.p(str(c.find('./description').text))
+            if c.attrib['n'] is not "0":
+                pass # look for parameters
 
 
 pdf = PDF()

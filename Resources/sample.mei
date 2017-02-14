@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<mei xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.music-encoding.org/ns/mei" meiversion="3.0.0">
+<mei xmlns:xlink="http://www.w3.org/1999/xlink" meiversion="3.0.0">
   <meiHead>
     <fileDesc>
       <titleStmt>
@@ -23,7 +23,7 @@
     <workDesc>
       <work>
         <titleStmt>
-          <title>Composition X</title>
+          <title>Composition X - ode for a landscape.</title>
           <title type="subordinate">Any sub-title for composition X</title>
           <respStmt>
             <persName role="composer">Composer name</persName>
@@ -55,6 +55,7 @@
           <part label="Electronics">
             <cues>
               <cue n="0" label="Cue 0">
+                <description>This is a mute Cue.</description>
                 <modules>
                   <module ref="#track1_module1">
                     <channels>
@@ -69,6 +70,7 @@
                 </modules>
               </cue>
               <cue n="1" label="Cue 1">
+                <description>This is a nice noisy Cue.</description>
                 <modules>
                   <module ref="#track1_module1">
                     <channels>
@@ -154,7 +156,8 @@
                   </soundfile>
                 </soundfiles>
               </cue>
-              <cue n="0" label="Cue 0">
+              <cue n="2" label="Cue 2">
+                <description>Cue 2 is the best.</description>
                 <modules>
                   <module ref="#track1_module1">
                     <channels>
@@ -168,7 +171,8 @@
                   </module>
                 </modules>
               </cue>
-              <cue n="2" label="Cue 2">
+              <cue n="3" label="Cue 3">
+                <description>Cue 3 is a dead end.</description>
                 <modules>
                   <module ref="#track1_module1">
                     <channels>
@@ -259,12 +263,12 @@
               <soundfile xml:id="soundfile_1" n="1" label="Soundfile 1">
                 <format>aif</format>
                 <filename>snd_1.aif</filename>
-                <title>A title for this soundfile</title>
                 <description>A short description for this soundfile</description>
               </soundfile>
             </soundfiles>
             <tracks>
               <track xml:id="track_1" n="1" label="Track 1">
+                <description>This track will rock your speakers.</description>
                 <modules>
                   <module xml:id="track1_module1" n="1">
                     <category>Others</category>
@@ -305,6 +309,7 @@
                 </modules>
               </track>
               <track xml:id="track_2" n="2" label="Track 2">
+                <description>This track will also rock your speakers.</description>
                 <modules>
                   <module xml:id="track2_module1" n="1">
                     <category>Others</category>
