@@ -41,17 +41,9 @@ class PDF:
         self.subtitle = str(tree.find('./meiHead/workDesc/work/titleStmt/title[@type="subordinate"]').text)
         self.composer = str(tree.find('./meiHead/workDesc/work/titleStmt/respStmt/persName[@role="composer"]').text)
         self.year = str(tree.find('./meiHead/workDesc/work/creation/date').text)
-        self.abstract = """This paper describes the primative methods underlying the implementation
-of SQL query evaluation in Gadfly 2, a database management system implemented
-in Python [Van Rossum]. The major design goals behind
-the architecture described here are to simplify the implementation
-and to permit flexible and efficient extensions to the gadfly
-engine. Using this architecture and its interfaces programmers
-can add functionality to the engine such as alternative disk based
-indexed table implementations, dynamic interfaces to remote data
-bases or or other data sources, and user defined computations."""
 
-        # Loading music
+        # Loading music content
+        self.preface = tree.find('./music/front/div[@type="preface"]')
         self.cues = tree.findall('./music/body/mdiv/parts/part/cues/cue')
         self.tracks = tree.findall('./music/body/mdiv/parts/part/tracks/track')
         self.soundfiles = tree.findall('./music/body/mdiv/parts/part/soundfiles/soundfile')
@@ -70,10 +62,8 @@ bases or or other data sources, and user defined computations."""
         canvas.setStrokeColorRGB(1,0,0)
         canvas.setLineWidth(5)
         canvas.line(66,72,66,self.PAGE_HEIGHT-72)
-        canvas.setFont('Times-Bold',16) #FIXME: center and breakline
-        canvas.drawString(108, self.PAGE_HEIGHT-108, self.title)
         canvas.setFont('Times-Roman',9)
-        canvas.drawString(inch, 0.75 * inch, "First Page / %s" % self.pageinfo)
+        canvas.drawString(inch, 0.75 * inch, "p.1 / %s" % self.pageinfo)
         canvas.restoreState()
 
     def myLaterPages(self, canvas, doc):
@@ -83,7 +73,7 @@ bases or or other data sources, and user defined computations."""
         canvas.setLineWidth(5)
         canvas.line(66,72,66,self.PAGE_HEIGHT-72)
         canvas.setFont('Times-Roman',9)
-        canvas.drawString(inch, 0.75 * inch, "Page %d %s" % (doc.page, self.pageinfo))
+        canvas.drawString(inch, 0.75 * inch, "p.%d %s" % (doc.page, self.pageinfo))
         canvas.restoreState()
 
     def go(self):
@@ -101,23 +91,32 @@ bases or or other data sources, and user defined computations."""
         return self.header(txt, style=self.ParaStyle, sep=0.1)
 
     def build(self):
-        self.header(self.subtitle, sep=0.1, style=self.ParaStyle)
-        self.header(self.composer, sep=0.1, style=self.ParaStyle)
-        self.header("WORK DESCRIPTION", style=self.HeaderStyle)
-        self.p(self.abstract)
+        # First page
+        composer = '<para align=center spaceAfter=50>'+self.composer+'</para>'
+        title = '<para align=center spaceAfter=0 spaceBefore=30 fontSize=20>'+self.title+'</para>'
+        subtitle = '<para align=center spaceAfter=20>'+self.subtitle+'</para>'
+        self.header("", sep=0.5, style=self.ParaStyle)
+        self.header(title, style=self.HeaderStyle, sep=0)
+        self.header(subtitle, sep=0, style=self.HeaderStyle3)
+        self.header(composer, sep=0.2, style=self.ParaStyle)
+        for i in self.preface:
+            paragraph = '<para firstLineIndent=15 rightIndent=60 leftIndent=60 align=justify>%s</para>' % (str(i.text))
+            self.p(paragraph)
         self.Elements.append(PageBreak())
-        self.header("SOUNDFILES", style=self.HeaderStyle)
+
+        # Others pages
+        self.header("Soundfiles", style=self.HeaderStyle2)
         for s in self.soundfiles:
-            header_text = s.attrib['label'] + ' (' + str(s.find('./filename').text) + ')'
-            self.header(header_text, style=self.HeaderStyle2, sep=0)
+            header_text = '%s (%s)' % (s.attrib['label'], str(s.find('./filename').text))
+            self.header(header_text, style=self.ParaStyle, sep=0)
             self.p(str(s.find('./description').text))
-        self.header("TRACKS", style=self.HeaderStyle)
+        self.header("Tracks", style=self.HeaderStyle2)
         for t in self.tracks:
-            self.header(t.attrib['label'], style=self.HeaderStyle2, sep=0)
+            self.header(t.attrib['label'], style=self.HeaderStyle3, sep=0)
             self.p(str(t.find('./description').text))
-        self.header("CUES", style=self.HeaderStyle)
+        self.header("Cues", style=self.HeaderStyle2)
         for c in self.cues:
-            self.header(c.attrib['label'], style=self.HeaderStyle2, sep=0)
+            self.header(c.attrib['label'], style=self.HeaderStyle3, sep=0)
             self.p(str(c.find('./description').text))
             if c.attrib['n'] is not "0":
                 pass # look for parameters

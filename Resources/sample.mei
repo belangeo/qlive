@@ -24,9 +24,9 @@
       <work>
         <titleStmt>
           <title>Composition X - ode for a landscape.</title>
-          <title type="subordinate">Any sub-title for composition X</title>
+          <title type="subordinate">Any subtitle for composition X goes here</title>
           <respStmt>
-            <persName role="composer">Composer name</persName>
+            <persName role="composer">Tiago B. Vaz</persName>
           </respStmt>
         </titleStmt>
         <creation>Year of composition:<date isodate="2017">2017</date></creation>
@@ -41,7 +41,13 @@
   </meiHead>
   <music>
     <front>
-      <!-- front matter of text, if any, goes here -->
+      <div type="preface">
+       <p>Here the @resp attribute has been used to indicate responsibility for the correction. Its value ( #editTrans.JK) isan example of the pointer values discussed in section 19 Pointers and References. In this case, the @resp
+attribute points to a name element within the metadata header, but any element might be indicated in this way,</p>
+<p>if the correction has been taken from some other source. The @resp attribute is available for all elements
+which are members of the att.responsibility class. The att.edit class makes available a @cert attribute,which may
+be used to indicate the degree of editorial confidence in a particular correction, as in the following example:</p>
+      </div>
     </front>
     <body>
       <mdiv n="1" type="movement">
