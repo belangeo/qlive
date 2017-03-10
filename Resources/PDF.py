@@ -20,6 +20,9 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 import wx
+from reportlab.graphics.shapes import Drawing, Line
+from reportlab.lib import colors
+
 from constants import *
 import QLiveLib
 import xml.etree.cElementTree as ET
@@ -54,7 +57,6 @@ class PDF:
         self.HeaderStyle2 = self.styles["Heading2"]
         self.HeaderStyle3 = self.styles["Heading3"]
         self.ParaStyle = self.styles["Normal"]
-
 
     def myFirstPage(self, canvas, doc):
         self.pageinfo = "%s / %s" % (self.title, self.composer)
@@ -105,16 +107,48 @@ class PDF:
         self.Elements.append(PageBreak())
 
         # Others pages
+
+        # SOUNDFILES
         self.header("Soundfiles", style=self.HeaderStyle2)
+        d = Drawing(450,1)
+        d.add(Line(0,5,450,5))
+        self.Elements.append(d)
         for s in self.soundfiles:
             header_text = '%s (%s)' % (s.attrib['label'], str(s.find('./filename').text))
             self.header(header_text, style=self.ParaStyle, sep=0)
             self.p(str(s.find('./description').text))
+
+
+        # TRACKS
         self.header("Tracks", style=self.HeaderStyle2)
+        d = Drawing(450,1)
+        d.add(Line(0,5,450,5))
+        self.Elements.append(d)
         for t in self.tracks:
             self.header(t.attrib['label'], style=self.HeaderStyle3, sep=0)
             self.p(str(t.find('./description').text))
+            self.p('\n')
+            w,h = 0,0
+            label = ""
+            LIST_STYLE = TableStyle()
+            for m in t.find('./modules'):
+                # getting w and h
+                if int(m.attrib['x_seq']) > w: w = int(m.attrib['x_seq'])
+                if int(m.attrib['y_seq']) > h: h = int(m.attrib['y_seq'])
+            track_table_data = [["" for i in range(w)] for i in range(h)]
+            for m in t.find('./modules'):
+                x,y = int(m.attrib['x_seq'])-1, int(m.attrib['y_seq'])-1
+                label = str(m.find("./name").text)
+                track_table_data[y][x] = label
+                LIST_STYLE.add('BOX',(x,y),(x,y),1,colors.red)
+            t = Table(track_table_data, style=LIST_STYLE)
+            self.Elements.append(t)
+
+        # CUES
         self.header("Cues", style=self.HeaderStyle2)
+        d = Drawing(450,1)
+        d.add(Line(0,5,450,5))
+        self.Elements.append(d)
         for c in self.cues:
             self.header(c.attrib['label'], style=self.HeaderStyle3, sep=0)
             self.p(str(c.find('./description').text))

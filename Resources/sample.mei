@@ -88,7 +88,7 @@ be used to indicate the degree of editorial confidence in a particular correctio
                       </channel>
                     </channels>
                   </module>
-                  <module ref="#track2_module2">
+                  <module ref="#track1_module2">
                     <parameters>
                       <size>0.1</size>
                       <damp>0.3</damp>
@@ -276,87 +276,46 @@ be used to indicate the degree of editorial confidence in a particular correctio
               <track xml:id="track_1" n="1" label="Track 1">
                 <description>This track will rock your speakers.</description>
                 <modules>
-                  <module xml:id="track1_module1" n="1">
+                  <module xml:id="track1_module1" x_seq="1" y_seq="1">
                     <category>Others</category>
                     <type>input</type>
-                    <name>audioin</name>
-                    <channels>
-                      <channel n="1">
-                        <gain/>
-                      </channel>
-                      <channel n="2">
-                        <gain/>
-                      </channel>
-                    </channels>
+                    <name>AudioIn</name>
                   </module>
-                  <module xml:id="track1_module2" n="2">
+                  <module xml:id="track1_module2" x_seq="2" y_seq="1">
                     <category>Delay effects</category>
                     <type>effect</type>
                     <name>Delay</name>
-                    <parameters>
-                      <deltime/>
-                      <feed/>
-                      <gain/>
-                      <drywet/>
-                    </parameters>
                   </module>
-                  <module xml:id="track1_module3" n="3">
+                  <module xml:id="track1_module3" x_seq="3" y_seq="1">
                     <category>Others</category>
                     <type>output</type>
-                    <channels>
-                      <channel n="1">
-                        <gain/>
-                      </channel>
-                      <channel n="2">
-                        <gain/>
-                      </channel>
-                    </channels>
+                  <name>AudioOut</name>
                   </module>
                 </modules>
               </track>
               <track xml:id="track_2" n="2" label="Track 2">
                 <description>This track will also rock your speakers.</description>
                 <modules>
-                  <module xml:id="track2_module1" n="1">
+                  <module xml:id="track2_module1" x_seq="1" y_seq="1">
                     <category>Others</category>
                     <type>input</type>
-                    <name>soundfile</name>
+                    <name>Soundfile</name>
                     <soundfile ref="#soundfile_1"/>
-                    <gain/>
                   </module>
-                  <module xml:id="track2_module2" n="2">
+                  <module xml:id="track2_module2" x_seq="2" y_seq="1">
                     <category>Reverb effects</category>
                     <type>effect</type>
                     <name>Freeverb</name>
-                    <parameters>
-                      <size/>
-                      <damp/>
-                      <gain/>
-                      <drywet/>
-                    </parameters>
                   </module>
-                  <module xml:id="track1_module3" n="2">
+                  <module xml:id="track2_module3" x_seq="2" y_seq="2">
                     <category>Filter effects</category>
                     <type>effect</type>
                     <name>Lowpass</name>
-                    <parameters>
-                      <freq/>
-                      <q/>
-                      <gain/>
-                      <drywet/>
-                    </parameters>
                   </module>
-                  <module xml:id="track1_module4" n="3">
+                  <module xml:id="track2_module4" x_seq="3" y_seq="1">
                     <category>Others</category>
                     <type>output</type>
-                    <channels>
-                      <channel n="1">
-                        <gain/>
-                      </channel>
-                      <channel n="2">
-                        <gain/>
-                      </channel>
-                    </channels>
+                    <name>AudioOut</name>
                   </module>
                 </modules>
               </track>
