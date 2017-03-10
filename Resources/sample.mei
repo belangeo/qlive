@@ -266,11 +266,36 @@ be used to indicate the degree of editorial confidence in a particular correctio
               </cue>
             </cues>
             <soundfiles>
-              <soundfile xml:id="soundfile_1" n="1" label="Soundfile 1">
-                <format>aif</format>
-                <filename>snd_1.aif</filename>
-                <description>A short description for this soundfile</description>
+              <soundfile xml:id="soundfile_1" n="1" label="Coffee maker">
+                <filename>383437__chrisreierson__coffee-maker-noise.wavsnd_1.aif</filename>
+                <type>wav</type>
+                <duration>00:02:176</duration>
+                <filesize>562.5 KB</filesize>
+                <samplerate>44100 hz</samplerate>
+                <bitdepth>16 bit</bitdepth>                                
+                <channels>stereo</channels>
+                <description>Buzzing sound emitted from a coffee maker. Recorded 02/17/2017.</description>
               </soundfile>
+              <soundfile xml:id="soundfile_2" n="2" label="Moscow">
+                <filename>383415__softwalls__moscow-center-court-2015-04-06-xy.wav</filename>
+                <type>wav</type>
+                <duration>05:06:199</duration>
+                <filesize>56.1 MB</filesize>
+                <samplerate>48000 hz</samplerate>
+                <bitdepth>24 bit</bitdepth>                
+                <channels>stereo</channels>
+                <description>Ambience of Moscow court in a historical center. Quiet close space.</description>
+              </soundfile>
+              <soundfile xml:id="soundfile_3" n="3" label="Metalic">
+                <filename>383116__stiffman__tools-metal-metalic-rummage-looking-search-toolbox-2.wav</filename>
+                <type>wav</type>
+                <duration>00:06:359</duration>
+                <filesize>1.8 MB</filesize>
+                <bitdepth>24 bit</bitdepth>
+                <samplerate>96000 hz</samplerate>
+                <channels>mono</channels>
+                <description>Rummaging through toolbox to find something.</description>
+              </soundfile>              
             </soundfiles>
             <tracks>
               <track xml:id="track_1" n="1" label="Track 1">
@@ -313,6 +338,26 @@ be used to indicate the degree of editorial confidence in a particular correctio
                     <name>Lowpass</name>
                   </module>
                   <module xml:id="track2_module4" x_seq="3" y_seq="1">
+                    <category>Reverb effect</category>
+                    <type>effect</type>
+                    <name>Freeverb</name>
+                  </module>
+                  <module xml:id="track2_module5" x_seq="3" y_seq="2">
+                    <category>Reverb effect</category>
+                    <type>effect</type>
+                    <name>Stereoverb</name>
+                  </module>
+                  <module xml:id="track2_module6" x_seq="3" y_seq="3">
+                    <category>Filter effects</category>
+                    <type>effect</type>
+                    <name>Highpass</name>
+                  </module>
+                  <module xml:id="track2_module7" x_seq="4" y_seq="1">
+                    <category>Delay effects</category>
+                    <type>effect</type>
+                    <name>Delay</name>
+                  </module>
+                  <module xml:id="track2_module7" x_seq="5" y_seq="1">
                     <category>Others</category>
                     <type>output</type>
                     <name>AudioOut</name>

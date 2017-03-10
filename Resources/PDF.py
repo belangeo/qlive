@@ -56,6 +56,7 @@ class PDF:
         self.HeaderStyle = self.styles["Heading1"]
         self.HeaderStyle2 = self.styles["Heading2"]
         self.HeaderStyle3 = self.styles["Heading3"]
+        self.HeaderStyle4 = self.styles["Heading4"]
         self.ParaStyle = self.styles["Normal"]
 
     def myFirstPage(self, canvas, doc):
@@ -109,21 +110,42 @@ class PDF:
         # Others pages
 
         # SOUNDFILES
-        self.header("Soundfiles", style=self.HeaderStyle2)
+        self.header("SOUNDFILES", style=self.HeaderStyle2)
         d = Drawing(450,1)
         d.add(Line(0,5,450,5))
         self.Elements.append(d)
+        self.p("Here is a list of sound files used in this work:")
+        self.p("\n")
+        self.p("\n")
+        soundfiles_line_data = []
+        LIST_STYLE = TableStyle()
+        styles = getSampleStyleSheet()
+        soundfiles_table_data = [["Descriptive name", "Filename", "Description"]]
         for s in self.soundfiles:
-            header_text = '%s (%s)' % (s.attrib['label'], str(s.find('./filename').text))
-            self.header(header_text, style=self.ParaStyle, sep=0)
-            self.p(str(s.find('./description').text))
+            label = Paragraph('<para fontSize=9 fontName="Courier">' + s.attrib['label'] + '</para>', styles['Normal'])
+            filename = Paragraph('<para fontSize=9 fontName="Courier">' + str(s.find('./filename').text) + '</para>', styles['Normal'])
+            desc = Paragraph('<para fontSize=9 fontName="Courier">' + str(s.find('./description').text) + '</para>', styles['Normal'])
 
+            soundfiles_line_data.append(label)
+            soundfiles_line_data.append(filename)
+            soundfiles_line_data.append(desc)
+            soundfiles_table_data.append(soundfiles_line_data)
+            soundfiles_line_data = []
+            LIST_STYLE.add('INNERGRID', (0,0), (-1,-1), 0.25, colors.black)
+            LIST_STYLE.add('GRID', (0,0), (-1,-1), 0.25, colors.black)
+
+        t = Table(soundfiles_table_data, colWidths=140,style=LIST_STYLE)
+        self.Elements.append(t)
 
         # TRACKS
-        self.header("Tracks", style=self.HeaderStyle2)
+        self.header("TRACKS", style=self.HeaderStyle2)
         d = Drawing(450,1)
         d.add(Line(0,5,450,5))
         self.Elements.append(d)
+        self.p("These are the tracks used in this work. Each track has a sequence of modules, "
+               "which should be read from left to right. They can be connected in series or in parallel, "
+               "here visually represented by their vertical and horizontal arrangements.")
+
         for t in self.tracks:
             self.header(t.attrib['label'], style=self.HeaderStyle3, sep=0)
             self.p(str(t.find('./description').text))
@@ -145,7 +167,7 @@ class PDF:
             self.Elements.append(t)
 
         # CUES
-        self.header("Cues", style=self.HeaderStyle2)
+        self.header("CUES", style=self.HeaderStyle2)
         d = Drawing(450,1)
         d.add(Line(0,5,450,5))
         self.Elements.append(d)
