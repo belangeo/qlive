@@ -19,6 +19,10 @@ TODO
 - Edit mode versus playing mode **done**
 - Live update of changes on a track. **done**
 - SaveAs should copy the entire project, not just create a new .qlp file. **done**
+- BusIn - BusOut
+- Insert cue after selection
+- colour Chooser on cue
+- saveas snapshot (only a .qlp file in the same project folder)
 
 - Documentation/archive prototype
 - META data framework

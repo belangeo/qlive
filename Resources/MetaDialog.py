@@ -24,6 +24,8 @@ import QLiveLib
 from constants import *
 import pprint
 
+# FIXME: Gtk-WARNING **: gtk_widget_size_allocate(): attempt to allocate widget with width -5 and height 15 (on opening)
+
 # Based on section "2.1 File Description" from MEI Guidelines 3.0.0
 class FileDescriptionTab(wx.Panel):
     def __init__(self, parent):

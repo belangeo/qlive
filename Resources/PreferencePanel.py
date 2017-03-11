@@ -23,6 +23,8 @@ import wx
 import QLiveLib
 from constants import *
 
+# FIXME: Gtk-WARNING **: gtk_widget_size_allocate(): attempt to allocate widget with width -5 and height 15 (on opening)
+
 class GeneralPrefsTab(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
