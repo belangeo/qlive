@@ -22,7 +22,7 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 import wx, time, os, pprint, copy, codecs, shutil, psutil
 from constants import *
 import QLiveLib
-import Meta
+#import Meta
 from MEI import MEI
 from AudioServer import AudioServer, MidiServer
 from AudioMixer import AudioMixer
@@ -362,9 +362,9 @@ class MainWindow(wx.Frame):
 
     def setTitle(self, filename=""):
         if QLiveLib.getVar("locked"):
-            state = "Play Mode"
+            state = "PLAY MODE"
         else:
-            state = "Edit Mode"
+            state = "EDIT MODE"
         self.SetTitle("QLive Session - " + filename + " - " + state)
 
     def askForSaving(self):
