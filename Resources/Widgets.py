@@ -316,8 +316,8 @@ class QLiveControlKnob(wx.Panel):
         gc.SetPen(wx.Pen("#777777", width=self.borderWidth, style=wx.SOLID))
         gc.DrawRoundedRectangle(0, 0, w-1, h-1, 3)
 
-        dc.SetFont(wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
-                           wx.FONTWEIGHT_NORMAL, face=FONT_FACE))
+        dc.SetFont(wx.Font(9, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL,
+                           wx.FONTWEIGHT_NORMAL))
         dc.SetTextForeground(CONTROLSLIDER_TEXT_COLOUR)
 
         # Draw text label
@@ -336,9 +336,8 @@ class QLiveControlKnob(wx.Panel):
         gc.DrawEllipse(25-R, 35-R, R*2, R*2)
         gc.StrokeLine(25, 35, X+25, Y+35)
 
-        dc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT,
-                           wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL,
-                           face=FONT_FACE))
+        dc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_SWISS,
+                           wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
 
         # Highlight text for keyboard input
         if self.selected:
@@ -359,9 +358,8 @@ class QLiveControlKnob(wx.Panel):
 
         # Midi ctl and automation window handle
         if self.drawBottomPart:
-            dc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_DEFAULT,
-                               wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL,
-                               face=FONT_FACE))
+            dc.SetFont(wx.Font(CONTROLSLIDER_FONT, wx.FONTFAMILY_SWISS,
+                               wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
             if self.midictl is not None:
                 dc.DrawLabel("M : %d" % self.midictl, wx.Rect(5, 72, 41, 11),
                              wx.ALIGN_CENTER_VERTICAL)
@@ -402,10 +400,12 @@ class NumericCtrl(wx.TextCtrl):
         self.Bind(wx.EVT_SET_FOCUS, self.onfocus)
 
     def onfocus(self, evt):
+        self.previous = self.GetValue()
         QLiveLib.setVar("CanProcessCueKeys", False)
 
     def doubleClick(self, evt):
         self.SelectAll()
+        self.previous = self.GetValue()
         QLiveLib.setVar("CanProcessCueKeys", False)
 
     def filter(self, evt):
@@ -685,11 +685,11 @@ class MeterControlSlider(wx.Panel):
         self.Bind(wx.EVT_KILL_FOCUS, self.LooseFocus)
 
         if sys.platform in ['win32', 'linux2']:
-            self.font = wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
-                                wx.FONTWEIGHT_BOLD, face="Monospace")
+            self.font = wx.Font(6, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL,
+                                wx.FONTWEIGHT_BOLD)
         else:
-            self.font = wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
-                                wx.FONTWEIGHT_NORMAL, face="Monospace")
+            self.font = wx.Font(9, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL,
+                                wx.FONTWEIGHT_NORMAL)
 
     def createKnobBitmap(self):
         b = wx.EmptyBitmap(10, self.knobSize)

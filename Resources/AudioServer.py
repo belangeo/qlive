@@ -20,10 +20,14 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 import time
+import operator
 from pyo64 import *
 from constants import *
 from fxbox_def import *
 import QLiveLib
+
+def prod(factors):
+    return reduce(operator.mul, factors, 1)
 
 class Automator:
     def __init__(self, init=0, inter=None):
@@ -48,6 +52,24 @@ class Automator:
         self.envFol = Follower(self.envInput, freq=self.envCutoff)
         self.env = Scale(self.envFol, 0, 1, self.envMin, self.envMax)
         self.envStop()
+        # BPF signal chain
+        self.bpfActive = 0
+        self.bpfMode = 0
+        self.bpfLastMode = -1
+        self.bpfForward = [(0, 0.0), (512, 0.998)]
+        self.bpfBackward = [(0, 1.0), (512, 0.0)]
+        self.bpfBackForth = [(0, 0.0), (255,1.0), (512, 0.0)]
+        self.bpfPointerTable = LinTable(self.bpfForward, size=512)
+        self.bpfTable = LinTable([(0, 0.0), (512, 1.0)], size=512)
+        self.bpfDur = SigTo(1, time=interpTime, init=1)
+        self.bpfMin = SigTo(0, time=interpTime, init=0)
+        self.bpfMax = SigTo(1, time=interpTime, init=1)
+
+        self.bpfPhasor = TableRead(self.bpfPointerTable, freq=1.0 / self.bpfDur, loop=False)
+        self.bpfPhasor.setKeepLast(True)
+        self.bpfLooper = Pointer(self.bpfTable, self.bpfPhasor)
+        self.bpf = Scale(self.bpfLooper, 0, 1, self.bpfMin, self.bpfMax)
+        self.bpfStop()
 
         self.auto = Sig(0)
         self.output = Interp(self.param, self.auto, 0)
@@ -60,6 +82,13 @@ class Automator:
             self.param.time = time
         if value is not None:
             self.param.value = value
+
+    def checkActive(self):
+        if self.envActive or self.bpfActive:
+            self.output.interp = 1
+        else:
+            self.output.interp = 0
+        self.handleMixMethod()
 
     def envPlay(self):
         self.envThreshold.play()
@@ -82,12 +111,11 @@ class Automator:
     def setEnvAttributes(self, dict):
         active = dict[ID_ENV_ACTIVE]
         if active and not self.envActive:
-            self.output.interp = 1
             self.envPlay()
         elif not active and self.envActive:
-            self.output.interp = 0
             self.envStop()
         self.envActive = active
+        self.checkActive()
         if self.envInputs != dict[ID_ENV_INPUTS]:
             self.envInputs = dict[ID_ENV_INPUTS]
             new = Mix([self.mixer.getInputChannel(i).getOutput() \
@@ -102,6 +130,56 @@ class Automator:
         self.envMax.time = dict[ID_ENV_MAX_INTERP]
         self.envMax.value = dict[ID_ENV_MAX]
 
+    def bpfPlay(self):
+        self.bpfDur.play()
+        self.bpfMin.play()
+        self.bpfMax.play()
+        #self.bpfPhasor.play()
+        self.bpfLooper.play()
+        self.bpf.play()
+
+    def bpfStop(self):
+        self.bpfDur.stop()
+        self.bpfMin.stop()
+        self.bpfMax.stop()
+        self.bpfPhasor.stop()
+        self.bpfLooper.stop()
+        self.bpf.stop()
+
+    def bpfHandlePlaybackMode(self, mode):
+        if mode == self.bpfLastMode:
+            return
+        if mode < 2:
+            self.bpfPointerTable.replace(self.bpfForward)
+        elif mode == 2:
+            self.bpfPointerTable.replace(self.bpfBackward)
+        elif mode == 3:
+            self.bpfPointerTable.replace(self.bpfBackForth)
+        if mode == 0:
+            self.bpfPhasor.setLoop(False)
+        else:
+            self.bpfPhasor.setLoop(True)
+
+        self.bpfPhasor.play()
+        self.bpfLastMode = mode
+
+    def setBpfAttributes(self, dict):
+        active = dict[ID_BPF_ACTIVE]
+        if active and not self.bpfActive:
+            self.bpfPlay()
+        elif not active and self.bpfActive:
+            self.bpfStop()
+        self.bpfActive = active
+        self.checkActive()
+        self.bpfDur.time = dict[ID_BPF_DUR_INTERP]
+        self.bpfDur.value = dict[ID_BPF_DUR]
+        self.bpfMin.time = dict[ID_BPF_MIN_INTERP]
+        self.bpfMin.value = dict[ID_BPF_MIN]
+        self.bpfMax.time = dict[ID_BPF_MAX_INTERP]
+        self.bpfMax.value = dict[ID_BPF_MAX]
+        self.bpfTable.replace(dict[ID_BPF_FUNCTION])
+        self.bpfHandlePlaybackMode(dict[ID_BPF_MODE])
+
     def setAttributes(self, dict):
         if dict is not None:
             mixmethod = dict.get("mixmethod", 0)
@@ -111,16 +189,27 @@ class Automator:
             envDict = dict.get("env", None)
             if envDict is not None:
                 self.setEnvAttributes(envDict)
+            bpfDict = dict.get("bpf", None)
+            if bpfDict is not None:
+                self.setBpfAttributes(bpfDict)
 
     def handleMixMethod(self):
+        actives = []
+        if self.mixmethod < 2:
+            actives.append(self.param)
+        if self.envActive:
+            actives.append(self.env)
+        if self.bpfActive:
+            actives.append(self.bpf)
+
         if self.mixmethod == 0:
-            self.auto.value = self.param + self.env
+            self.auto.value = sum(actives)
         elif self.mixmethod == 1:
-            self.auto.value = self.param * self.env
+            self.auto.value = prod(actives)
         elif self.mixmethod == 2:
-            self.auto.value = self.env
+            self.auto.value = sum(actives)
         elif self.mixmethod == 3:
-            self.auto.value = self.env
+            self.auto.value = prod(actives)
 
 class SoundFilePlayer:
     def __init__(self, id, filename):

@@ -23,6 +23,7 @@ import wx
 from constants import *
 import QLiveLib
 from Widgets import *
+from pyo64 import PyoGuiGrapher
 
 class AutomationWindow(wx.Frame):
     def __init__(self, parent, title, object=None, closeCallback=None,
@@ -108,9 +109,16 @@ class AutomationPanel(wx.Panel):
         self.envMin, self.envMinInterp = 0.0, interpTime
         self.envMax, self.envMaxInterp = 1.0, interpTime
 
+        # breakpoint-function attributes
+        self.bpfActive = 0
+        self.bpfMode = 0
+        self.bpfDur, self.bpfDurInterp = 1.0, interpTime
+        self.bpfMin, self.bpfMinInterp = 0.0, interpTime
+        self.bpfMax, self.bpfMaxInterp = 1.0, interpTime
+        self.bpfFunction = [(0, 0.0), (512, 1.0)]
 
         title = wx.StaticText(self, label="Automation Controls")
-        title.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
+        title.SetFont(wx.Font(12, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL,
                               wx.FONTWEIGHT_BOLD))
 
         methodChoices = ["Added to the main value",
@@ -130,32 +138,33 @@ class AutomationPanel(wx.Panel):
         # Collapsible Panes - TODO: remove those we won't use in the prototype?
         id = AUTOMATION_PANEL_FIRST_ID
         self.bpfCp = wx.CollapsiblePane(self, id, label="BPF", style=cpstyle)
-        self.lfoCp = wx.CollapsiblePane(self, id+1, label="LFO", style=cpstyle)
-        self.randCp = wx.CollapsiblePane(self, id+2, label="Random",
-                                         style=cpstyle)
-        self.envCp = wx.CollapsiblePane(self, id+3, label="Envelope Follower",
+        self.MakeBpfPaneContent(self.bpfCp.GetPane())
+        self.envCp = wx.CollapsiblePane(self, id+1, label="Envelope Follower",
                                         style=cpstyle)
         self.MakeEnvPaneContent(self.envCp.GetPane())
-        self.pitCp = wx.CollapsiblePane(self, id+4, label="Pitch Follower",
-                                        style=cpstyle)
-        self.zeroCp = wx.CollapsiblePane(self, id+5, label="Zero-Crossing",
-                                         style=cpstyle)
-        self.centCp = wx.CollapsiblePane(self, id+6, label="Centroid",
-                                         style=cpstyle)
+#        self.lfoCp = wx.CollapsiblePane(self, id+2, label="LFO", style=cpstyle)
+#        self.randCp = wx.CollapsiblePane(self, id+3, label="Random",
+#                                         style=cpstyle)
+#        self.pitCp = wx.CollapsiblePane(self, id+4, label="Pitch Follower",
+#                                        style=cpstyle)
+#        self.zeroCp = wx.CollapsiblePane(self, id+5, label="Zero-Crossing",
+#                                         style=cpstyle)
+#        self.centCp = wx.CollapsiblePane(self, id+6, label="Centroid",
+#                                         style=cpstyle)
 
         self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.OnPaneChanged,
-                  id=id, id2=id+6)
+                  id=id, id2=id+1)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(title, 0, wx.ALL|wx.CENTER, 5)
         sizer.Add(headSizer, 0, wx.ALL|wx.EXPAND, 5)
         sizer.Add(self.bpfCp, 0, wx.ALL|wx.EXPAND, 5)
-        sizer.Add(self.lfoCp, 0, wx.ALL|wx.EXPAND, 5)
-        sizer.Add(self.randCp, 0, wx.ALL|wx.EXPAND, 5)
         sizer.Add(self.envCp, 0, wx.ALL|wx.EXPAND, 5)
-        sizer.Add(self.pitCp, 0, wx.ALL|wx.EXPAND, 5)
-        sizer.Add(self.zeroCp, 0, wx.ALL|wx.EXPAND, 5)
-        sizer.Add(self.centCp, 0, wx.ALL|wx.EXPAND, 5)
+        #sizer.Add(self.lfoCp, 0, wx.ALL|wx.EXPAND, 5)
+        #sizer.Add(self.randCp, 0, wx.ALL|wx.EXPAND, 5)
+        #sizer.Add(self.pitCp, 0, wx.ALL|wx.EXPAND, 5)
+        #sizer.Add(self.zeroCp, 0, wx.ALL|wx.EXPAND, 5)
+        #sizer.Add(self.centCp, 0, wx.ALL|wx.EXPAND, 5)
         self.SetSizer(sizer)
 
     def changeMixingMethod(self, evt):
@@ -308,16 +317,132 @@ class AutomationPanel(wx.Panel):
         self.envWidgets[2].setValues(self.envMin, self.envMinInterp)
         self.envWidgets[3].setValues(self.envMax, self.envMaxInterp)
 
+    def MakeBpfPaneContent(self, panel):
+        interpTime = QLiveLib.getVar("globalInterpTime")
+        mainbox = wx.StaticBox(panel, -1, "")
+        sizer = wx.StaticBoxSizer(mainbox, wx.VERTICAL)
+        sizer.AddSpacer(5)
+
+        headSizer = wx.BoxSizer(wx.HORIZONTAL)
+        headSizer.AddStretchSpacer(1)
+        self.bpfActiveCheck = wx.CheckBox(panel, -1, "Active:",
+                                          style=wx.ALIGN_RIGHT)
+        self.bpfActiveCheck.Bind(wx.EVT_CHECKBOX, self.bpfOnActivate)
+        headSizer.Add(self.bpfActiveCheck, 0, wx.ALIGN_CENTER_HORIZONTAL)
+
+        self.bpfGrapher = PyoGuiGrapher(panel, 512, size=(200, 150))
+        self.bpfGrapher.Bind(EVT_PYO_GUI_GRAPHER, self.bpfOnGrapher)
+
+        modeSizer = wx.BoxSizer(wx.HORIZONTAL)
+        modeText = wx.StaticText(panel, label="Playback Mode: ")
+        self.bpfPlayMode = wx.Choice(panel, choices=["No Loop", "Forward",
+                                                     "Backward", "Back&Forth"])
+        self.bpfPlayMode.SetSelection(0)
+        self.bpfPlayMode.Bind(wx.EVT_CHOICE, self.bpfOnPlayMode)
+        modeSizer.Add(modeText, 0, wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 5)
+        modeSizer.Add(self.bpfPlayMode, 0)
+
+        sampleList = ["Parameter Values", "Interpolation Times"]
+        interpButton = wx.RadioBox(panel, -1, "",
+                                   wx.DefaultPosition,
+                                   wx.DefaultSize, sampleList, 2,
+                                   wx.RA_SPECIFY_COLS | wx.NO_BORDER)
+        interpButton.Bind(wx.EVT_RADIOBOX, self.bpfChangeParamMode)
+
+        params = [["Dur (sec)", 1.0, interpTime, self.bpfOnDur],
+                  ["Range Min", 0, interpTime, self.bpfOnMin],
+                  ["Range Max", 1, interpTime, self.bpfOnMax]]
+        self.bpfWidgets = []
+        knobSizer = wx.BoxSizer(wx.HORIZONTAL)
+        for param in params:
+            numbox = wx.BoxSizer(wx.VERTICAL)
+            label = wx.StaticText(panel, -1, label=param[0])
+            ctrl = NumericCtrl(panel, value=param[1], interp=param[2],
+                               size=(80, -1), callback=param[3])
+            self.bpfWidgets.append(ctrl)
+            numbox.Add(label, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 2)
+            numbox.Add(ctrl, 0, wx.LEFT|wx.RIGHT|wx.EXPAND, 2)
+            knobSizer.Add(numbox, 1, wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, 5)
+
+        sizer.Add(headSizer, 0, wx.EXPAND)
+        sizer.Add(self.bpfGrapher, 0, wx.EXPAND)
+        sizer.Add(modeSizer, 0, wx.LEFT, 5)
+        sizer.Add(interpButton, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
+        sizer.Add(knobSizer, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
+        panel.SetSizer(sizer)
+
+    def bpfOnActivate(self, evt):
+        self.bpfActive = evt.GetInt()
+        self.callback()
+
+    def bpfOnGrapher(self, evt):
+        self.bpfFunction = evt.value
+        self.callback()
+
+    def bpfOnPlayMode(self, evt):
+        self.bpfMode = evt.GetInt()
+        self.callback()
+
+    def bpfOnDur(self, value, interp):
+        self.bpfDur, self.bpfDurInterp = value, interp
+        self.callback()
+
+    def bpfOnMin(self, value, interp):
+        self.bpfMin, self.bpfMinInterp = value, interp
+        self.callback()
+
+    def bpfOnMax(self, value, interp):
+        self.bpfMax, self.bpfMaxInterp = value, interp
+        self.callback()
+
+    def bpfChangeParamMode(self, evt):
+        for widget in self.bpfWidgets:
+            widget.changeMode(evt.GetInt())
+
+    def getBpfAttributes(self):
+        return {
+                ID_BPF_ACTIVE: self.bpfActive,
+                ID_BPF_DUR: self.bpfDur,
+                ID_BPF_DUR_INTERP: self.bpfDurInterp,
+                ID_BPF_MIN: self.bpfMin,
+                ID_BPF_MIN_INTERP: self.bpfMinInterp,
+                ID_BPF_MAX: self.bpfMax,
+                ID_BPF_MAX_INTERP: self.bpfMaxInterp,
+                ID_BPF_FUNCTION: self.bpfFunction,
+                ID_BPF_MODE: self.bpfMode
+                }
+
+    def setBpfAttributes(self, dict):
+        self.bpfActive = dict[ID_BPF_ACTIVE]
+        self.bpfDur = dict[ID_BPF_DUR]
+        self.bpfDurInterp = dict[ID_BPF_DUR_INTERP]
+        self.bpfMin = dict[ID_BPF_MIN]
+        self.bpfMinInterp = dict[ID_BPF_MIN_INTERP]
+        self.bpfMax = dict[ID_BPF_MAX]
+        self.bpfMaxInterp = dict[ID_BPF_MAX_INTERP]
+        self.bpfFunction = dict[ID_BPF_FUNCTION]
+        self.bpfMode = dict[ID_BPF_MODE]
+        # Update graphical widgets
+        self.bpfActiveCheck.SetValue(self.bpfActive)
+        self.bpfWidgets[0].setValues(self.bpfDur, self.bpfDurInterp)
+        self.bpfWidgets[1].setValues(self.bpfMin, self.bpfMinInterp)
+        self.bpfWidgets[2].setValues(self.bpfMax, self.bpfMaxInterp)
+        self.bpfGrapher.setValues(self.bpfFunction)
+        self.bpfPlayMode.SetSelection(self.bpfMode)
+
+    # Global setter and getter
     def getAttributes(self):
         dict = {}
         dict['mixmethod'] = self.mixingMethod
         dict['env'] = self.getEnvAttributes()
+        dict['bpf'] = self.getBpfAttributes()
         return dict
 
     def setAttributes(self, dict):
         self.mixingMethod = dict.get('mixmethod', 0)
         self.method.SetSelection(self.mixingMethod)
-        maps = {'env': self.setEnvAttributes}
+        maps = {'env': self.setEnvAttributes,
+                'bpf': self.setBpfAttributes}
         for key in dict.keys():
             if key in maps:
                 maps[key](dict[key])

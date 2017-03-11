@@ -25,7 +25,7 @@ from Widgets import MeterControlSlider
 from AudioMixer import *
 from constants import *
 import QLiveLib
-from pyo import rescale
+from pyo64 import rescale
 
 class QLiveControlSlider(MeterControlSlider):
     def __init__(self, parent, minvalue, maxvalue, init=None, pos=(0,0),

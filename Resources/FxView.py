@@ -123,6 +123,7 @@ class SliderWidget(wx.Panel):
         self.setShowEdit(0)
 
     def outputAutomationValues(self, dict):
+        self.automationDict = dict
         self.fxbox.setAutomationValues(self.name, dict)
 
     def getAutomationValues(self):

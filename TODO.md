@@ -9,7 +9,7 @@ TODO
 - Spatialisation (partially done with the Pan object) Need more work.
 - Improving effect modules (add spectral category)
 - Do we offer synthesis algorithms as input boxes?
-- BPF - playback mode, window size
+- BPF - playback mode, window size **done**
 - Automators on fx parameters. **done**
 - AudioIn, one gain per input **done** (do we do the same for AudioOut?) **done**
 - On tracks canvas: Double-click to open the FxView. **done** 

@@ -76,8 +76,8 @@ class FxTracks(wx.ScrolledWindow):
         self.drawAndRefresh()
 
     def setFont(self, ptsize=10):
-        self.font = wx.Font(ptsize, wx.FONTFAMILY_DEFAULT, wx.NORMAL,
-                            wx.FONTWEIGHT_NORMAL, face="Monospace")
+        self.font = wx.Font(ptsize, wx.FONTFAMILY_SWISS, wx.NORMAL,
+                            wx.FONTWEIGHT_NORMAL)
 
     def createButtonBitmap(self, enable=True):
         w, h = BUTTON_WIDTH, BUTTON_HEIGHT

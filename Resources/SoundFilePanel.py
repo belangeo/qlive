@@ -21,7 +21,7 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 """
 import wx, os, shutil, weakref, copy
 import wx.grid as gridlib
-from pyo import sndinfo
+from pyo64 import sndinfo
 from constants import *
 import QLiveLib
 from AutomationWindow import AutomationWindow
@@ -92,7 +92,7 @@ class SoundFileObject:
         title = "Gain Automations on Soundfile %d" % (self.id+1)
         self.gainAutoWindow = AutomationWindow(parent, title, self,
                                                self.closeGainWindow,
-                                               self.setGainTranspo)
+                                               self.setAutoGain)
         if self.gainDict is not None:
             self.gainAutoWindow.setAttributes(self.gainDict)
 
@@ -375,9 +375,11 @@ class SoundFileObject:
         return self.channel
 
     def setAutoTranspo(self, dict):
+        self.transpoDict = dict
         self.setPlayerAttribute(ID_TRANSPO_AUTO, dict)
 
-    def setGainTranspo(self, dict):
+    def setAutoGain(self, dict):
+        self.gainDict = dict
         self.setPlayerAttribute(ID_GAIN_AUTO, dict)
 
 class GridFileDropTarget(wx.FileDropTarget):
@@ -422,8 +424,8 @@ class SoundFileGrid(gridlib.Grid):
         self.SetCellHighlightROPenWidth(0)
         self.SetSelectionBackground("#FFFFFF")
         self.SetSelectionForeground("#000000")
-        self.font = wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
-                            wx.FONTWEIGHT_NORMAL, face="Monospace")
+        self.font = wx.Font(8, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL,
+                            wx.FONTWEIGHT_NORMAL)
         self.SetRowLabelSize(50)
 
         dropTarget = GridFileDropTarget(self)

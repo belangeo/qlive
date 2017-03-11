@@ -21,9 +21,9 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 """
 import os
 import codecs
-from pyo import pa_get_input_devices, pa_get_default_input
-from pyo import pa_get_output_devices, pa_get_default_output
-from pyo import pm_get_input_devices, pm_get_default_input
+from pyo64 import pa_get_input_devices, pa_get_default_input
+from pyo64 import pa_get_output_devices, pa_get_default_output
+from pyo64 import pm_get_input_devices, pm_get_default_input
 from constants import *
 from collections import defaultdict
 import variables as vars

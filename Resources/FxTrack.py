@@ -56,8 +56,8 @@ class FxTrack:
     def setFont(self, ptsize=8):
         if PLATFORM == "darwin":
             ptsize += 3
-        self.font = wx.Font(ptsize, wx.FONTFAMILY_DEFAULT, wx.NORMAL,
-                            wx.FONTWEIGHT_NORMAL, face="Monospace")
+        self.font = wx.Font(ptsize, wx.FONTFAMILY_SWISS, wx.NORMAL,
+                            wx.FONTWEIGHT_NORMAL)
 
     def checkTrackSize(self):
         xid = yid = 0
