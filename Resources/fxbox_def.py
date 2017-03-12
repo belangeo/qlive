@@ -79,16 +79,33 @@ FX_DICT = {
         "DCBlock": {"ctrls": [GAIN_DEF]},
     },
 
-    "Reverb effects": { # WGVerb, Waveguide, AllpassWG, ComplexRes
+    "Reverb effects": {
         "Freeverb": {"ctrls": [["size", 0.5, 0, 1, "", False],
                                ["damp", 0.5, 0, 1, "", False],
                                GAIN_DEF,
                                DRYWET_DEF]},
+        "WGverb": {"ctrls": [["feed", 0.5, 0, 1, "", False],
+                             ["cutoff", 5000, 20, 15000, "Hz", True],
+                             GAIN_DEF,
+                             DRYWET_DEF]},
         "StereoVerb": {"ctrls": [["pan", 0.5, 0, 1, "", False],
                                  ["revtime", 1.5, 0.1, 30, "Sec", True],
                                  ["cutoff", 5000, 100, 15000, "Hz", True],
                                  GAIN_DEF,
-                                 DRYWET_DEF]}
+                                 DRYWET_DEF]},
+        "Resonator": {"ctrls": [["freq", 100, 20, 1000, "Hz", True],
+                                ["dur", 20, 0.1, 60, "Sec", True],
+                                GAIN_DEF,
+                                DRYWET_DEF]},
+        "ConReson": {"ctrls": [["freq", 100, 20, 1000, "Hz", True],
+                               ["feed", 0.75, 0, 1, "", False],
+                               ["detune", 0.5, 0, 1, "", False],
+                               GAIN_DEF,
+                               DRYWET_DEF]},
+        "ComplexRes": {"ctrls": [["freq", 100, 20, 10000, "Hz", True],
+                                 ["decay", 0.5, 0.001, 5, "Sec", True],
+                                 GAIN_DEF,
+                                 DRYWET_DEF]},
     },
 
     "Delay effects": { # SmoothDelay, Flanger, Phaser
@@ -148,7 +165,8 @@ FX_DICT = {
 # Not using dicts to make dynamic submenu generation easier.
 # Use the names as in FX_DICT.
 FX_LIST = [ ["Delay effects", "Delay"],
-            ["Reverb effects", "Freeverb", "StereoVerb"],
+            ["Reverb effects", "Freeverb", "WGverb", "StereoVerb", "Resonator",
+             "ConReson", "ComplexRes"],
             ["Filter effects", "Lowpass", "Highpass", "Bandpass", "Bandstop",
              "PeakNotch", "Lowshelf", "Highshelf", "LPRes24", "StateVar",
              "DCBlock"],

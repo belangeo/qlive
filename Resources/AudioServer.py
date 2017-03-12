@@ -457,6 +457,38 @@ class FxFreeverb(BaseAudioObject):
         self.process = Interp(self.input, self.reverb, self.dryWet.sig())
         self.output = Sig(self.process)
 
+class FxWGverb(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.reverb = WGVerb(self.input, self.feed.sig(), self.cutoff.sig(),
+                             bal=1.0, mul=self.gain.sig())
+        self.process = Interp(self.input, self.reverb, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxResonator(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.reverb = Waveguide(self.input, self.freq.sig(), self.dur.sig(),
+                                mul=self.gain.sig())
+        self.process = Interp(self.input, self.reverb, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxConReson(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.reverb = AllpassWG(self.input, self.freq.sig(), self.feed.sig(),
+                                detune=self.detune.sig(), mul=self.gain.sig())
+        self.process = Interp(self.input, self.reverb, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxComplexRes(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.reverb = ComplexRes(self.input, self.freq.sig(), self.decay.sig(),
+                                 mul=self.gain.sig())
+        self.process = Interp(self.input, self.reverb, self.dryWet.sig())
+        self.output = Sig(self.process)
+
 class FxStereoVerb(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
@@ -530,7 +562,9 @@ AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn,
                 "Lowshelf": FxLowshelf, "Highshelf": FxHighshelf,
                 "LPRes24": FxLPRes24, "StateVar": FxStateVar,
                 "DCBlock": FxDCBlock,
-                "Freeverb": FxFreeverb, "StereoVerb": FxStereoVerb,
+                "Freeverb": FxFreeverb, "WGverb": FxWGverb,
+                "StereoVerb": FxStereoVerb, "Resonator": FxResonator,
+                "ConReson": FxConReson, "ComplexRes": FxComplexRes,
                 "Disto": FxDisto, "Delay": FxDelay, "Compressor": FxCompressor,
                 "FreqShift": FxFreqShift, "Harmonizer": FxHarmonizer,
                 "Panning": FxPanning, "AudioOut": FxAudioOut}
