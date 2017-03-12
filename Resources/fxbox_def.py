@@ -30,6 +30,7 @@ GAIN_DEF = ["gain", 0, -60, 18, "dB", False]
 DRYWET_DEF = ["dryWet", 1, 0, 1, "", False]
 FREQ_DEF = ["freq", 1000, 20, 20000, "Hz", True]
 Q_DEF = ["Q", 1, 0.5, 50, "", False]
+BOOST_DEF = ["boost", 0, -24, 24, "dB", False]
 FEED_DEF = ["feed", 0, 0, 1, "", False]
 
 # Effects Defintiions
@@ -46,10 +47,39 @@ FX_DICT = {
         "Bandpass": {"ctrls": [FREQ_DEF,
                                Q_DEF,
                                GAIN_DEF,
-                               DRYWET_DEF]}
+                               DRYWET_DEF]},
+        "Bandstop": {"ctrls": [FREQ_DEF,
+                               Q_DEF,
+                               GAIN_DEF,
+                               DRYWET_DEF]},
+        "PeakNotch": {"ctrls": [FREQ_DEF,
+                               Q_DEF,
+                               BOOST_DEF,
+                               GAIN_DEF,
+                               DRYWET_DEF]},
+        "Lowshelf": {"ctrls": [FREQ_DEF,
+                               Q_DEF,
+                               BOOST_DEF,
+                               GAIN_DEF,
+                               DRYWET_DEF]},
+        "Highshelf": {"ctrls": [FREQ_DEF,
+                               Q_DEF,
+                               BOOST_DEF,
+                               GAIN_DEF,
+                               DRYWET_DEF]},
+        "LPRes24": {"ctrls": [FREQ_DEF,
+                             ["res", 0.25, 0, 1, "", False],
+                             GAIN_DEF,
+                             DRYWET_DEF]},
+        "StateVar": {"ctrls": [FREQ_DEF,
+                               Q_DEF,
+                               ["type", 0, 0, 1, "", False],
+                               GAIN_DEF,
+                               DRYWET_DEF]},
+        "DCBlock": {"ctrls": [GAIN_DEF]},
     },
 
-    "Reverb effects": {
+    "Reverb effects": { # WGVerb, Waveguide, AllpassWG, ComplexRes
         "Freeverb": {"ctrls": [["size", 0.5, 0, 1, "", False],
                                ["damp", 0.5, 0, 1, "", False],
                                GAIN_DEF,
@@ -61,21 +91,21 @@ FX_DICT = {
                                  DRYWET_DEF]}
     },
 
-    "Delay effects": {
+    "Delay effects": { # SmoothDelay, Flanger, Phaser
         "Delay": {"ctrls": [["deltime", 1, 0, 5, "", False],
                             FEED_DEF,
                             GAIN_DEF,
                             DRYWET_DEF]}
     },
 
-    "Distortion effects": {
+    "Distortion effects": { # Degrade, Clipper
         "Disto": {"ctrls": [["drive", 0.75, 0, 1, "", False],
                             ["slope", 0.75, 0, 1, "", False],
                             GAIN_DEF,
                             DRYWET_DEF]}
     },
 
-    "Dynamic processors": {
+    "Dynamic processors": { # Gate
         "Compressor": {"ctrls":[["thresh", -10, -60, 0, "dB", False],
                                 ["ratio", 2, 1, 50, "x", True],
                                 ["attack", 0.01, 0.001, 0.5, "sec", False],
@@ -84,7 +114,7 @@ FX_DICT = {
                                 DRYWET_DEF]}
     },
 
-    "Frequency/Pitch effects": {
+    "Frequency/Pitch effects": { # Chorus
         "FreqShift": {"ctrls": [["shift", 0, -5000, 5000, "Hz", False],
                                 GAIN_DEF,
                                 DRYWET_DEF]},
@@ -100,7 +130,7 @@ FX_DICT = {
                               GAIN_DEF]}
     },
 
-    "Others": {
+    "Others": { # BusIn, BusOut, Denorm
         "None": {"ctrls": []},
         "AudioOut": {"ctrls":[["gain1", 0, -60, 18, "dB", False],
                               ["gain2", 0, -60, 18, "dB", False],
@@ -119,7 +149,9 @@ FX_DICT = {
 # Use the names as in FX_DICT.
 FX_LIST = [ ["Delay effects", "Delay"],
             ["Reverb effects", "Freeverb", "StereoVerb"],
-            ["Filter effects", "Lowpass", "Highpass", "Bandpass"],
+            ["Filter effects", "Lowpass", "Highpass", "Bandpass", "Bandstop",
+             "PeakNotch", "Lowshelf", "Highshelf", "LPRes24", "StateVar",
+             "DCBlock"],
             ["Distortion effects", "Disto"],
             ["Dynamic processors", "Compressor"],
             ["Frequency/Pitch effects", "FreqShift", "Harmonizer"],

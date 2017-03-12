@@ -395,6 +395,60 @@ class FxBandpass(BaseAudioObject):
         self.process = Interp(self.input, self.filter, self.dryWet.sig())
         self.output = Sig(self.process)
 
+class FxBandstop(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.filter = Biquadx(self.input, freq=self.freq.sig(), q=self.Q.sig(), type=3,
+                              stages=2, mul=self.gain.sig())
+        self.process = Interp(self.input, self.filter, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxPeakNotch(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.filter = EQ(self.input, freq=self.freq.sig(), q=self.Q.sig(),
+                         boost=self.boost.sig(), type=0, mul=self.gain.sig())
+        self.process = Interp(self.input, self.filter, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxLowshelf(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.filter = EQ(self.input, freq=self.freq.sig(), q=self.Q.sig(),
+                         boost=self.boost.sig(), type=1, mul=self.gain.sig())
+        self.process = Interp(self.input, self.filter, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxHighshelf(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.filter = EQ(self.input, freq=self.freq.sig(), q=self.Q.sig(),
+                         boost=self.boost.sig(), type=2, mul=self.gain.sig())
+        self.process = Interp(self.input, self.filter, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxLPRes24(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.filter = MoogLP(self.input, freq=self.freq.sig(),
+                             res=self.res.sig(), mul=self.gain.sig())
+        self.process = Interp(self.input, self.filter, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxStateVar(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.filter = SVF(self.input, freq=self.freq.sig(), q=self.Q.sig(),
+                         type=self.type.sig(), mul=self.gain.sig())
+        self.process = Interp(self.input, self.filter, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxDCBlock(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.process = DCBlock(self.input, mul=self.gain.sig())
+        self.output = Sig(self.process)
+
 class FxFreeverb(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
@@ -472,6 +526,10 @@ class FxAudioOut(BaseAudioObject):
 AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn,
                  "Soundfile": SoundfileIn, "Lowpass": FxLowpass,
                 "Highpass": FxHighpass, "Bandpass": FxBandpass,
+                "Bandstop": FxBandstop, "PeakNotch": FxPeakNotch,
+                "Lowshelf": FxLowshelf, "Highshelf": FxHighshelf,
+                "LPRes24": FxLPRes24, "StateVar": FxStateVar,
+                "DCBlock": FxDCBlock,
                 "Freeverb": FxFreeverb, "StereoVerb": FxStereoVerb,
                 "Disto": FxDisto, "Delay": FxDelay, "Compressor": FxCompressor,
                 "FreqShift": FxFreqShift, "Harmonizer": FxHarmonizer,
