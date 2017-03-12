@@ -108,11 +108,28 @@ FX_DICT = {
                                  DRYWET_DEF]},
     },
 
-    "Delay effects": { # SmoothDelay, Flanger, Phaser
+    "Delay effects": {
         "Delay": {"ctrls": [["deltime", 1, 0, 5, "", False],
                             FEED_DEF,
                             GAIN_DEF,
-                            DRYWET_DEF]}
+                            DRYWET_DEF]},
+        "SmoothDelay": {"ctrls": [["deltime", 1, 0.001, 5, "", False],
+                                  FEED_DEF,
+                                  GAIN_DEF,
+                                  DRYWET_DEF]},
+        "Flanger": {"ctrls": [["center", 5, 0.01, 30, "ms", False],
+                              ["lfofreq", 0.1, 0.001, 20, "Hz", True],
+                              ["depth", 0.75, 0, 1, "", False],
+                              FEED_DEF,
+                              GAIN_DEF,
+                              DRYWET_DEF]},
+        "Phaser": {"ctrls": [["freq", 100, 40, 2000, "Hz", True],
+                             ["spread", .5, 0, 2, "", False],
+                             ["lfofreq", 0.1, 0.001, 20, "Hz", True],
+                             ["Q", 0.5, 0, 1, "", False],
+                             ["feed", 0.5, 0, 1, "", False],
+                             GAIN_DEF,
+                             DRYWET_DEF]}
     },
 
     "Distortion effects": { # Degrade, Clipper
@@ -164,7 +181,7 @@ FX_DICT = {
 # Categories/Effects ordered names. Index 0 of each list is the category.
 # Not using dicts to make dynamic submenu generation easier.
 # Use the names as in FX_DICT.
-FX_LIST = [ ["Delay effects", "Delay"],
+FX_LIST = [ ["Delay effects", "Delay", "SmoothDelay", "Flanger", "Phaser"],
             ["Reverb effects", "Freeverb", "WGverb", "StereoVerb", "Resonator",
              "ConReson", "ComplexRes"],
             ["Filter effects", "Lowpass", "Highpass", "Bandpass", "Bandstop",

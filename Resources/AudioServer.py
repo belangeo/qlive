@@ -492,15 +492,16 @@ class FxComplexRes(BaseAudioObject):
 class FxStereoVerb(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.reverb = STRev(self.input, self.pan.sig(), self.revtime.sig(), self.cutoff.sig(),
-                            1, mul=self.gain.sig())
+        self.reverb = STRev(self.input, self.pan.sig(), self.revtime.sig(),
+                            self.cutoff.sig(), 1, mul=self.gain.sig())
         self.process = Interp(self.input, self.reverb, self.dryWet.sig())
         self.output = Sig(self.process)
 
 class FxDisto(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.disto = Disto(self.input, self.drive.sig(), self.slope.sig(), mul=self.gain.sig())
+        self.disto = Disto(self.input, self.drive.sig(), self.slope.sig(),
+                           mul=self.gain.sig())
         self.process = Interp(self.input, self.disto, self.dryWet.sig())
         self.output = Sig(self.process)
 
@@ -510,6 +511,34 @@ class FxDelay(BaseAudioObject):
         self.delay = Delay(self.input, self.deltime.sig(), self.feed.sig(), 5,
                            mul=self.gain.sig())
         self.process = Interp(self.input, self.delay, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxSmoothDelay(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.delay = SmoothDelay(self.input, self.deltime.sig(), self.feed.sig(),
+                                 crossfade=0.005, maxdelay=5, mul=self.gain.sig())
+        self.process = Interp(self.input, self.delay, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxFlanger(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.seconds = Sig(self.center.sig(), mul=0.001)
+        self.lfo = Sine(self.lfofreq.sig(), mul=self.seconds*self.depth.sig(),
+                        add=self.seconds)
+        self.delay = Delay(self.input, self.lfo, self.feed.sig(), 0.1,
+                           mul=self.gain.sig(), add=self.input)
+        self.process = Interp(self.input, self.delay, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxPhaser(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.lfo = Sine(self.lfofreq.sig(), mul=0.5, add=0.5)
+        self.phs = Phaser(self.input, self.freq.sig(), self.lfo*self.spread.sig()+1,
+                          self.Q.sig(), self.feed.sig(), 12, mul=self.gain.sig())
+        self.process = Interp(self.input, self.phs, self.dryWet.sig())
         self.output = Sig(self.process)
 
 class FxCompressor(BaseAudioObject):
@@ -565,7 +594,9 @@ AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn,
                 "Freeverb": FxFreeverb, "WGverb": FxWGverb,
                 "StereoVerb": FxStereoVerb, "Resonator": FxResonator,
                 "ConReson": FxConReson, "ComplexRes": FxComplexRes,
-                "Disto": FxDisto, "Delay": FxDelay, "Compressor": FxCompressor,
+                "Disto": FxDisto, "Delay": FxDelay, "SmoothDelay": FxSmoothDelay,
+                "Flanger": FxFlanger, "Phaser": FxPhaser,
+                "Compressor": FxCompressor,
                 "FreqShift": FxFreqShift, "Harmonizer": FxHarmonizer,
                 "Panning": FxPanning, "AudioOut": FxAudioOut}
 
