@@ -308,7 +308,8 @@ class FxSlidersView(wx.Frame):
             self.sizer.Add(popupSizer, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
 
         # Controller box
-        if "ctrls" in self.parameters:
+        self.widgets = []
+        if "ctrls" in self.parameters and self.parameters["ctrls"] != []:
             knobSizer = wx.BoxSizer(wx.HORIZONTAL)
             sampleList = ["Slider Values", "Interpolation Times"]
             self.interpButton = wx.RadioBox(self.panel, -1, "",
@@ -318,7 +319,6 @@ class FxSlidersView(wx.Frame):
             self.interpButton.Bind(wx.EVT_RADIOBOX, self.showMorphEvent)
             self.sizer.Add(self.interpButton, 0, wx.LEFT, 5)
 
-            self.widgets = []
             for param in self.parameters["ctrls"]:
                 slider = SliderWidget(self.panel, param, fxbox)
                 self.widgets.append(slider)
@@ -336,7 +336,7 @@ class FxSlidersView(wx.Frame):
         self.SetSizerAndFit(self.frameSizer)
 
         self.Bind(wx.EVT_ENTER_WINDOW, self.getFocus)
-        # Effects windows are too small just after creation (at least on linux).
+        # FIXME: Effects windows are too small just after creation (at least on linux).
         self.SetMinSize((560, -1))
         self.SetSize((560, -1))
 
