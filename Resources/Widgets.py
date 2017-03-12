@@ -316,7 +316,7 @@ class QLiveControlKnob(wx.Panel):
         gc.SetPen(wx.Pen("#777777", width=self.borderWidth, style=wx.SOLID))
         gc.DrawRoundedRectangle(0, 0, w-1, h-1, 3)
 
-        dc.SetFont(wx.Font(9, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL,
+        dc.SetFont(wx.Font(8, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL,
                            wx.FONTWEIGHT_NORMAL))
         dc.SetTextForeground(CONTROLSLIDER_TEXT_COLOUR)
 

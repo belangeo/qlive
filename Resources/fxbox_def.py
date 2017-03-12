@@ -132,11 +132,22 @@ FX_DICT = {
                              DRYWET_DEF]}
     },
 
-    "Distortion effects": { # Degrade, Clipper
+    "Distortion effects": {
         "Disto": {"ctrls": [["drive", 0.75, 0, 1, "", False],
                             ["slope", 0.75, 0, 1, "", False],
                             GAIN_DEF,
-                            DRYWET_DEF]}
+                            DRYWET_DEF]},
+        "Degrade": {"ctrls": [["bits", 6, 2, 16, "", True],
+                              ["srscale", 0.25, 0.001, 1, "", True],
+                              GAIN_DEF,
+                              DRYWET_DEF]},
+        "Clipper": {"ctrls": [["drive", 0.75, 0, 1, "", False],
+                              ["cutoff", 2500, 20, 15000, "Hz", True],
+                              GAIN_DEF,
+                              DRYWET_DEF]},
+        "Rectifier": {"ctrls": [["amount", 0.5, 0, 1, "", False],
+                                GAIN_DEF,
+                                DRYWET_DEF]},
     },
 
     "Dynamic processors": { # Gate
@@ -187,7 +198,7 @@ FX_LIST = [ ["Delay effects", "Delay", "SmoothDelay", "Flanger", "Phaser"],
             ["Filter effects", "Lowpass", "Highpass", "Bandpass", "Bandstop",
              "PeakNotch", "Lowshelf", "Highshelf", "LPRes24", "StateVar",
              "DCBlock"],
-            ["Distortion effects", "Disto"],
+            ["Distortion effects", "Disto", "Degrade", "Clipper", "Rectifier"],
             ["Dynamic processors", "Compressor"],
             ["Frequency/Pitch effects", "FreqShift", "Harmonizer"],
             ["Spatial effects", "Panning"],

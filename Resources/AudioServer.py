@@ -497,14 +497,6 @@ class FxStereoVerb(BaseAudioObject):
         self.process = Interp(self.input, self.reverb, self.dryWet.sig())
         self.output = Sig(self.process)
 
-class FxDisto(BaseAudioObject):
-    def __init__(self, chnls, ctrls, values, interps):
-        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
-        self.disto = Disto(self.input, self.drive.sig(), self.slope.sig(),
-                           mul=self.gain.sig())
-        self.process = Interp(self.input, self.disto, self.dryWet.sig())
-        self.output = Sig(self.process)
-
 class FxDelay(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
@@ -539,6 +531,39 @@ class FxPhaser(BaseAudioObject):
         self.phs = Phaser(self.input, self.freq.sig(), self.lfo*self.spread.sig()+1,
                           self.Q.sig(), self.feed.sig(), 12, mul=self.gain.sig())
         self.process = Interp(self.input, self.phs, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxDisto(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.disto = Disto(self.input, self.drive.sig(), self.slope.sig(),
+                           mul=self.gain.sig())
+        self.process = Interp(self.input, self.disto, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxDegrade(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.disto = Degrade(self.input, self.bits.sig(), self.srscale.sig(),
+                             mul=self.gain.sig())
+        self.process = Interp(self.input, self.disto, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxClipper(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.thresh = Scale(self.drive.sig(), 0, 1, 1, 0.001, 0.2)
+        self.disto = Clip(self.input, -self.thresh, self.thresh,
+                          mul=1.0/self.thresh)
+        self.lp = ButLP(self.disto, freq=self.cutoff.sig(), mul=self.gain.sig())
+        self.process = Interp(self.input, self.lp, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxRectifier(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.disto = self.input + (Abs(self.input) - self.input) * self.amount.sig()
+        self.process = Interp(self.input, self.disto, self.dryWet.sig())
         self.output = Sig(self.process)
 
 class FxCompressor(BaseAudioObject):
@@ -594,8 +619,10 @@ AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn,
                 "Freeverb": FxFreeverb, "WGverb": FxWGverb,
                 "StereoVerb": FxStereoVerb, "Resonator": FxResonator,
                 "ConReson": FxConReson, "ComplexRes": FxComplexRes,
-                "Disto": FxDisto, "Delay": FxDelay, "SmoothDelay": FxSmoothDelay,
+                "Delay": FxDelay, "SmoothDelay": FxSmoothDelay,
                 "Flanger": FxFlanger, "Phaser": FxPhaser,
+                "Disto": FxDisto, "Degrade": FxDegrade, "Clipper": FxClipper,
+                "Rectifier": FxRectifier,
                 "Compressor": FxCompressor,
                 "FreqShift": FxFreqShift, "Harmonizer": FxHarmonizer,
                 "Panning": FxPanning, "AudioOut": FxAudioOut}
