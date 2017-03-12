@@ -574,6 +574,14 @@ class FxCompressor(BaseAudioObject):
         self.process = Interp(self.input, self.comp, self.dryWet.sig())
         self.output = Sig(self.process)
 
+class FxGate(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.gate = Gate(self.input, self.thresh.sig(), self.attack.sig(),
+                         self.decay.sig(), 5, mul=self.gain.sig())
+        self.process = Interp(self.input, self.gate, self.dryWet.sig())
+        self.output = Sig(self.process)
+
 class FxFreqShift(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
@@ -589,12 +597,26 @@ class FxHarmonizer(BaseAudioObject):
         self.process = Interp(self.input, self.harmon, self.dryWet.sig())
         self.output = Sig(self.process)
 
+class FxChorus(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.chorus = Chorus(self.input, self.depth.sig(), self.feed.sig(),
+                             1.0, mul=self.gain.sig())
+        self.process = Interp(self.input, self.chorus, self.dryWet.sig())
+        self.output = Sig(self.process)
+
 class FxPanning(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
         self.chnls *= 2
         self.process = Pan(self.input, self.chnls, self.pan.sig(), self.spread.sig(),
                            mul=self.gain.sig())
+        self.output = Sig(self.process)
+
+class FxDenormal(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.process = Denorm(self.input)
         self.output = Sig(self.process)
 
 class FxAudioOut(BaseAudioObject):
@@ -623,9 +645,11 @@ AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn,
                 "Flanger": FxFlanger, "Phaser": FxPhaser,
                 "Disto": FxDisto, "Degrade": FxDegrade, "Clipper": FxClipper,
                 "Rectifier": FxRectifier,
-                "Compressor": FxCompressor,
+                "Compressor": FxCompressor, "Gate": FxGate,
                 "FreqShift": FxFreqShift, "Harmonizer": FxHarmonizer,
-                "Panning": FxPanning, "AudioOut": FxAudioOut}
+                "Chorus": FxChorus,
+                "Panning": FxPanning,
+                "Denormal": FxDenormal, "AudioOut": FxAudioOut}
 
 class AudioServer:
     def __init__(self):

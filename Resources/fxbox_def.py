@@ -150,23 +150,32 @@ FX_DICT = {
                                 DRYWET_DEF]},
     },
 
-    "Dynamic processors": { # Gate
+    "Dynamic processors": {
         "Compressor": {"ctrls":[["thresh", -10, -60, 0, "dB", False],
                                 ["ratio", 2, 1, 50, "x", True],
                                 ["attack", 0.01, 0.001, 0.5, "sec", False],
                                 ["decay", 0.1, 0.001, 1, "sec", False],
                                 GAIN_DEF,
-                                DRYWET_DEF]}
+                                DRYWET_DEF]},
+        "Gate": {"ctrls":[["thresh", -40, -90, 0, "dB", False],
+                          ["attack", 0.01, 0.001, 0.5, "sec", False],
+                          ["decay", 0.1, 0.001, 1, "sec", False],
+                          GAIN_DEF,
+                          DRYWET_DEF]}
     },
 
-    "Frequency/Pitch effects": { # Chorus
+    "Frequency/Pitch effects": {
         "FreqShift": {"ctrls": [["shift", 0, -5000, 5000, "Hz", False],
                                 GAIN_DEF,
                                 DRYWET_DEF]},
         "Harmonizer": {"ctrls": [["transpo", 0, -24, 24, "half", False],
                                  FEED_DEF,
                                  GAIN_DEF,
-                                 DRYWET_DEF]}
+                                 DRYWET_DEF]},
+        "Chorus": {"ctrls": [["depth", 1, 0, 5, "", False],
+                             ["feed", 0.5, 0, 1, "", False],
+                             GAIN_DEF,
+                             DRYWET_DEF]}
     },
 
     "Spatial effects": {
@@ -175,8 +184,9 @@ FX_DICT = {
                               GAIN_DEF]}
     },
 
-    "Others": { # BusIn, BusOut, Denorm
+    "Others": { # BusIn, BusOut
         "None": {"ctrls": []},
+        "Denormal": {"ctrls": []},
         "AudioOut": {"ctrls":[["gain1", 0, -60, 18, "dB", False],
                               ["gain2", 0, -60, 18, "dB", False],
                               ["gain3", 0, -60, 18, "dB", False],
@@ -199,10 +209,10 @@ FX_LIST = [ ["Delay effects", "Delay", "SmoothDelay", "Flanger", "Phaser"],
              "PeakNotch", "Lowshelf", "Highshelf", "LPRes24", "StateVar",
              "DCBlock"],
             ["Distortion effects", "Disto", "Degrade", "Clipper", "Rectifier"],
-            ["Dynamic processors", "Compressor"],
-            ["Frequency/Pitch effects", "FreqShift", "Harmonizer"],
+            ["Dynamic processors", "Compressor", "Gate"],
+            ["Frequency/Pitch effects", "FreqShift", "Harmonizer", "Chorus"],
             ["Spatial effects", "Panning"],
-            ["Others", "None", "AudioOut"]
+            ["Others", "None", "Denormal", "AudioOut"]
           ]
 
 # Input defintions
