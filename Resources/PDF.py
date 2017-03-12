@@ -38,7 +38,7 @@ class PDF:
         self.styles = getSampleStyleSheet()
 
         tree = ET.parse('sample.mei')
-        root = tree.getroot()
+        self.root = tree.getroot()
         # Loading header content
         self.title = str(tree.find('./meiHead/workDesc/work/titleStmt/title').text)
         self.subtitle = str(tree.find('./meiHead/workDesc/work/titleStmt/title[@type="subordinate"]').text)
@@ -171,12 +171,25 @@ class PDF:
         d = Drawing(450,1)
         d.add(Line(0,5,450,5))
         self.Elements.append(d)
-        for c in self.cues:
-            self.header(c.attrib['label'], style=self.HeaderStyle3, sep=0)
-            self.p(str(c.find('./description').text))
-            if c.attrib['n'] is not "0":
-                pass # look for parameters
-
+        for cue in self.cues:
+            self.header(cue.attrib['label'], style=self.HeaderStyle3, sep=0)
+            self.p(str(cue.find('./description').text))
+            if cue.attrib['n'] != "0": # no need to loop over cue 0
+                # TRACKS INTO CUES
+                for tracks in cue.find('./tracks'):
+                    self.p("Modules setup for this track:")
+                    for track in tracks:
+                        self.p(track.attrib['ref'])
+                        for parameter in track.find('./parameters'):
+                            parameter_str = '<para fontSize=9 fontName="Courier">%s: %s</para>' % (str(parameter.tag), str(parameter.text))
+                            self.p(parameter_str)
+                # SOUNDFILES INTO CUES
+                for soundfile in cue.find('./soundfiles'):
+                    self.p("Soundfiles setup:")
+                    self.p(soundfile.attrib['ref'])
+                    for parameter in soundfile.find('./parameters'):
+                        parameter_str = '<para fontSize=9 fontName="Courier">%s: %s</para>' % (str(parameter.tag), str(parameter.text))
+                        self.p(parameter_str)
 
 pdf = PDF()
 pdf.build()
