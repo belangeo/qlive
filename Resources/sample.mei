@@ -3,7 +3,7 @@
   <meiHead>
     <fileDesc>
       <titleStmt>
-        <title>Composition X</title>
+        <title>Composition X Live</title>
         <title type="subordinate">Electronic part of composition X</title>
         <respStmt>
           <persName role="creator">Composer</persName>
@@ -23,7 +23,7 @@
     <workDesc>
       <work>
         <titleStmt>
-          <title>Composition X - ode for a landscape.</title>
+          <title>Composition X Live - ode for a landscape.</title>
           <title type="subordinate">Any subtitle for composition X goes here</title>
           <respStmt>
             <persName role="composer">Tiago B. Vaz</persName>
@@ -42,9 +42,9 @@
   <music>
     <front>
       <div type="preface">
-       <p>Here the @resp attribute has been used to indicate responsibility for the correction. Its value ( #editTrans.JK) isan example of the pointer values discussed in section 19 Pointers and References. In this case, the @resp
+        <p>Here the @resp attribute has been used to indicate responsibility for the correction. Its value ( #editTrans.JK) isan example of the pointer values discussed in section 19 Pointers and References. In this case, the @resp
 attribute points to a name element within the metadata header, but any element might be indicated in this way,</p>
-<p>if the correction has been taken from some other source. The @resp attribute is available for all elements
+        <p>if the correction has been taken from some other source. The @resp attribute is available for all elements
 which are members of the att.responsibility class. The att.edit class makes available a @cert attribute,which may
 be used to indicate the degree of editorial confidence in a particular correction, as in the following example:</p>
       </div>
@@ -62,7 +62,6 @@ be used to indicate the degree of editorial confidence in a particular correctio
             <cues>
               <cue n="0" label="Cue 0">
                 <description>This is a mute Cue.</description>
-                <modules>
                   <module ref="#track1_module1">
                     <channels>
                       <channel n="1">
@@ -73,83 +72,48 @@ be used to indicate the degree of editorial confidence in a particular correctio
                       </channel>
                     </channels>
                   </module>
-                </modules>
               </cue>
               <cue n="1" label="Cue 1">
                 <description>This is a nice noisy Cue.</description>
-                <modules>
-                  <module ref="#track1_module1">
-                    <channels>
-                      <channel n="1">
-                        <gain>0.891</gain>
-                      </channel>
-                      <channel n="2">
-                        <gain>0.637</gain>
-                      </channel>
-                    </channels>
-                  </module>
-                  <module ref="#track1_module2">
-                    <parameters>
-                      <size>0.1</size>
-                      <damp>0.3</damp>
-                      <gain>0.8</gain>
-                      <drywet>0.5</drywet>
-                    </parameters>
-                  </module>
-                  <module ref="#track1_module3">
-                    <parameters>
-                      <freq>120</freq>
-                      <q>1</q>
-                      <gain>0.3</gain>
-                      <drywet>0.8</drywet>
-                    </parameters>
-                  </module>
-                  <module ref="#track1_module4">
-                    <channels>
-                      <channel n="1">
-                        <gain>0.3</gain>
-                      </channel>
-                      <channel n="2">
-                        <gain>0.8</gain>
-                      </channel>
-                    </channels>
-                  </module>
-                  <module xml:id="track2_module1" n="1">
-                    <category>Others</category>
-                    <type>input</type>
-                    <name>soundfile</name>
-                    <soundfile ref="#soundfile_1"/>
-                    <gain/>
-                  </module>
-                  <module ref="track2_module2">
-                    <parameters>
-                      <size>0.1</size>
-                      <damp>0.3</damp>
-                      <gain>0.8</gain>
-                      <drywet>0.5</drywet>
-                    </parameters>
-                  </module>
-                  <module ref="#track2_module3">
-                    <parameters>
-                      <freq>123</freq>
-                      <q>2</q>
-                      <gain>0.4</gain>
-                      <drywet>0.9</drywet>
-                    </parameters>
-                  </module>
-                  <module ref="#track2_module4">
-                    <channels>
-                      <channel n="1">
-                        <gain>0.4</gain>
-                      </channel>
-                      <channel n="2">
-                        <gain>0.5</gain>
-                      </channel>
-                    </channels>
-                  </module>
-                </modules>
+                <tracks>
+                  <track ref="#track_1">
+                      <module ref="#track1_module1">
+                        <parameters>
+                          <chgain n="1" label="Gain">0.89</chgain>
+                          <chgain n="2" label="Gain">0.80</chgain>
+                        </parameters>
+                      </module>
+                      <module ref="#track1_module2">
+                        <parameters>
+                          <size>0.1</size>
+                          <damp>0.3</damp>
+                          <gain>0.8</gain>
+                          <drywet>0.5</drywet>
+                        </parameters>
+                      </module>
+                      <module ref="#track1_module3">
+                        <parameters>
+                          <freq>120</freq>
+                          <q>1</q>
+                          <gain>0.3</gain>
+                          <drywet>0.8</drywet>
+                        </parameters>
+                      </module>
+                      <module ref="#track1_module4">
+                        <parameters>
+                          <channel n="1">
+                            <gain>0.3</gain>
+                          </channel>
+                          <channel n="2">
+                            <gain>0.8</gain>
+                          </channel>
+                        </parameters>
+                      </module>
+                  </track>
+                </tracks>
                 <soundfiles>
                   <soundfile ref="#soundfile_1">
+                  <parameters>
                     <playing>Play</playing>
                     <loopmode>Forward</loopmode>
                     <transposition>0.56</transposition>
@@ -159,108 +123,7 @@ be used to indicate the degree of editorial confidence in a particular correctio
                     <end unit="s">0.2114</end>
                     <xfade>5.0</xfade>
                     <outchan>0</outchan>
-                  </soundfile>
-                </soundfiles>
-              </cue>
-              <cue n="2" label="Cue 2">
-                <description>Cue 2 is the best.</description>
-                <modules>
-                  <module ref="#track1_module1">
-                    <channels>
-                      <channel n="1">
-                        <gain>0</gain>
-                      </channel>
-                      <channel n="2">
-                        <gain>0</gain>
-                      </channel>
-                    </channels>
-                  </module>
-                </modules>
-              </cue>
-              <cue n="3" label="Cue 3">
-                <description>Cue 3 is a dead end.</description>
-                <modules>
-                  <module ref="#track1_module1">
-                    <channels>
-                      <channel n="1">
-                        <gain>0.3</gain>
-                      </channel>
-                      <channel n="2">
-                        <gain>0.1</gain>
-                      </channel>
-                    </channels>
-                  </module>
-                  <module ref="#track2_module2">
-                    <parameters>
-                      <size>0.1</size>
-                      <damp>0.3</damp>
-                      <gain>0.8</gain>
-                      <drywet>0.5</drywet>
                     </parameters>
-                  </module>
-                  <module ref="#track1_module3">
-                    <parameters>
-                      <freq>420</freq>
-                      <q>2</q>
-                      <gain>0.3</gain>
-                      <drywet>0.8</drywet>
-                    </parameters>
-                  </module>
-                  <module ref="#track1_module4">
-                    <channels>
-                      <channel n="1">
-                        <gain>0.3</gain>
-                      </channel>
-                      <channel n="2">
-                        <gain>0.8</gain>
-                      </channel>
-                    </channels>
-                  </module>
-                  <module xml:id="track2_module1" n="1">
-                    <category>Others</category>
-                    <type>input</type>
-                    <name>soundfile</name>
-                    <soundfile ref="#soundfile_1"/>
-                    <gain/>
-                  </module>
-                  <module ref="track2_module2">
-                    <parameters>
-                      <size>0.1</size>
-                      <damp>0.4</damp>
-                      <gain>0.8</gain>
-                      <drywet>0.89</drywet>
-                    </parameters>
-                  </module>
-                  <module ref="#track2_module3">
-                    <parameters>
-                      <freq>123</freq>
-                      <q>2</q>
-                      <gain>0.4</gain>
-                      <drywet>0.9</drywet>
-                    </parameters>
-                  </module>
-                  <module ref="#track2_module4">
-                    <channels>
-                      <channel n="1">
-                        <gain>0.4</gain>
-                      </channel>
-                      <channel n="2">
-                        <gain>0.5</gain>
-                      </channel>
-                    </channels>
-                  </module>
-                </modules>
-                <soundfiles>
-                  <soundfile ref="#soundfile_1">
-                    <playing>Stop</playing>
-                    <loopmode>Forward</loopmode>
-                    <transposition>0.56</transposition>
-                    <gain>0.3</gain>
-                    <output>True</output>
-                    <start unit="s">0.000</start>
-                    <end unit="s">0.2114</end>
-                    <xfade>5.0</xfade>
-                    <outchan>0</outchan>
                   </soundfile>
                 </soundfiles>
               </cue>
@@ -272,7 +135,7 @@ be used to indicate the degree of editorial confidence in a particular correctio
                 <duration>00:02:176</duration>
                 <filesize>562.5 KB</filesize>
                 <samplerate>44100 hz</samplerate>
-                <bitdepth>16 bit</bitdepth>                                
+                <bitdepth>16 bit</bitdepth>
                 <channels>stereo</channels>
                 <description>Buzzing sound emitted from a coffee maker. Recorded 02/17/2017.</description>
               </soundfile>
@@ -282,7 +145,7 @@ be used to indicate the degree of editorial confidence in a particular correctio
                 <duration>05:06:199</duration>
                 <filesize>56.1 MB</filesize>
                 <samplerate>48000 hz</samplerate>
-                <bitdepth>24 bit</bitdepth>                
+                <bitdepth>24 bit</bitdepth>
                 <channels>stereo</channels>
                 <description>Ambience of Moscow court in a historical center. Quiet close space.</description>
               </soundfile>
@@ -295,7 +158,7 @@ be used to indicate the degree of editorial confidence in a particular correctio
                 <samplerate>96000 hz</samplerate>
                 <channels>mono</channels>
                 <description>Rummaging through toolbox to find something.</description>
-              </soundfile>              
+              </soundfile>
             </soundfiles>
             <tracks>
               <track xml:id="track_1" n="1" label="Track 1">
@@ -314,7 +177,7 @@ be used to indicate the degree of editorial confidence in a particular correctio
                   <module xml:id="track1_module3" x_seq="3" y_seq="1">
                     <category>Others</category>
                     <type>output</type>
-                  <name>AudioOut</name>
+                    <name>AudioOut</name>
                   </module>
                 </modules>
               </track>
