@@ -193,6 +193,7 @@ class ControlPanel(wx.Panel):
     def onAudioButton(self, evt):
         server = QLiveLib.getVar("AudioServer")
         server.start(evt.GetInt())
+        QLiveLib.getVar("CuesPanel").loadCurrentCue()
         self.audioButton.SetLabel(["Start Audio", "Stop Audio"][evt.GetInt()])
 
     def onDelCue(self, evt):
