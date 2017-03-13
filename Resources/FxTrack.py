@@ -165,7 +165,7 @@ class FxTrack:
     def createConnections(self):
         inputs = [but.getOutput() for but in self.buttonsInputs]
         insum = sum([inp for inp in inputs if inp is not None])
-
+        self.cols = max([but.getId()[0] for but in self.buttonsFxs]) + 1
         for col in range(self.cols):
             accum = []
             for but in self.buttonsFxs:
