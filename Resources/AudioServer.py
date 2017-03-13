@@ -619,6 +619,70 @@ class FxDenormal(BaseAudioObject):
         self.process = Denorm(self.input)
         self.output = Sig(self.process)
 
+class FxPVTranspo(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.pvin = PVAnal(self.input, size=1024, overlaps=4)
+        self.mod = PVTranspose(self.pvin, self.transpo.sig())
+        self.pvout = PVSynth(self.mod)
+        self.process = Interp(self.input, self.pvout, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxPVShift(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.pvin = PVAnal(self.input, size=1024, overlaps=4)
+        self.mod = PVShift(self.pvin, self.shift.sig())
+        self.pvout = PVSynth(self.mod)
+        self.process = Interp(self.input, self.pvout, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxPVAmpMod(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.pvin = PVAnal(self.input, size=1024, overlaps=4)
+        self.mod = PVAmpMod(self.pvin, self.freq.sig(), self.spread.sig())
+        self.pvout = PVSynth(self.mod)
+        self.tf = TrigFunc(Change(self.shape.sig()), self.setShape)
+        self.process = Interp(self.input, self.pvout, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+    def setShape(self):
+        self.mod.setShape(int(self.shape.sig().get()))
+
+class FxPVFreqMod(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.pvin = PVAnal(self.input, size=1024, overlaps=4)
+        self.mod = PVFreqMod(self.pvin, self.freq.sig(), self.spread.sig(),
+                             self.depth.sig())
+        self.pvout = PVSynth(self.mod)
+        self.tf = TrigFunc(Change(self.shape.sig()), self.setShape)
+        self.process = Interp(self.input, self.pvout, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+    def setShape(self):
+        self.mod.setShape(int(self.shape.sig().get()))
+
+class FxPVGate(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.pvin = PVAnal(self.input, size=1024, overlaps=4)
+        self.gate = PVGate(self.pvin, self.thresh.sig(), self.damp.sig())
+        self.pvout = PVSynth(self.gate)
+        self.process = Interp(self.input, self.pvout, self.dryWet.sig())
+        self.output = Sig(self.process)
+
+class FxPVGatedVerb(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self.pvin = PVAnal(self.input, size=1024, overlaps=4)
+        self.gate = PVGate(self.pvin, self.thresh.sig(), self.damp.sig())
+        self.verb = PVVerb(self.gate, self.revtime.sig(), self.slope.sig())
+        self.pvout = PVSynth(self.verb)
+        self.process = Interp(self.input, self.pvout, self.dryWet.sig())
+        self.output = Sig(self.process)
+
 class FxAudioOut(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
@@ -649,7 +713,11 @@ AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn,
                 "FreqShift": FxFreqShift, "Harmonizer": FxHarmonizer,
                 "Chorus": FxChorus,
                 "Panning": FxPanning,
-                "Denormal": FxDenormal, "AudioOut": FxAudioOut}
+                "Denormal": FxDenormal,
+                "PV-AmpMod": FxPVAmpMod, "PV-FreqMod": FxPVFreqMod,
+                "PV-Gate": FxPVGate, "PV-GatedVerb": FxPVGatedVerb,
+                "PV-Transpo": FxPVTranspo, "PV-Shift": FxPVShift,
+                "AudioOut": FxAudioOut}
 
 class AudioServer:
     def __init__(self):

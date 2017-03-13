@@ -37,9 +37,13 @@ class SliderWidget(wx.Panel):
         self.fxbox = fxbox
         self.name = parameters[0]
         self.sizer = wx.BoxSizer(wx.VERTICAL)
+        if len(parameters) > 6:
+            integer = parameters[6]
+        else:
+            integer = False
         self.slider = QLiveControlKnob(self, parameters[2], parameters[3],
                                        parameters[1], label=parameters[0],
-                                       log=parameters[5],
+                                       log=parameters[5], integer=integer,
                                        outFunction=self.outputValue,
                                        editFunction=self.showAutomationWindow)
         self.sizer.Add(self.slider, 0, wx.ALL, 5)

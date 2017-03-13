@@ -23,7 +23,7 @@ from constants import *
 
 ####### BOX PROCESS DEFINITIONS ######
 
-# init parameters: name, init, min, max, unit, log (unit not used yet)
+# init parameters: name, init, min, max, unit, log [, integer] (unit not used yet)
 
 # Recurrent parameter definitions
 GAIN_DEF = ["gain", 0, -60, 18, "dB", False]
@@ -184,6 +184,36 @@ FX_DICT = {
                               GAIN_DEF]}
     },
 
+    "Spectral effects": {
+        "PV-Transpo": {"ctrls": [["transpo", 0.5, 0.125, 4, "", False],
+                                 GAIN_DEF,
+                                 DRYWET_DEF]},
+        "PV-Shift": {"ctrls": [["shift", 100, -2000, 2000, "Hz", False],
+                               GAIN_DEF,
+                               DRYWET_DEF]},
+        "PV-AmpMod": {"ctrls": [["freq", 1, 0.001, 10, "Hz", True],
+                                ["spread", 0.1, -1, 1, "", False],
+                                ["shape", 0, 0, 7, "", False, True],
+                                GAIN_DEF,
+                                DRYWET_DEF]},
+        "PV-FreqMod": {"ctrls": [["freq", 1, 0.001, 10, "Hz", True],
+                                ["spread", 0.1, -1, 1, "", False],
+                                ["depth", 0.1, 0, 1, "", False],
+                                ["shape", 0, 0, 7, "", False, True],
+                                GAIN_DEF,
+                                DRYWET_DEF]},
+        "PV-Gate": {"ctrls": [["thresh", -40, -90, 0, "dB", False],
+                              ["damp", 0, 0, 1, "", False],
+                              GAIN_DEF,
+                              DRYWET_DEF]},
+        "PV-GatedVerb": {"ctrls": [["thresh", -40, -90, 0, "dB", False],
+                                   ["damp", 0, 0, 1, "", False],
+                                   ["revtime", 0.75, 0, 1, "", False],
+                                   ["slope", 0.75, 0, 1, "", False],
+                                   GAIN_DEF,
+                                   DRYWET_DEF]}
+    },
+
     "Others": { # BusIn, BusOut
         "None": {"ctrls": []},
         "Denormal": {"ctrls": []},
@@ -212,6 +242,8 @@ FX_LIST = [ ["Delay effects", "Delay", "SmoothDelay", "Flanger", "Phaser"],
             ["Dynamic processors", "Compressor", "Gate"],
             ["Frequency/Pitch effects", "FreqShift", "Harmonizer", "Chorus"],
             ["Spatial effects", "Panning"],
+            ["Spectral effects", "PV-Transpo", "PV-Shift", "PV-AmpMod",
+             "PV-FreqMod", "PV-Gate", "PV-GatedVerb"],
             ["Others", "None", "Denormal", "AudioOut"]
           ]
 

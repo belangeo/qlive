@@ -7,8 +7,8 @@ TODO
     - partially done
 - Master effects for both input and output section
 - Spatialisation (partially done with the Pan object) Need more work.
-- Improving effect modules (add spectral category)
 - Do we offer synthesis algorithms as input boxes?
+- Improving effect modules (add spectral category) **done**
 - BPF - playback mode, window size **done**
 - Automators on fx parameters. **done**
 - AudioIn, one gain per input **done** (do we do the same for AudioOut?) **done**
@@ -19,6 +19,7 @@ TODO
 - Edit mode versus playing mode **done**
 - Live update of changes on a track. **done**
 - SaveAs should copy the entire project, not just create a new .qlp file. **done**
+
 - BusIn - BusOut
 - Insert cue after selection
 - colour Chooser on cue
@@ -30,6 +31,10 @@ TODO
 - Record functions for both the input sound and the processed sound
 
 - global interpolation time does not affect automators.
+- Track mute?
+- Can't remove all channels in AudioOut but we can't bypass it either...
+- If we jump to a cue for which a soundfile is set to "Through" but it is
+  not already playing, shouldn't we start it?
 
 TODO / Meeting on 18/09/2015
 ---------------------
