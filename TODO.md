@@ -32,7 +32,6 @@ TODO
 
 - global interpolation time does not affect automators.
 - Track mute?
-- Can't remove all channels in AudioOut but we can't bypass it either...
 - If we jump to a cue for which a soundfile is set to "Through" but it is
   not already playing, shouldn't we start it?
 

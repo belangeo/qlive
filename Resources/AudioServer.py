@@ -693,7 +693,13 @@ class FxAudioOut(BaseAudioObject):
 
     def setGains(self, outchnls):
         self.gain = [ctl.sig() for i, ctl in enumerate(self.gainCtrls) if outchnls[i]]
-        self.output.mul = self.gain
+        if self.gain == []:
+            self.output.mul = [0.0] * self.chnls
+        else:
+            self.output.mul = self.gain
+
+    def setEnable(self, x):
+        self.output.value = [[0.0] * self.chnls, self.process][x]
 
 AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn,
                  "Soundfile": SoundfileIn, "Lowpass": FxLowpass,

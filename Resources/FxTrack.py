@@ -203,9 +203,10 @@ class FxTrack:
                 chnls = len(obj.getOutput())
                 outchnls = obj.getOutChannels()
                 channels = [j for j in range(NUM_OUTPUTS) if outchnls[j]]
-                for j in range(chnls):
-                    audioMixer.addToMixer(channels[j % len(channels)],
-                                          obj.getOutput()[j])
+                if len(channels) > 0:
+                    for j in range(chnls):
+                        audioMixer.addToMixer(channels[j % len(channels)],
+                                              obj.getOutput()[j])
 
     def checkForDeletedSoundfile(self, id):
         for obj in self.buttonsInputs:
