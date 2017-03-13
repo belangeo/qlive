@@ -38,23 +38,23 @@ TODO
 TODO / Meeting on 18/09/2015
 ---------------------
 
-    - autoremove config/project file if not valid
-        - Need a sanity function to check loaded prefs...
-    - add symbols to make it more intuitive
+- autoremove config/project file if not valid
+    - Need a sanity function to check loaded prefs...
+- add symbols to make it more intuitive
 
 TODO / Meeting on 05/10/2015
 ---------------------
 
-    - ~~MIDI-learn: use a global MIDI-learn state instead of the current
-      individual process.~~
-    - ~~Use 'del' key for unassigning MIDI.~~
-    - ~~Add Cut/copy/paste options for Cues.~~
-    - ~~**urgent** fix crash when closing the audio server.~~
-    - ~~fix 'new project' option in the menu.~~
-    - ~~parameters values for soundfiles should update in 'realtime'.~~
+- ~~MIDI-learn: use a global MIDI-learn state instead of the current
+  individual process.~~
+- ~~Use 'del' key for unassigning MIDI.~~
+- ~~Add Cut/copy/paste options for Cues.~~
+- ~~**urgent** fix crash when closing the audio server.~~
+- ~~fix 'new project' option in the menu.~~
+- ~~parameters values for soundfiles should update in 'realtime'.~~
 
-    - macro task: conceive a monitor module, which will provide realtime
-      visualization of automations and other parameters (probably using OSC).
+- macro task: conceive a monitor module, which will provide realtime
+  visualization of automations and other parameters (probably using OSC).
 
 TODO / Play mode (frozen session)
 ---------
