@@ -7,18 +7,18 @@ TODO
     - partially done
 - Master effects for both input and output section
 - Spatialisation (partially done with the Pan object) Need more work.
-- Do we offer synthesis algorithms as input boxes?
-- Improving effect modules (add spectral category) **done**
-- BPF - playback mode, window size **done**
-- Automators on fx parameters. **done**
-- AudioIn, one gain per input **done** (do we do the same for AudioOut?) **done**
-- On tracks canvas: Double-click to open the FxView. **done** 
-- On tracks canvas: Click+drag to move FxBoxes. **done**
-- Remember app pos and size in saved file. **done**
-- Automatic fx connection (serial, parallel), GUI conection design **done**
-- Edit mode versus playing mode **done**
-- Live update of changes on a track. **done**
-- SaveAs should copy the entire project, not just create a new .qlp file. **done**
+- Do we offer synthesis algorithms as input boxes (as midi synths)?
+- ~~Improving effect modules (add spectral category)~~
+- ~~BPF - playback mode, window size~~
+- ~~Automators on fx parameters.~~
+- ~~AudioIn, one gain per input~~ ~~(do we do the same for AudioOut?)~~
+- ~~On tracks canvas: Double-click to open the FxView.~~ 
+- ~~On tracks canvas: Click+drag to move FxBoxes.~~
+- ~~Remember app pos and size in saved file.~~
+- ~~Automatic fx connection (serial, parallel), GUI conection design.~~
+- ~~Edit mode versus playing mode.~~
+- ~~Live update of changes on a track.~~
+- ~~SaveAs should copy the entire project, not just create a new .qlp file.~~
 
 - BusIn - BusOut
 - Insert cue after selection
@@ -45,51 +45,51 @@ TODO / Meeting on 18/09/2015
 TODO / Meeting on 05/10/2015
 ---------------------
 
-    - MIDI-learn: use a global MIDI-learn state instead of the current
-      individual process **done**
-    - Use 'del' key for unassigning MIDI **done**
-    - Add Cut/copy/paste options for Cues **done**
-    - **urgent** fix crash when closing the audio server **done**
-    - fix 'new project' option in the menu **done**
-    - parameters values for soundfiles should update in 'realtime' **done**
+    - ~~MIDI-learn: use a global MIDI-learn state instead of the current
+      individual process.~~
+    - ~~Use 'del' key for unassigning MIDI.~~
+    - ~~Add Cut/copy/paste options for Cues.~~
+    - ~~**urgent** fix crash when closing the audio server.~~
+    - ~~fix 'new project' option in the menu.~~
+    - ~~parameters values for soundfiles should update in 'realtime'.~~
 
     - macro task: conceive a monitor module, which will provide realtime
       visualization of automations and other parameters (probably using OSC).
 
 TODO / Play mode (frozen session)
 ---------
-- Background colour darker **done**
-- No "saveCue()" before loading a new cue **done**
-- Can't add or delete a soundfile **done**
-- Can't add or delete a cue **done**
-- Can't add, delete, move or replace an fxbox or a track **done**
-- disable menu items **done**
-- ask for saving when switching in play mode **done**
+- ~~Background colour darker.~~
+- ~~No "saveCue()" before loading a new cue.~~
+- ~~Can't add or delete a soundfile.~~
+- ~~Can't add or delete a cue.~~
+- ~~Can't add, delete, move or replace an fxbox or a track.~~
+- ~~Disable menu items.~~
+- ~~Ask for saving when switching in play mode.~~
 
 Recently done
 -------------
-- Follower applied on transpo and gain parameters of the soundfile player **done**
-- add 'recent projects' in the intro dialog **done**
-- **urgent** set input/output devices from preferences panel **done**
-- fix: replacing a new project with same name doesn't work **done**
-- no more clicks pop-up for loading sounds -> single dialog **done**
-- MIDI learn for each effect **done**
-- push 'play' to the first column in soundfiles panel **done**
-- replace play/record with a toggle **done**
-- default interpolation time option for future cues **done**
-- overwrite option for interpolation time **done**
-- Reset cue, standby function **done**
-- Interpolations (global, track, fx, parameter) **done**
-- Handling SoundFilePlayer number of channels and routing to the tracks **done**
-- Need a mecanism to disable play/edit button on the knob (ex. for the global
-  interpolation window). **done** (just give nothing to playFunction and 
-  editFunction arguments)
-- Add a current selected soundfile **done**
-- Floating window to show current cue number **done**
-- Add Soundfile transpo and gain attributes to cue and interpolation design. **done**
-- MIDI/Key learn pour cues (mode forward-backward and/or key-per-cue) **done**
-- fix: harmonizer mutes the output when activated **done**
-- Use shift+crtl+c for Cue windows instead of ctrl+c **done**
-- classer les effets par categorie (filtres, delay, reverb...) **done**
-- Automatically clean up sounds folder on close/quit. **done**
-- Licensing **done**
+- ~~Follower applied on transpo and gain parameters of the soundfile player.~~
+- ~~Add 'recent projects' in the intro dialog.~~
+- ~~**urgent** Set input/output devices from preferences panel.~~
+- ~~Fix: replacing a new project with same name doesn't work.~~
+- ~~No more clicks pop-up for loading sounds -> single dialog.~~
+- ~~MIDI learn for each effect.~~
+- ~~Push 'play' to the first column in soundfiles panel.~~
+- ~~Replace play/record with a toggle.~~
+- ~~Default interpolation time option for future cues.~~
+- ~~Overwrite option for interpolation time.~~
+- ~~Reset cue, standby function.~~
+- ~~Interpolations (global, track, fx, parameter).~~
+- ~~Handling SoundFilePlayer number of channels and routing to the tracks.~~
+- ~~Need a mecanism to disable play/edit button on the knob (ex. for the global
+  interpolation window). (just give nothing to playFunction and 
+  editFunction arguments)~~
+- ~~Add a current selected soundfile.~~
+- ~~Floating window to show current cue number.~~
+- ~~Add Soundfile transpo and gain attributes to cue and interpolation design.~~
+- ~~MIDI/Key learn pour cues (mode forward-backward and/or key-per-cue).~~
+- ~~Fix: harmonizer mutes the output when activated.~~
+- ~~Use shift+crtl+c for Cue windows instead of ctrl+c.~~
+- ~~Classer les effets par categorie (filtres, delay, reverb...).~~
+- ~~Automatically clean up sounds folder on close/quit.~~
+- ~~Licensing.~~
