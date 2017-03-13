@@ -106,13 +106,14 @@ class FxTracks(wx.ScrolledWindow):
         dc.Clear()
         self.DoDrawing(dc)
 
-    def drawAndRefresh(self):
+    def drawAndRefresh(self, restart=True):
         self.draw()
         wx.CallAfter(self.Refresh)
         server = QLiveLib.getVar("AudioServer")
-        if server.isStarted():
+        if restart and server.isStarted():
             server.start(False)
             server.start(True)
+            QLiveLib.getVar("CuesPanel").loadCurrentCue()
 
     def OnPaint(self, evt):
         dc = wx.BufferedPaintDC(self, self.buffer, wx.BUFFER_VIRTUAL_AREA)

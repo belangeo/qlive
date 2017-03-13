@@ -394,13 +394,13 @@ class FxSlidersView(wx.Frame):
 
     def enableFx(self, evt):
         self.fxbox.setEnable(evt.GetInt(), fromUser=True)
-        QLiveLib.getVar("FxTracks").drawAndRefresh()
+        QLiveLib.getVar("FxTracks").drawAndRefresh(restart=False)
 
     def setEnableState(self, x):
         self.enable.SetValue(x)
         if x != self.last_enable:
             self.last_enable = x
-            QLiveLib.getVar("FxTracks").drawAndRefresh()
+            QLiveLib.getVar("FxTracks").drawAndRefresh(restart=False)
 
     def onCheckInSelect(self, evt):
         state = evt.GetInt()
