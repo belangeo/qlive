@@ -3,11 +3,15 @@ TODO
 
 - Need to document how things work right now (shortcut,
   key bindings, mouse bindings, buttons, etc.).
-- Software preferences (record options)
-    - partially done
+- Software preferences
+    - Record options are missing
 - Master effects for both input and output section
 - Spatialisation (partially done with the Pan object) Need more work.
 - Do we offer synthesis algorithms as input boxes (as midi synths)?
+    - The basics are implemented. Generic controls to add:
+        - polyphony
+        - input midi range (min and max midi notes)
+        - ADSR envelope control
 - ~~Improving effect modules (add spectral category)~~
 - ~~BPF - playback mode, window size~~
 - ~~Automators on fx parameters.~~
@@ -20,15 +24,15 @@ TODO
 - ~~Live update of changes on a track.~~
 - ~~SaveAs should copy the entire project, not just create a new .qlp file.~~
 
-- BusIn - BusOut
-- Insert cue after selection
-- colour Chooser on cue
-- saveas snapshot (only a .qlp file in the same project folder)
+- BusIn - BusOut (audio channels between tracks).
+- Insert new cue after the current selection.
+- Colour chooser on cue button (user-defined color per cue).
+- Saveas snapshot... (only a .qlp file in the same project folder).
+- Arbitrary interpolation between two cues.
+- Record functions for both the input sound and the processed sound.
 
-- Documentation/archive prototype
-- META data framework
-- Arbitrary interpolation between two cues
-- Record functions for both the input sound and the processed sound
+- Documentation/archive prototype.
+- META data framework.
 
 - global interpolation time does not affect automators.
 - Track mute?
