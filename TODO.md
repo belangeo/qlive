@@ -3,7 +3,7 @@ TODO
 
 - Need to document how things work right now (shortcut,
   key bindings, mouse bindings, buttons, etc.).
-- Software preferences (record options, audio driver setup)
+- Software preferences (record options)
     - partially done
 - Master effects for both input and output section
 - Spatialisation (partially done with the Pan object) Need more work.

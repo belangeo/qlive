@@ -414,12 +414,7 @@ class MainWindow(wx.Frame):
 
     def newRecent(self, file):
         filename = QLiveLib.ensureNFD(OPEN_RECENT_PATH)
-        try:
-            f = codecs.open(filename, "r", encoding="utf-8")
-            lines = [line.replace("\n", "") for line in f.readlines()]
-            f.close()
-        except:
-            lines = []
+        lines = QLiveLib.getRecentFiles()
         if not file in lines:
             f = codecs.open(filename, "w", encoding="utf-8")
             lines.insert(0, file)

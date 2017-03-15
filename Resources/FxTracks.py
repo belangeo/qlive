@@ -93,7 +93,7 @@ class FxTracks(wx.ScrolledWindow):
         else:
             gc.SetBrush(wx.Brush(FXBOX_DISABLE_BACKGROUND_COLOUR, wx.SOLID))
         rect = wx.Rect(0, 0, w, h)
-        gc.DrawRoundedRectangle(rect[0], rect[1], rect[2], rect[3], 5)
+        gc.DrawRoundedRectangle(rect[0], rect[1], rect[2], rect[3], 2)
         dc.SelectObject(wx.NullBitmap)
         if enable:
             self.buttonBitmap = b
