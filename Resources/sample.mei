@@ -47,6 +47,7 @@ attribute points to a name element within the metadata header, but any element m
         <p>if the correction has been taken from some other source. The @resp attribute is available for all elements
 which are members of the att.responsibility class. The att.edit class makes available a @cert attribute,which may
 be used to indicate the degree of editorial confidence in a particular correction, as in the following example:</p>
+<p>In eu dolor non mauris ullamcorper rutrum auctor eget leo. Donec at auctor ligula. Pellentesque consequat maximus ex, et tincidunt eros sollicitudin sed. Praesent ac tincidunt odio, nec lacinia tortor. Sed tempus vel leo vel ultrices. Aliquam a erat tempor, pellentesque elit quis, lacinia elit. Curabitur semper elit a nisl maximus, in sagittis ipsum vehicula. Nam non ipsum urna. Donec egestas, ex quis fringilla laoreet, dolor arcu ornare libero, sed egestas dui neque malesuada diam. Maecenas mollis non magna sed iaculis. Duis ornare lacus a dui condimentum, a vestibulum risus tempus. Praesent ut fringilla tellus, tincidunt dictum leo. Quisque aliquet placerat tortor, vitae faucibus velit sodales ac. Duis vel faucibus leo, vel facilisis turpis. Proin imperdiet urna eget nunc dignissim pellentesque.</p>
       </div>
     </front>
     <body>
@@ -62,74 +63,104 @@ be used to indicate the degree of editorial confidence in a particular correctio
             <cues>
               <cue n="0" label="Cue 0">
                 <description>This is a mute Cue.</description>
-                  <module ref="#track1_module1">
-                    <channels>
-                      <channel n="1">
-                        <gain>0</gain>
-                      </channel>
-                      <channel n="2">
-                        <gain>0</gain>
-                      </channel>
-                    </channels>
-                  </module>
+                <tracks>
+                  <track ref="1">
+                    <module ref="1">
+                      <channels>
+                        <channel n="1">
+                          <gain>0</gain>
+                        </channel>
+                        <channel n="2">
+                          <gain>0</gain>
+                        </channel>
+                      </channels>
+                    </module>
+                  </track>
+                </tracks>
               </cue>
               <cue n="1" label="Cue 1">
-                <description>This is a nice noisy Cue.</description>
+                <description>This is a nice noisy Cue. Nam at ipsum ullamcorper, euismod nulla non, pharetra odio. Etiam eleifend ipsum nisi, in pharetra sapien ornare quis. Nunc ipsum urna, mattis ut nibh ac, varius gravida massa. Fusce odio erat, consequat scelerisque consectetur ac, vestibulum et metus. Quisque a tellus ut ipsum facilisis finibus sed a est.</description>
                 <tracks>
-                  <track ref="#track_1">
-                      <module ref="#track1_module1">
-                        <parameters>
-                          <chgain n="1" label="Gain">0.89</chgain>
-                          <chgain n="2" label="Gain">0.80</chgain>
-                        </parameters>
-                      </module>
-                      <module ref="#track1_module2">
-                        <parameters>
-                          <size>0.1</size>
-                          <damp>0.3</damp>
-                          <gain>0.8</gain>
-                          <drywet>0.5</drywet>
-                        </parameters>
-                      </module>
-                      <module ref="#track1_module3">
-                        <parameters>
-                          <freq>120</freq>
-                          <q>1</q>
+                  <track ref="1">
+                    <module ref="1">
+                      <parameters>
+                        <chgain n="1" label="Gain">0.89</chgain>
+                        <chgain n="2" label="Gain">0.80</chgain>
+                      </parameters>
+                    </module>
+                    <module ref="2">
+                      <parameters>
+                        <size>0.1</size>
+                        <damp>0.3</damp>
+                        <gain>0.8</gain>
+                        <drywet>0.5</drywet>
+                      </parameters>
+                    </module>
+                    <module ref="3">
+                      <parameters>
+                        <freq>120</freq>
+                        <q>1</q>
+                        <gain>0.3</gain>
+                        <drywet>0.8</drywet>
+                      </parameters>
+                    </module>
+                    <module ref="4">
+                      <parameters>
+                        <channel n="1">
                           <gain>0.3</gain>
-                          <drywet>0.8</drywet>
-                        </parameters>
-                      </module>
-                      <module ref="#track1_module4">
-                        <parameters>
-                          <channel n="1">
-                            <gain>0.3</gain>
-                          </channel>
-                          <channel n="2">
-                            <gain>0.8</gain>
-                          </channel>
-                        </parameters>
-                      </module>
+                        </channel>
+                        <channel n="2">
+                          <gain>0.8</gain>
+                        </channel>
+                      </parameters>
+                    </module>
                   </track>
                 </tracks>
                 <soundfiles>
-                  <soundfile ref="#soundfile_1">
-                  <parameters>
-                    <playing>Play</playing>
-                    <loopmode>Forward</loopmode>
-                    <transposition>0.56</transposition>
-                    <gain>0.3</gain>
-                    <output>True</output>
-                    <start unit="s">0.000</start>
-                    <end unit="s">0.2114</end>
-                    <xfade>5.0</xfade>
-                    <outchan>0</outchan>
+                  <soundfile ref="1">
+                    <parameters>
+                      <playing>Play</playing>
+                      <loopmode>Forward</loopmode>
+                      <transposition>0.56</transposition>
+                      <gain>0.3</gain>
+                      <output>True</output>
+                      <start unit="s">0.000</start>
+                      <end unit="s">0.2114</end>
+                      <xfade>5.0</xfade>
+                      <outchan>0</outchan>
+                    </parameters>
+                  </soundfile>
+                  <soundfile ref="2">
+                    <parameters>
+                      <playing>Loop</playing>
+                      <loopmode>Backward</loopmode>
+                      <transposition>0.0</transposition>
+                      <gain>0.7</gain>
+                      <output>True</output>
+                      <start unit="s">0.000</start>
+                      <end unit="s">0.415</end>
+                      <xfade>2.0</xfade>
+                      <outchan>0</outchan>
+                    </parameters>
+                  </soundfile>
+                  <soundfile ref="3">
+                    <parameters>
+                      <playing>Stop</playing>
+                      <loopmode>Forward</loopmode>
+                      <transposition>0.0</transposition>
+                      <gain>0.6</gain>
+                      <output>True</output>
+                      <start unit="s">0.000</start>
+                      <end unit="s">0.447</end>
+                      <xfade>4.0</xfade>
+                      <outchan>1</outchan>
                     </parameters>
                   </soundfile>
                 </soundfiles>
               </cue>
             </cues>
             <soundfiles>
-              <soundfile id="soundfile_1" n="1" label="Coffee maker">
+              <soundfile n="1" label="Coffee maker">
                 <filename>383437__chrisreierson__coffee-maker-noise.wavsnd_1.aif</filename>
                 <type>wav</type>
                 <duration>00:02:176</duration>
@@ -139,7 +170,7 @@ be used to indicate the degree of editorial confidence in a particular correctio
                 <channels>stereo</channels>
                 <description>Buzzing sound emitted from a coffee maker. Recorded 02/17/2017.</description>
               </soundfile>
-              <soundfile id="soundfile_2" n="2" label="Moscow">
+              <soundfile n="2" label="Moscow">
                 <filename>383415__softwalls__moscow-center-court-2015-04-06-xy.wav</filename>
                 <type>wav</type>
                 <duration>05:06:199</duration>
@@ -149,7 +180,7 @@ be used to indicate the degree of editorial confidence in a particular correctio
                 <channels>stereo</channels>
                 <description>Ambience of Moscow court in a historical center. Quiet close space.</description>
               </soundfile>
-              <soundfile id="soundfile_3" n="3" label="Metalic">
+              <soundfile n="3" label="Metalic">
                 <filename>383116__stiffman__tools-metal-metalic-rummage-looking-search-toolbox-2.wav</filename>
                 <type>wav</type>
                 <duration>00:06:359</duration>
@@ -161,71 +192,71 @@ be used to indicate the degree of editorial confidence in a particular correctio
               </soundfile>
             </soundfiles>
             <tracks>
-              <track id="track_1" n="1" label="Track 1">
-                <description>This track will rock your speakers.</description>
+              <track n="1" label="Track 1">
+                <description>This track will rock your speakers. Vivamus ac sem purus. In hac habitasse platea dictumst. Donec nulla turpis, luctus ac odio eu, lacinia convallis neque. Maecenas felis augue, tempus id nulla vitae, tristique interdum arcu. In vitae quam aliquet, blandit tortor et, sodales risus. Nullam at placerat ipsum. Maecenas scelerisque quam et lacus tempor aliquam. Maecenas eu metus bibendum, finibus neque dignissim, rutrum mi.</description>
                 <modules>
-                  <module id="track1_module1" x_seq="1" y_seq="1">
+                  <module x_seq="1" y_seq="1" n="1">
                     <category>Others</category>
                     <type>input</type>
                     <name>AudioIn</name>
                   </module>
-                  <module id="track1_module2" x_seq="2" y_seq="1">
+                  <module x_seq="2" y_seq="1" n="2">
                     <category>Delay effects</category>
                     <type>effect</type>
                     <name>Delay</name>
                   </module>
-                  <module id="track1_module3" x_seq="3" y_seq="1">
+                  <module x_seq="3" y_seq="1" n="3">
                     <category>Filters</category>
                     <type>filter</type>
                     <name>Lowpass</name>
                   </module>
-                  <module id="track1_module4" x_seq="4" y_seq="1">
+                  <module x_seq="4" y_seq="1" n="4">
                     <category>Others</category>
                     <type>output</type>
                     <name>AudioOut</name>
                   </module>
-                </modules>                
+                </modules>
               </track>
-              <track id="track_2" n="2" label="Track 2">
-                <description>This track will also rock your speakers.</description>
+              <track n="2" label="Track 2">
+                <description>This track will also rock your speakers. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc scelerisque purus a ornare accumsan. Nullam et libero odio. Suspendisse euismod mi nisl, vel mattis nisl dictum sit amet. Sed congue semper eleifend. Nam dictum mauris nec placerat aliquam. Etiam nec semper erat. Sed iaculis nibh nec fermentum varius. Pellentesque efficitur nisl quis viverra mattis. Vestibulum pretium non massa laoreet ullamcorper.</description>
                 <modules>
-                  <module id="track2_module1" x_seq="1" y_seq="1">
+                  <module x_seq="1" y_seq="1" n="1">
                     <category>Others</category>
                     <type>input</type>
                     <name>Soundfile</name>
-                    <soundfile ref="#soundfile_1"/>
+                    <soundfile ref="#1"/>
                   </module>
-                  <module id="track2_module2" x_seq="2" y_seq="1">
+                  <module x_seq="2" y_seq="1" n="2">
                     <category>Reverb effects</category>
                     <type>effect</type>
                     <name>Freeverb</name>
                   </module>
-                  <module id="track2_module3" x_seq="2" y_seq="2">
+                  <module x_seq="2" y_seq="2" n="3">
                     <category>Filter effects</category>
                     <type>effect</type>
                     <name>Lowpass</name>
                   </module>
-                  <module id="track2_module4" x_seq="3" y_seq="1">
+                  <module x_seq="3" y_seq="1" n="4">
                     <category>Reverb effect</category>
                     <type>effect</type>
                     <name>Freeverb</name>
                   </module>
-                  <module id="track2_module5" x_seq="3" y_seq="2">
+                  <module x_seq="3" y_seq="2" n="5">
                     <category>Reverb effect</category>
                     <type>effect</type>
                     <name>Stereoverb</name>
                   </module>
-                  <module id="track2_module6" x_seq="3" y_seq="3">
+                  <module x_seq="3" y_seq="3" n="6">
                     <category>Filter effects</category>
                     <type>effect</type>
                     <name>Highpass</name>
                   </module>
-                  <module id="track2_module7" x_seq="4" y_seq="1">
+                  <module x_seq="4" y_seq="1" n="7">
                     <category>Delay effects</category>
                     <type>effect</type>
                     <name>Delay</name>
                   </module>
-                  <module id="track2_module7" x_seq="5" y_seq="1">
+                  <module x_seq="5" y_seq="1" n="8">
                     <category>Others</category>
                     <type>output</type>
                     <name>AudioOut</name>
