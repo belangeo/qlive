@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-import wx, time, os, pprint, copy, codecs, shutil, psutil
+import wx, time, os, pprint, copy, codecs, shutil, psutil, sys
 from constants import *
 import QLiveLib
 #import Meta
@@ -583,3 +583,5 @@ class MainWindow(wx.Frame):
         QLiveLib.saveVars()
         self.tracks.close()
         self.Destroy()
+        if sys.platform == "win32":
+            os._exit(0)
