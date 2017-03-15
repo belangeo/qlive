@@ -341,6 +341,7 @@ class BaseAudioObject:
     def setEnable(self, x):
         self.output.value = [self.input, self.process][x]
 
+# Do-nothing classe
 class AudioNone(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
@@ -349,6 +350,7 @@ class AudioNone(BaseAudioObject):
     def setEnable(self, x):
         self.output.value = [[0.0] * self.chnls, self.input][x]
 
+# Input classes
 class AudioIn(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
@@ -371,6 +373,63 @@ class SoundfileIn(BaseAudioObject):
     def setEnable(self, x):
         self.output.value = [[0.0] * self.chnls, self.input][x]
 
+class MidiSynth(BaseAudioObject):
+    def __init__(self, chnls, ctrls, values, interps):
+        BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
+        self._poly = 5
+        self._next = 0
+        self._playing = [-1] * self._poly
+        self._amp = Sig([0] * self._poly)
+        self.pitch = Sig([0] * self._poly)
+        self.envelope = MidiAdsr(self._amp, 0.002, 0.2, 0.7, 0.25)
+
+    def setEnable(self, x):
+        self.output.value = [[0.0] * self.chnls, self.process][x]
+
+    def _getNextFreeVoice(self):
+        for i in range(self._poly):
+            voice = (i + self._next) % self._poly
+            if self._playing[voice] == -1:
+                return voice
+
+    def midiEvent(self, pit, vel):
+        if vel:
+            if -1 in self._playing:
+                pos = self._getNextFreeVoice()
+                self._playing[pos] = pit
+                self._amp[pos].setValue(vel / 127.0)
+                self.pitch[pos].setValue(midiToHz(pit))
+        else:
+            if pit in self._playing:
+                pos = self._playing.index(pit)
+                self._playing[pos] = -1
+                self._amp[pos].setValue(0.0)
+                self._next = (pos + 1) % self._poly
+
+class MSTB303In(MidiSynth):
+    def __init__(self, chnls, ctrls, values, interps):
+        MidiSynth.__init__(self, chnls, ctrls, values, interps)
+        self.factor = MToT(self.transpo.sig() + 60)
+        self.phase = Phasor(self.pitch * self.factor)
+        self.phase2 = Phasor(self.pitch * self.factor * 1.005)
+        self.square = Sig((self.phase < self.duty.sig()) * 2 - 1, mul=self.envelope)
+        self.square2 = Sig((self.phase2 < self.duty.sig()) * 2 - 1, mul=self.envelope)
+        self.stereo = Mix([self.square.mix(1), self.square2.mix(1)], voices=2)
+        self.process = MoogLP(self.stereo, self.freq.sig(), self.res.sig())
+        self.output = Sig(self.process, mul=self.gain.sig())
+
+class MSSuperSaw(MidiSynth):
+    def __init__(self, chnls, ctrls, values, interps):
+        MidiSynth.__init__(self, chnls, ctrls, values, interps)
+        self.factor = MToT(self.transpo.sig() + 60)
+        self.ss1 = SuperSaw(self.pitch * self.factor, self.detune.sig(),
+                            self.bal.sig(), self.envelope)
+        self.ss2 = SuperSaw(self.pitch * self.factor * 1.005, self.detune.sig(),
+                            self.bal.sig(), self.envelope)
+        self.process = Mix([self.ss1.mix(1), self.ss2.mix(1)], voices=2)
+        self.output = Sig(self.process, mul=self.gain.sig())
+
+# Effect classes
 class FxLowpass(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
         BaseAudioObject.__init__(self, chnls, ctrls, values, interps)
@@ -702,6 +761,7 @@ class FxAudioOut(BaseAudioObject):
         self.output.value = [[0.0] * self.chnls, self.process][x]
 
 AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn,
+                 "MS-TB-303": MSTB303In, "MS-SupSaw": MSSuperSaw,
                  "Soundfile": SoundfileIn, "Lowpass": FxLowpass,
                 "Highpass": FxHighpass, "Bandpass": FxBandpass,
                 "Bandstop": FxBandstop, "PeakNotch": FxPeakNotch,
@@ -872,6 +932,8 @@ class AudioServer:
                         chnls = self.soundfiles[id].getChnls()
                     else:
                         chnls = 1
+                elif name.startswith("MS-"):
+                    chnls = 2
                 ctrls = INPUT_DICT[name]["ctrls"]
                 values = but.getCurrentValues()
                 if values is not None:
@@ -881,6 +943,8 @@ class AudioServer:
                     self.audioObjects.append(obj)
                     if name == "AudioIn":
                         obj.setGains(inchnls)
+                    if name.startswith("MS-"):
+                        QLiveLib.getVar("MidiServer").registerMidiSynth(obj, (0, 127))
                 trackchnls = max(trackchnls, chnls)
             for but in track.getButtonFxs():
                 name = but.name
@@ -981,6 +1045,7 @@ class MidiServer:
         self.ctlscan_callback = None
         self.noteonscan_callback = None
         self.bindings = {"ctls": {}, "noteon": {}}
+        self.midisynths = [] # [(obj, midirange), ...]
         self.listen = MidiListener(self._midirecv, 20)
         self.listen.start()
 
@@ -994,6 +1059,9 @@ class MidiServer:
             elif data1 in self.bindings["noteon"]:
                 for callback in self.bindings["noteon"][data1]:
                     callback(data1, data2)
+            self.sendMidiSynthEvent(data1, data2)
+        if status & 0xF0 == 0x90 and data2 == 0 or status & 0xF0 == 0x80: # noteoff
+            self.sendMidiSynthEvent(data1, 0)
         if status & 0xF0 == 0xB0: # control change
             midichnl = status - 0xB0 + 1
             if self.ctlscan_callback is not None:
@@ -1023,3 +1091,13 @@ class MidiServer:
                 self.bindings[group][x].remove(callback)
                 if not self.bindings[group][x]:
                     del self.bindings[group][x]
+
+    def registerMidiSynth(self, obj, midirange):
+        # do we have to unregister midi synths.
+        self.midisynths.append((obj, midirange))
+
+    def sendMidiSynthEvent(self, pit, vel):
+        if len(self.midisynths) > 0:
+            for synth in self.midisynths:
+                if pit > synth[1][0] and pit < synth[1][1]:
+                    synth[0].midiEvent(pit, vel)

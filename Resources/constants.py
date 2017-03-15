@@ -61,7 +61,7 @@ PREFERENCES_PATH = os.path.join(TEMP_PATH, "qlive-prefs.py")
 SOUNDS_PATH = os.path.join(RESOURCES_PATH, "sounds")
 NEW_FILE_PATH = os.path.join(RESOURCES_PATH, "qlive_new_file.qlp")
 
-DEBUG = True
+DEBUG = False
 
 NUM_INPUTS = 8
 NUM_OUTPUTS = 8

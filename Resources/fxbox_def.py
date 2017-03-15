@@ -260,7 +260,16 @@ INPUT_DICT = {  "None":     {"ctrls":   []},
                              "inselect": [str(x+1) for x in range(NUM_INPUTS)]},
                 "Soundfile": {"ctrls":   [GAIN_DEF],
                               "select": None},
+                "MS-TB-303": {"ctrls": [["transpo", 0, -24, 24, "half", False],
+                                        ["freq", 1000, 20, 5000, "Hz", True],
+                                        ["res", 0.75, 0, 1, "", False],
+                                        ["duty", 0.5, 0, 1, "", False],
+                                        GAIN_DEF]},
+                "MS-SupSaw": {"ctrls": [["transpo", 0, -24, 24, "half", False],
+                                        ["detune", 0.5, 0, 1, "", False],
+                                        ["bal", 0.7, 0, 1, "", False],
+                                        GAIN_DEF]},
              }
 
 # Input ordered names
-INPUT_LIST = ["None", "AudioIn", "Soundfile"]
+INPUT_LIST = ["None", "AudioIn", "Soundfile", "MS-TB-303", "MS-SupSaw"]
