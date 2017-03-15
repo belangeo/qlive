@@ -43,21 +43,21 @@ def getRecentFiles():
 def getAvailableAudioMidiDrivers():
     inDefault = pa_get_default_input()
     inDriverList, inDriverIndexes = pa_get_input_devices()
-    if inDefault in inDriverIndexes:
+    try:
         defaultInputDriver = inDriverList[inDriverIndexes.index(inDefault)]
-    else:
+    except:
         defaultInputDriver = ""
-    outDriverList, outDriverIndexes = pa_get_output_devices()
     outDefault = pa_get_default_output()
-    if outDefault in outDriverIndexes:
+    outDriverList, outDriverIndexes = pa_get_output_devices()
+    try:
         defaultOutputDriver = outDriverList[outDriverIndexes.index(outDefault)]
-    else:
+    except:
         defaultOutputDriver = ""
     midiDefault = pm_get_default_input()
     midiDriverList, midiDriverIndexes = pm_get_input_devices()
-    if midiDefault in midiDriverIndexes:
+    try:
         defaultMidiDriver = midiDriverList[midiDriverIndexes.index(midiDefault)]
-    else:
+    except:
         defaultMidiDriver = ""
     return (inDriverList, inDriverIndexes, defaultInputDriver,
             outDriverList, outDriverIndexes, defaultOutputDriver,
