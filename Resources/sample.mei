@@ -129,7 +129,7 @@ be used to indicate the degree of editorial confidence in a particular correctio
               </cue>
             </cues>
             <soundfiles>
-              <soundfile xml:id="soundfile_1" n="1" label="Coffee maker">
+              <soundfile id="soundfile_1" n="1" label="Coffee maker">
                 <filename>383437__chrisreierson__coffee-maker-noise.wavsnd_1.aif</filename>
                 <type>wav</type>
                 <duration>00:02:176</duration>
@@ -139,7 +139,7 @@ be used to indicate the degree of editorial confidence in a particular correctio
                 <channels>stereo</channels>
                 <description>Buzzing sound emitted from a coffee maker. Recorded 02/17/2017.</description>
               </soundfile>
-              <soundfile xml:id="soundfile_2" n="2" label="Moscow">
+              <soundfile id="soundfile_2" n="2" label="Moscow">
                 <filename>383415__softwalls__moscow-center-court-2015-04-06-xy.wav</filename>
                 <type>wav</type>
                 <duration>05:06:199</duration>
@@ -149,7 +149,7 @@ be used to indicate the degree of editorial confidence in a particular correctio
                 <channels>stereo</channels>
                 <description>Ambience of Moscow court in a historical center. Quiet close space.</description>
               </soundfile>
-              <soundfile xml:id="soundfile_3" n="3" label="Metalic">
+              <soundfile id="soundfile_3" n="3" label="Metalic">
                 <filename>383116__stiffman__tools-metal-metalic-rummage-looking-search-toolbox-2.wav</filename>
                 <type>wav</type>
                 <duration>00:06:359</duration>
@@ -161,66 +161,71 @@ be used to indicate the degree of editorial confidence in a particular correctio
               </soundfile>
             </soundfiles>
             <tracks>
-              <track xml:id="track_1" n="1" label="Track 1">
+              <track id="track_1" n="1" label="Track 1">
                 <description>This track will rock your speakers.</description>
                 <modules>
-                  <module xml:id="track1_module1" x_seq="1" y_seq="1">
+                  <module id="track1_module1" x_seq="1" y_seq="1">
                     <category>Others</category>
                     <type>input</type>
                     <name>AudioIn</name>
                   </module>
-                  <module xml:id="track1_module2" x_seq="2" y_seq="1">
+                  <module id="track1_module2" x_seq="2" y_seq="1">
                     <category>Delay effects</category>
                     <type>effect</type>
                     <name>Delay</name>
                   </module>
-                  <module xml:id="track1_module3" x_seq="3" y_seq="1">
+                  <module id="track1_module3" x_seq="3" y_seq="1">
+                    <category>Filters</category>
+                    <type>filter</type>
+                    <name>Lowpass</name>
+                  </module>
+                  <module id="track1_module4" x_seq="4" y_seq="1">
                     <category>Others</category>
                     <type>output</type>
                     <name>AudioOut</name>
                   </module>
-                </modules>
+                </modules>                
               </track>
-              <track xml:id="track_2" n="2" label="Track 2">
+              <track id="track_2" n="2" label="Track 2">
                 <description>This track will also rock your speakers.</description>
                 <modules>
-                  <module xml:id="track2_module1" x_seq="1" y_seq="1">
+                  <module id="track2_module1" x_seq="1" y_seq="1">
                     <category>Others</category>
                     <type>input</type>
                     <name>Soundfile</name>
                     <soundfile ref="#soundfile_1"/>
                   </module>
-                  <module xml:id="track2_module2" x_seq="2" y_seq="1">
+                  <module id="track2_module2" x_seq="2" y_seq="1">
                     <category>Reverb effects</category>
                     <type>effect</type>
                     <name>Freeverb</name>
                   </module>
-                  <module xml:id="track2_module3" x_seq="2" y_seq="2">
+                  <module id="track2_module3" x_seq="2" y_seq="2">
                     <category>Filter effects</category>
                     <type>effect</type>
                     <name>Lowpass</name>
                   </module>
-                  <module xml:id="track2_module4" x_seq="3" y_seq="1">
+                  <module id="track2_module4" x_seq="3" y_seq="1">
                     <category>Reverb effect</category>
                     <type>effect</type>
                     <name>Freeverb</name>
                   </module>
-                  <module xml:id="track2_module5" x_seq="3" y_seq="2">
+                  <module id="track2_module5" x_seq="3" y_seq="2">
                     <category>Reverb effect</category>
                     <type>effect</type>
                     <name>Stereoverb</name>
                   </module>
-                  <module xml:id="track2_module6" x_seq="3" y_seq="3">
+                  <module id="track2_module6" x_seq="3" y_seq="3">
                     <category>Filter effects</category>
                     <type>effect</type>
                     <name>Highpass</name>
                   </module>
-                  <module xml:id="track2_module7" x_seq="4" y_seq="1">
+                  <module id="track2_module7" x_seq="4" y_seq="1">
                     <category>Delay effects</category>
                     <type>effect</type>
                     <name>Delay</name>
                   </module>
-                  <module xml:id="track2_module7" x_seq="5" y_seq="1">
+                  <module id="track2_module7" x_seq="5" y_seq="1">
                     <category>Others</category>
                     <type>output</type>
                     <name>AudioOut</name>
