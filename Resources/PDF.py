@@ -37,19 +37,19 @@ class PDF:
         self.PAGE_HEIGHT=defaultPageSize[1]
         self.styles = getSampleStyleSheet()
 
-        tree = ET.parse('sample.mei')
-        self.root = tree.getroot()
+        self.tree = ET.parse('sample.mei')
+        self.root = self.tree.getroot()
         # Loading header content
-        self.title = str(tree.find('./meiHead/workDesc/work/titleStmt/title').text)
-        self.subtitle = str(tree.find('./meiHead/workDesc/work/titleStmt/title[@type="subordinate"]').text)
-        self.composer = str(tree.find('./meiHead/workDesc/work/titleStmt/respStmt/persName[@role="composer"]').text)
-        self.year = str(tree.find('./meiHead/workDesc/work/creation/date').text)
+        self.title = str(self.tree.find('./meiHead/workDesc/work/titleStmt/title').text)
+        self.subtitle = str(self.tree.find('./meiHead/workDesc/work/titleStmt/title[@type="subordinate"]').text)
+        self.composer = str(self.tree.find('./meiHead/workDesc/work/titleStmt/respStmt/persName[@role="composer"]').text)
+        self.year = str(self.tree.find('./meiHead/workDesc/work/creation/date').text)
 
         # Loading music content
-        self.preface = tree.find('./music/front/div[@type="preface"]')
-        self.cues = tree.findall('./music/body/mdiv/parts/part/cues/cue')
-        self.tracks = tree.findall('./music/body/mdiv/parts/part/tracks/track')
-        self.soundfiles = tree.findall('./music/body/mdiv/parts/part/soundfiles/soundfile')
+        self.preface = self.tree.find('./music/front/div[@type="preface"]')
+        self.cues = self.tree.findall('./music/body/mdiv/parts/part/cues/cue')
+        self.tracks = self.tree.findall('./music/body/mdiv/parts/part/tracks/track')
+        self.soundfiles = self.tree.findall('./music/body/mdiv/parts/part/soundfiles/soundfile')
 
         # Formating
         self.Elements = []
@@ -179,7 +179,8 @@ class PDF:
                 for tracks in cue.find('./tracks'):
                     self.p("Modules setup for this track:")
                     for track in tracks:
-                        self.p(track.attrib['ref'])
+                        track_ref = './music/body/mdiv/parts/part/tracks/track/modules/module/[@id="%s"]' % track.attrib['ref'][1:]
+                        self.p(str(self.tree.find(track_ref).find('name').text))
                         for parameter in track.find('./parameters'):
                             parameter_str = '<para fontSize=9 fontName="Courier">%s: %s</para>' % (str(parameter.tag), str(parameter.text))
                             self.p(parameter_str)
