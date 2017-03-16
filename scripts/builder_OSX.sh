@@ -5,8 +5,8 @@
 # Olivier Belanger, 2016
 ##################################
 
-export DMG_DIR="QLive 0.1.2"
-export DMG_NAME="QLive_0.1.2.dmg"
+export DMG_DIR="QLive 0.1.3"
+export DMG_NAME="QLive_0.1.3.dmg"
 
 python2 setup.py py2app
 
