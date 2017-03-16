@@ -116,7 +116,7 @@ class MEI:
 
         soundfiles = SubElement(main_part, 'soundfiles')
         for sf in dictSave['soundfiles']:
-            s = SubElement(soundfiles, 'soundfile', {'xml:id': 'soundfile_'+str(sf['id'])})
+            s = SubElement(soundfiles, 'soundfile', {'n': str(sf['id']), 'label':'SF #'})
             SubElement(s, 'id').text = str(sf['id'])
             SubElement(s, 'filename').text = sf['filename']
             SubElement(s, 'title').text = "Title for this soundfile"
