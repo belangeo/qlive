@@ -120,12 +120,14 @@ class PDF:
         soundfiles_line_data = []
         LIST_STYLE = TableStyle()
         styles = getSampleStyleSheet()
-        soundfiles_table_data = [["Descriptive name", "Filename", "Description"]]
+        soundfiles_table_data = [["ID", "Descriptive name", "Filename", "Description"]]
         for s in self.soundfiles:
+            id = Paragraph('<para fontSize=9 fontName="Courier">' + s.attrib['n'] + '</para>', styles['Normal'])
             label = Paragraph('<para fontSize=9 fontName="Courier">' + s.attrib['label'] + '</para>', styles['Normal'])
             filename = Paragraph('<para fontSize=9 fontName="Courier">' + str(s.find('./filename').text) + '</para>', styles['Normal'])
             desc = Paragraph('<para fontSize=9 fontName="Courier">' + str(s.find('./description').text) + '</para>', styles['Normal'])
 
+            soundfiles_line_data.append(id)
             soundfiles_line_data.append(label)
             soundfiles_line_data.append(filename)
             soundfiles_line_data.append(desc)
@@ -134,7 +136,7 @@ class PDF:
             LIST_STYLE.add('INNERGRID', (0,0), (-1,-1), 0.25, colors.black)
             LIST_STYLE.add('GRID', (0,0), (-1,-1), 0.25, colors.black)
 
-        t = Table(soundfiles_table_data, colWidths=140,style=LIST_STYLE)
+        t = Table(soundfiles_table_data, colWidths=(25,90,150,170),style=LIST_STYLE)
         self.Elements.append(t)
 
         # TRACKS
@@ -150,6 +152,7 @@ class PDF:
             self.header(t.attrib['label'], style=self.HeaderStyle3, sep=0)
             self.p(str(t.find('./description').text))
             self.p('\n')
+            self.p("\n")
             w,h = 0,0
             label = ""
             LIST_STYLE = TableStyle()
@@ -160,7 +163,7 @@ class PDF:
             track_table_data = [["" for i in range(w)] for i in range(h)]
             for m in t.find('./modules'):
                 x,y = int(m.attrib['x_seq'])-1, int(m.attrib['y_seq'])-1
-                label = str(m.find("./name").text)
+                label = "%s (%s)" % (str(m.find("./name").text), m.attrib['n'])
                 track_table_data[y][x] = label
                 LIST_STYLE.add('BOX',(x,y),(x,y),1,colors.red)
             t = Table(track_table_data, style=LIST_STYLE)
@@ -177,21 +180,30 @@ class PDF:
             if cue.attrib['n'] != "0": # no need to loop over cue 0
                 # TRACKS INTO CUES
                 for tracks in cue.find('./tracks'):
-                    self.p("Modules setup for this track:")
+                    track_text = "Modules setup for track %s" % tracks.attrib['ref']
+                    self.header(track_text, style=self.HeaderStyle4, sep=0)
                     for track in tracks:
-                        track_ref = './music/body/mdiv/parts/part/tracks/track/modules/module/[@id="%s"]' % track.attrib['ref'][1:]
-                        self.p(str(self.tree.find(track_ref).find('name').text))
+                        track_ref = './music/body/mdiv/parts/part/tracks/track/modules/module/[@n="%s"]' % track.attrib['ref']
+                        mod_ref = "%s (%s)" % (str(self.tree.find(track_ref).find('name').text), track.attrib['ref'])
+                        self.p(mod_ref)
                         for parameter in track.find('./parameters'):
-                            parameter_str = '<para fontSize=9 fontName="Courier">%s: %s</para>' % (str(parameter.tag), str(parameter.text))
+                            parameter_str = '<para fontSize=9 fontName="Courier"> &nbsp;|--> %s: %s</para>' % (str(parameter.tag), str(parameter.text))
                             self.p(parameter_str)
                 # SOUNDFILES INTO CUES
+                self.header("Soundfiles setup for this cue:", self.HeaderStyle4, sep=0)
+                soundfiles_table_data = [["ID", "Playing", "Loop", "Transp.", "Gain", "Output", "Start", "End", "Xfade", "Outchan"]]
                 for soundfile in cue.find('./soundfiles'):
-                    self.p("Soundfiles setup:")
-                    self.p(soundfile.attrib['ref'])
+                    soundfiles_line_data = []
+                    LIST_STYLE = TableStyle()
+                    styles = getSampleStyleSheet()
+                    soundfiles_line_data.append(soundfile.attrib['ref'])
                     for parameter in soundfile.find('./parameters'):
-                        parameter_str = '<para fontSize=9 fontName="Courier">%s: %s</para>' % (str(parameter.tag), str(parameter.text))
-                        self.p(parameter_str)
-
+                        parameter_str = Paragraph('<para fontSize=9 fontName="Courier">' + str(parameter.text) + '</para>', styles["Normal"])
+                        soundfiles_line_data.append(parameter_str)
+                    soundfiles_table_data.append(soundfiles_line_data)
+                t = Table(soundfiles_table_data, colWidths=(20, 45,56,45,45,45,45,48,45,45), style=LIST_STYLE)
+                self.Elements.append(t)
+                print soundfiles_table_data
 pdf = PDF()
 pdf.build()
 pdf.go()
