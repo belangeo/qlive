@@ -23,8 +23,8 @@
     <workDesc>
       <work>
         <titleStmt>
-          <title>Composition X Live - ode for a landscape.</title>
-          <title type="subordinate">Any subtitle for composition X goes here</title>
+          <title>Composition Testing Live</title>
+          <title type="subordinate">A subtitle for composition goes here</title>
           <respStmt>
             <persName role="composer">Tiago B. Vaz</persName>
           </respStmt>
@@ -106,12 +106,210 @@ be used to indicate the degree of editorial confidence in a particular correctio
                     </module>
                     <module ref="4">
                       <parameters>
-                        <channel n="1">
-                          <gain>0.3</gain>
-                        </channel>
-                        <channel n="2">
-                          <gain>0.8</gain>
-                        </channel>
+                        <chgain n="1" label="Gain">0.59</chgain>
+                        <chgain n="2" label="Gain">0.56</chgain>
+                      </parameters>
+                    </module>
+                  </track>
+                  <track ref="2">
+                    <module ref="1">
+                      <parameters>
+                        <soundfile>2</soundfile>
+                        <gain>0.3</gain>
+                      </parameters>
+                    </module>
+                    <module ref="2">
+                      <parameters>
+                        <size>0.3</size>
+                        <damp>0.31</damp>
+                        <gain>0.4</gain>
+                        <drywet>0.4</drywet>
+                      </parameters>
+                    </module>
+                    <module ref="3">
+                      <parameters>
+                        <freq>123</freq>
+                        <q>1</q>
+                        <gain>0.4</gain>
+                        <drywet>0.3</drywet>
+                      </parameters>
+                    </module>
+                   <module ref="4">
+                      <parameters>
+                        <size>0.1</size>
+                        <damp>0.4</damp>
+                        <gain>0.55</gain>
+                        <drywet>0.4</drywet>
+                      </parameters>
+                    </module> 
+                    <module ref="5">
+                       <parameters>
+                        <pan>0.6</pan>
+                        <revtime>0.43</revtime>
+                        <cutoff>7030.0</cutoff>
+                        <gain>0.3</gain>
+                        <drywet>0.9</drywet>
+                      </parameters>
+                    </module>
+                    <module ref="6">
+                      <parameters>
+                        <freq>1200</freq>
+                        <q>0.5</q>
+                        <gain>0.51</gain>
+                        <drywet>0.44</drywet>
+                      </parameters>
+                    </module>
+                    <module ref="7">
+                       <parameters>
+                        <deltime>1.4</deltime>
+                        <feed>0.43</feed>
+                        <gain>0.5</gain>
+                        <drywet>0.6</drywet>
+                      </parameters>
+                    </module> 
+                    <module ref="8">
+                       <parameters>
+                        <chgain n="1" label="Gain">0.81</chgain>
+                        <chgain n="2" label="Gain">0.54</chgain>
+                      </parameters>
+                    </module>
+                  </track>
+                </tracks>
+                <soundfiles>
+                  <soundfile ref="1">
+                    <parameters>
+                      <playing>Stop</playing>
+                      <loopmode>Forward</loopmode>
+                      <transposition>0.56</transposition>
+                      <gain>0.3</gain>
+                      <output>True</output>
+                      <start unit="s">0.000</start>
+                      <end unit="s">0.2114</end>
+                      <xfade>5.0</xfade>
+                      <outchan>0</outchan>
+                    </parameters>
+                  </soundfile>
+                  <soundfile ref="2">
+                    <parameters>
+                      <playing>Loop</playing>
+                      <loopmode>Backward</loopmode>
+                      <transposition>0.0</transposition>
+                      <gain>0.7</gain>
+                      <output>True</output>
+                      <start unit="s">0.000</start>
+                      <end unit="s">0.415</end>
+                      <xfade>2.0</xfade>
+                      <outchan>0</outchan>
+                    </parameters>
+                  </soundfile>
+                  <soundfile ref="3">
+                    <parameters>
+                      <playing>Through</playing>
+                      <loopmode>Forward</loopmode>
+                      <transposition>0.34</transposition>
+                      <gain>0.6</gain>
+                      <output>True</output>
+                      <start unit="s">0.000</start>
+                      <end unit="s">0.447</end>
+                      <xfade>4.0</xfade>
+                      <outchan>1</outchan>
+                    </parameters>
+                  </soundfile>
+                </soundfiles>
+              </cue>
+              <cue n="2" label="Cue 2">
+                <description>This is a nice noisy Cue. Nam at ipsum ullamcorper, euismod nulla non, pharetra odio. Etiam eleifend ipsum nisi, in pharetra sapien ornare quis. Nunc ipsum urna, mattis ut nibh ac, varius gravida massa. Fusce odio erat, consequat scelerisque consectetur ac, vestibulum et metus. Quisque a tellus ut ipsum facilisis finibus sed a est.</description>
+                <tracks>
+                  <track ref="1">
+                    <module ref="1">
+                      <parameters>
+                        <chgain n="1" label="Gain">0.89</chgain>
+                        <chgain n="2" label="Gain">0.80</chgain>
+                      </parameters>
+                    </module>
+                    <module ref="2">
+                      <parameters>
+                        <size>0.1</size>
+                        <damp>0.3</damp>
+                        <gain>0.8</gain>
+                        <drywet>0.5</drywet>
+                      </parameters>
+                    </module>
+                    <module ref="3">
+                      <parameters>
+                        <freq>120</freq>
+                        <q>1</q>
+                        <gain>0.3</gain>
+                        <drywet>0.8</drywet>
+                      </parameters>
+                    </module>
+                    <module ref="4">
+                      <parameters>
+                        <chgain n="1" label="Gain">0.64</chgain>
+                        <chgain n="2" label="Gain">0.5</chgain>
+                      </parameters>
+                    </module>
+                  </track>
+                  <track ref="2">
+                    <module ref="1">
+                      <parameters>
+                        <soundfile>1</soundfile>
+                        <gain>0.5</gain>
+                      </parameters>
+                    </module>
+                    <module ref="2">
+                      <parameters>
+                        <size>0.4</size>
+                        <damp>0.34</damp>
+                        <gain>0.3</gain>
+                        <drywet>0.7</drywet>
+                      </parameters>
+                    </module>
+                    <module ref="3">
+                      <parameters>
+                        <freq>150</freq>
+                        <q>0.5</q>
+                        <gain>0.5</gain>
+                        <drywet>0.54</drywet>
+                      </parameters>
+                    </module>
+                   <module ref="4">
+                      <parameters>
+                        <size>0.1</size>
+                        <damp>0.24</damp>
+                        <gain>0.5</gain>
+                        <drywet>0.4</drywet>
+                      </parameters>
+                    </module> 
+                    <module ref="5">
+                       <parameters>
+                        <pan>0.1</pan>
+                        <revtime>0.13</revtime>
+                        <cutoff>5000.0</cutoff>
+                        <gain>0.5</gain>
+                        <drywet>0.5</drywet>
+                      </parameters>
+                    </module>
+                    <module ref="6">
+                      <parameters>
+                        <freq>1000</freq>
+                        <q>0.5</q>
+                        <gain>0.5</gain>
+                        <drywet>0.54</drywet>
+                      </parameters>
+                    </module>
+                    <module ref="7">
+                       <parameters>
+                        <deltime>1</deltime>
+                        <feed>0.13</feed>
+                        <gain>0.5</gain>
+                        <drywet>0.5</drywet>
+                      </parameters>
+                    </module> 
+                    <module ref="8">
+                       <parameters>
+                        <chgain n="1" label="Gain">0.89</chgain>
+                        <chgain n="2" label="Gain">0.80</chgain>
                       </parameters>
                     </module>
                   </track>

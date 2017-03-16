@@ -97,11 +97,13 @@ class PDF:
         # First page
         composer = '<para align=center spaceAfter=50>'+self.composer+'</para>'
         title = '<para align=center spaceAfter=0 spaceBefore=30 fontSize=20>'+self.title+'</para>'
-        subtitle = '<para align=center spaceAfter=20>'+self.subtitle+'</para>'
+        subtitle = '<para align=center spaceAfter=0>'+self.subtitle+'</para>'
+        year = '<para align=center spaceAfter=20>('+self.year+')</para>'
         self.header("", sep=0.5, style=self.ParaStyle)
         self.header(title, style=self.HeaderStyle, sep=0)
         self.header(subtitle, sep=0, style=self.HeaderStyle3)
-        self.header(composer, sep=0.2, style=self.ParaStyle)
+        self.header(year, sep=0, style=self.HeaderStyle4)
+        self.header(composer, sep=0, style=self.ParaStyle)
         for i in self.preface:
             paragraph = '<para firstLineIndent=15 rightIndent=60 leftIndent=60 align=justify>%s</para>' % (str(i.text))
             self.p(paragraph)
@@ -182,11 +184,11 @@ class PDF:
                 for tracks in cue.find('./tracks'):
                     track_text = "Modules setup for track %s" % tracks.attrib['ref']
                     self.header(track_text, style=self.HeaderStyle4, sep=0)
-                    for track in tracks:
-                        track_ref = './music/body/mdiv/parts/part/tracks/track/modules/module/[@n="%s"]' % track.attrib['ref']
-                        mod_ref = "%s (%s)" % (str(self.tree.find(track_ref).find('name').text), track.attrib['ref'])
+                    for module in tracks:
+                        track_ref = './music/body/mdiv/parts/part/tracks/track/[@n="%s"]/modules/module/[@n="%s"]' % (tracks.attrib['ref'], module.attrib['ref'])
+                        mod_ref = "%s (%s)" % (str(self.tree.find(track_ref).find('name').text), module.attrib['ref'])
                         self.p(mod_ref)
-                        for parameter in track.find('./parameters'):
+                        for parameter in module.find('./parameters'):
                             parameter_str = '<para fontSize=9 fontName="Courier"> &nbsp;|--> %s: %s</para>' % (str(parameter.tag), str(parameter.text))
                             self.p(parameter_str)
                 # SOUNDFILES INTO CUES
@@ -196,14 +198,13 @@ class PDF:
                     soundfiles_line_data = []
                     LIST_STYLE = TableStyle()
                     styles = getSampleStyleSheet()
-                    soundfiles_line_data.append(soundfile.attrib['ref'])
+                    soundfiles_line_data.append(Paragraph('<para fontSize=9 fontName="Courier">' + soundfile.attrib['ref'] + '</para>', styles["Normal"]))
                     for parameter in soundfile.find('./parameters'):
                         parameter_str = Paragraph('<para fontSize=9 fontName="Courier">' + str(parameter.text) + '</para>', styles["Normal"])
                         soundfiles_line_data.append(parameter_str)
                     soundfiles_table_data.append(soundfiles_line_data)
                 t = Table(soundfiles_table_data, colWidths=(20, 45,56,45,45,45,45,48,45,45), style=LIST_STYLE)
                 self.Elements.append(t)
-                print soundfiles_table_data
 pdf = PDF()
 pdf.build()
 pdf.go()
