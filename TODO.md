@@ -1,6 +1,8 @@
 TODO
 ----
 
+- **urgent** CPU increases between each Audio stop/Audio start sequence.
+
 - Need to document how things work right now (shortcut,
   key bindings, mouse bindings, buttons, etc.).
 - Software preferences
