@@ -994,6 +994,7 @@ class AudioServer:
             self.resetObjectRefs()
             self.soundfiles = []
             self.audioObjects = []
+            QLiveLib.getVar("MidiServer").cleanup()
             QLiveLib.getVar("CuesPanel").onSaveCue()
 
     # Global recording.
@@ -1093,7 +1094,6 @@ class MidiServer:
                     del self.bindings[group][x]
 
     def registerMidiSynth(self, obj, midirange):
-        # do we have to unregister midi synths.
         self.midisynths.append((obj, midirange))
 
     def sendMidiSynthEvent(self, pit, vel):
@@ -1101,3 +1101,7 @@ class MidiServer:
             for synth in self.midisynths:
                 if pit > synth[1][0] and pit < synth[1][1]:
                     synth[0].midiEvent(pit, vel)
+
+    def cleanup(self):
+        self.midisynths = []
+        
