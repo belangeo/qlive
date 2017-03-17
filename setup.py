@@ -16,11 +16,11 @@ OPTIONS = {'argv_emulation': False,
                'CFBundleExecutable': 'QLive',
                'CFBundleIconFile': 'QLive-Icon.icns',
                'CFBundleIdentifier': 'com.litem.umontreal.ca.QLive',
-               'CFBundleInfoDictionaryVersion': '0.1.3',
+               'CFBundleInfoDictionaryVersion': '0.1.4',
                'CFBundleName': 'QLive',
                'CFBundlePackageType': 'APPL',
-               'CFBundleShortVersionString': '0.1.3',
-               'CFBundleVersion': '0.1.3',
+               'CFBundleShortVersionString': '0.1.4',
+               'CFBundleVersion': '0.1.4',
            }
        }
 
