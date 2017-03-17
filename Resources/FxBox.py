@@ -222,9 +222,8 @@ class BaseFxBox(object):
             inters = params["interps"]
             automations = params["automations"]
             for i, widget in enumerate(widgets):
-                if widget.getMidiBinding() is None:
-                    widget.setInterpValue(inters[i], propagate=True)
-                    widget.setValue(values[i], propagate=True)
+                widget.setInterpValue(inters[i], propagate=True)
+                widget.setValue(values[i], propagate=True)
                 widget.setAutomationValues(automations[i])
             self.setEnable(params["enable"])
 
