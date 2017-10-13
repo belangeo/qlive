@@ -269,7 +269,11 @@ INPUT_DICT = {  "None":     {"ctrls":   []},
                                         ["detune", 0.5, 0, 1, "", False],
                                         ["bal", 0.7, 0, 1, "", False],
                                         GAIN_DEF]},
+                "MS-CrossFM": {"ctrls": [["ratio", 0.01, 0, 1, "", False],
+                                        ["ind_carrier", 5, 0, 20, "", False],
+                                        ["ind_mod", 7, 0, 20, "", False],
+                                        GAIN_DEF]},
              }
 
 # Input ordered names
-INPUT_LIST = ["None", "AudioIn", "Soundfile", "MS-TB-303", "MS-SupSaw"]
+INPUT_LIST = ["None", "AudioIn", "Soundfile", "MS-TB-303", "MS-SupSaw", "MS-CrossFM"]

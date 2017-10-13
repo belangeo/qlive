@@ -429,6 +429,14 @@ class MSSuperSaw(MidiSynth):
         self.process = Mix([self.ss1.mix(1), self.ss2.mix(1)], voices=2)
         self.output = Sig(self.process, mul=self.gain.sig())
 
+class MSCrossFM(MidiSynth):
+    def __init__(self, chnls, ctrls, values, interps):
+        MidiSynth.__init__(self, chnls, ctrls, values, interps)
+        self.cfm1 = CrossFM(self.pitch, self.ratio.sig(),  self.ind_carrier.sig(), self.ind_mod.sig(), self.envelope)
+        self.cfm2 = CrossFM(self.pitch, self.ratio.sig(),  self.ind_carrier.sig(), self.ind_mod.sig(), self.envelope)
+        self.process = Mix([self.cfm1.mix(1), self.cfm2.mix(1)], voices=2)
+        self.output = Sig(self.process, mul=self.gain.sig())
+
 # Effect classes
 class FxLowpass(BaseAudioObject):
     def __init__(self, chnls, ctrls, values, interps):
@@ -761,7 +769,7 @@ class FxAudioOut(BaseAudioObject):
         self.output.value = [[0.0] * self.chnls, self.process][x]
 
 AUDIO_OBJECTS = {"None": AudioNone, "AudioIn": AudioIn,
-                 "MS-TB-303": MSTB303In, "MS-SupSaw": MSSuperSaw,
+                 "MS-TB-303": MSTB303In, "MS-SupSaw": MSSuperSaw, "MS-CrossFM": MSCrossFM,
                  "Soundfile": SoundfileIn, "Lowpass": FxLowpass,
                 "Highpass": FxHighpass, "Bandpass": FxBandpass,
                 "Bandstop": FxBandstop, "PeakNotch": FxPeakNotch,
