@@ -55,6 +55,7 @@ QLiveVariables['availableMidiInputIndexes'] = []
 # Declare here QLiveVariables which will be loaded/saved in prefs file:
 PREFS_TO_SAVE = {"useTooltips": False,
                  "audio":       "portaudio",
+                 "midi":       "portmidi",
                  "sr":          "44100",
                  "duplex":      1,
                  "nchnls":      2,

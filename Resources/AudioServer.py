@@ -807,8 +807,8 @@ class AudioServer:
         indev = prefs[8]
         firstin = prefs[9]
         firstout = prefs[10]
-        self.server = Server(sr=sr, buffersize=bufferSize, audio=audio,
-                             jackname=jackname, nchnls=nchnls, duplex=duplex)
+        midi = prefs[11]
+        self.server = Server(sr=sr, buffersize=bufferSize, audio=audio, midi=midi, jackname=jackname, nchnls=nchnls, duplex=duplex)
         if inchnls != None:
             self.server.setIchnls(inchnls)
         self.server.deactivateMidi()
@@ -849,8 +849,9 @@ class AudioServer:
         indev = prefs[8]
         firstin = prefs[9]
         firstout = prefs[10]
+        midi = prefs[11]
 
-        self.server.reinit(audio=audio, jackname=jackname)
+        self.server.reinit(audio=audio, midi=midi, jackname=jackname)
         self.server.setSamplingRate(sr)
         self.server.setBufferSize(bufferSize)
         self.server.setNchnls(nchnls)
@@ -895,8 +896,9 @@ class AudioServer:
             indev = inputIndexes[audioInputs.index(audioIn)]
         firstin = QLiveLib.getVar("defaultFirstInput")
         firstout = QLiveLib.getVar("defaultFirstOutput")
+        midi = QLiveLib.getVar("midi")
         return (sr, bufferSize, audio, jackname, nchnls, inchnls,
-                duplex, outdev, indev, firstin, firstout)
+                duplex, outdev, indev, firstin, firstout, midi)
 
     def getSaveState(self):
         return {}

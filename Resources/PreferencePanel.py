@@ -60,6 +60,17 @@ class AudioPrefsTab(wx.Panel):
         self.audioDriverCB.Bind(wx.EVT_COMBOBOX, self.setAudioDriver,
                                 self.audioDriverCB)
 
+        # Setting jack midi True/False
+        if QLiveLib.getVar("midi") == "jack":
+            jackmidiDefault = True
+        else:
+            jackmidiDefault = False
+        self.jackmidiLabel = wx.StaticText(self, -1, "Use jack midi:")
+        self.jackmidiCheckBox = wx.CheckBox(self, -1, "",
+                                            style=wx.ALIGN_LEFT)
+        self.jackmidiCheckBox.SetValue(jackmidiDefault)
+        self.Bind(wx.EVT_CHECKBOX, self.setMidiDriver, self.jackmidiCheckBox)
+
         # Portaudio: Audio Input devices
         self.inputDeviceLabel = wx.StaticText(self, -1,
                                               "Audio Input (portaudio):")
@@ -187,9 +198,13 @@ class AudioPrefsTab(wx.Panel):
         hsizerBufferSize  = wx.BoxSizer(wx.HORIZONTAL)
         hsizerSamplingRate  = wx.BoxSizer(wx.HORIZONTAL)
         hsizerDuplex  = wx.BoxSizer(wx.HORIZONTAL)
+        hsizerJackMidi  = wx.BoxSizer(wx.HORIZONTAL)
 
         hsizerAudioDriver.Add(audioDriverLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
         hsizerAudioDriver.Add(self.audioDriverCB, -1, wx.ALL, 3)
+
+        hsizerJackMidi.Add(self.jackmidiLabel, -1, wx.ALL|wx.ALIGN_CENTER, 3)
+        hsizerJackMidi.Add(self.jackmidiCheckBox, -1, wx.ALL, 3)
 
         hsizerInputDevice.Add(self.inputDeviceLabel, -1,
                               wx.ALL|wx.ALIGN_CENTER, 3)
@@ -232,6 +247,7 @@ class AudioPrefsTab(wx.Panel):
 
         vsizer.AddSpacer(5)
         vsizer.Add(hsizerAudioDriver, 0, wx.ALL|wx.EXPAND, 0)
+        vsizer.Add(hsizerJackMidi, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerInputDevice, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerOutputDevice, 0, wx.ALL|wx.EXPAND, 0)
         vsizer.Add(hsizerNumInputChannels, 0, wx.ALL|wx.EXPAND, 0)
@@ -263,6 +279,14 @@ class AudioPrefsTab(wx.Panel):
             self.reinit_server = True
         QLiveLib.setVar("audio", evt.GetString())
         self.EnableDisablePortaudioOpts()
+
+    def setMidiDriver(self, evt):
+        if QLiveLib.getVar("midi") != evt.GetString():
+            self.reinit_server = True
+        if evt.GetInt() == 1:
+            QLiveLib.setVar("midi", "jack")
+        else:
+            QLiveLib.setVar("midi", "portmidi")
 
     def setInputDevice(self, evt):
         if QLiveLib.getVar("audioInput") != evt.GetString():
