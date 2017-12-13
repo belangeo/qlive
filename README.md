@@ -25,8 +25,8 @@ alpha stage), you'll have to install these softwares/libraries on your system:
 - [WxPython 3.0](http://wxpython.org/download.php) : The GUI toolkit. Choose 
   the installer that fits your python version.
 
-- [Pyo (compiled from source)](http://ajaxsoundstudio.com/software/pyo/) : The audio engine. 
-  Need the very last update (commit 08a223aa500911a286065c2a9643343f21f5a937).
+- [Pyo)](http://ajaxsoundstudio.com/software/pyo/) : The audio engine. 
+  Needs pyo version >= 0.8.8.
 
 - [psutil 4.3.0+](https://pypi.python.org/pypi/psutil) : Library used to 
   retrieve memory and CPU usage.
