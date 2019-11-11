@@ -20,7 +20,7 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 import os, sys, unicodedata, copy
-from pyolib._wxwidgets import BACKGROUND_COLOUR
+from pyo.lib._wxwidgets import BACKGROUND_COLOUR
 
 reload(sys)
 sys.setdefaultencoding("utf-8")

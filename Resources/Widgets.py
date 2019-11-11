@@ -21,7 +21,7 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 """
 import wx, math
 import wx.lib.stattext as stattext
-from pyolib._wxwidgets import BACKGROUND_COLOUR
+from pyo.lib._wxwidgets import BACKGROUND_COLOUR
 from AudioMixer import *
 from constants import *
 import QLiveLib

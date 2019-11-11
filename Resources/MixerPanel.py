@@ -20,7 +20,7 @@ License along with QLive.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 import wx
-from pyolib._wxwidgets import BACKGROUND_COLOUR
+from pyo.lib._wxwidgets import BACKGROUND_COLOUR
 from Widgets import MeterControlSlider
 from AudioMixer import *
 from constants import *
